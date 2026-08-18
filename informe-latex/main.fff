@@ -1,0 +1,12 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H] % El parámetro [H] fija la imagen exactamente en esta posición
+	\centering    % Centra la imagen en la página
+	\includegraphics[width=0.7\textwidth]{<html>
+		<body>
+		<!--StartFragment--><img src="https://creately.com/static/assets/diagram-type/hero-images/class-diagram-es.webp" alt="Crear Diagramas de Clases Online (UML) | Creately"/><!--EndFragment-->
+		</body>
+		</html>} % Reemplaza "mi-imagen" por el nombre de tu archivo (sin la extensión)
+	\caption{Aquí va la descripción o pie de foto de la imagen.}
+	\label{fig:mi_imagen_referencia} % Sirve para citar la imagen en el texto
+\end{figure*}
