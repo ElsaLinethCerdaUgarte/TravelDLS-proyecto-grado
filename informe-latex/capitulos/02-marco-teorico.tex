@@ -3,12 +3,44 @@
 
 \section{Marco Teórico}
 
-En la Figura \ref{fig:ejemplo-diagrama} se ilustra el esquema general del proceso de desarrollo.
+\subsection{Antecedentes del Proyecto}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{logo-unhsjm.jpeg}
-  \caption{Isologo Institucional y Diagrama de Referencia.}
-  \label{fig:ejemplo-diagrama}
-\end{figure}
+TravelDLS surge de observar que varias necesidades del transporte ya han sido atendidas mediante soluciones tecnológicas, pero no siempre dentro de una misma propuesta. Los sistemas revisados muestran funciones relacionadas con administración, seguimiento y planificación de rutas. \textcite{sultan2022real}, por ejemplo, presentan una solución que reúne gestión de clientes, conductores, reservas, envíos y seguimiento dentro de un mismo entorno (pp. 1-4). Por su parte, \textcite{pauzuoliene2024smart} muestran que el seguimiento de carga y la planificación de rutas forman parte de las tecnologías utilizadas por empresas logísticas (pp. 988-989). Estas experiencias ayudan a ubicar TravelDLS dentro de una línea de desarrollo donde la información del viaje deja de verse como datos separados y comienza a tratarse como parte de un mismo proceso.
 
+En el contexto nacional, los trabajos de \textcite{aragon2018implementacion} y \textcite{garcia2022desarrollo} sirven como referencias cercanas porque abordan dos componentes que TravelDLS también necesita: la organización de los fletes y la ubicación de unidades de transporte. El proyecto toma esas ideas como punto de partida, pero busca llevarlas a un entorno orientado a carga pesada donde empresa, conductor y cliente puedan consultar información relacionada con el mismo servicio. Esta relación con trabajos previos no significa que TravelDLS sea una copia de esas soluciones; permite reconocer qué partes del problema ya han sido abordadas y desde dónde puede construirse una propuesta más integrada.
+
+\subsection{Definición de Términos}
+
+\textbf{Gestión logística.} Dentro de TravelDLS se entenderá como la organización de la información y de las actividades necesarias para coordinar un servicio de transporte, desde la asignación de recursos hasta el seguimiento del viaje. Esta idea no se limita a registrar datos: busca mantener una relación clara entre la carga, el vehículo, el conductor, la ruta y el estado del servicio. La literatura revisada muestra que los sistemas de gestión logística pueden integrar varios de estos elementos y facilitar el intercambio de información entre los participantes del proceso \parencite[pp. 1-4]{sultan2022real}.
+
+\textbf{Trazabilidad y seguimiento en tiempo real.} En este proyecto, la trazabilidad se relaciona con la posibilidad de conocer cómo avanza un servicio y conservar información sobre su estado durante el traslado. El seguimiento en tiempo real aporta la ubicación actual o la información más reciente disponible del viaje. \textcite{pauzuoliene2024smart} señalan que las tecnologías de seguimiento permiten conocer la ubicación y el estado de la carga, además de apoyar la estimación de los tiempos de entrega (p. 988). Para TravelDLS, esta información será importante tanto para la empresa como para el cliente que necesita saber cómo avanza su servicio.
+
+\textbf{Geolocalización.} Se refiere al uso de tecnologías que permiten obtener y representar la ubicación de una unidad durante su recorrido. En Nicaragua, \textcite{garcia2022desarrollo} incorporaron servicios de Google Maps para mostrar en tiempo real la localización de unidades de transporte dentro de una aplicación desarrollada en León (p. 7). En TravelDLS, la geolocalización se utilizará como apoyo al seguimiento del viaje y no como un fin independiente del resto de la operación.
+
+\textbf{Planificación y optimización de rutas.} La planificación de rutas busca ordenar los puntos que deben visitarse durante un recorrido. La optimización añade el interés de comparar alternativas para encontrar recorridos que reduzcan distancia, tiempo u otros costos definidos para el problema. Los resultados encontrados en antecedentes regionales muestran que las mejoras dependen del contexto y de la herramienta utilizada, por lo que en TravelDLS los métodos serán comparados antes de valorar su comportamiento \parencite[p. 56]{aguilar2022optimizacion}; \parencite[p. 111]{hernandez2024evaluacion}.
+
+\textbf{Problema del Agente Viajero y Vecino Más Cercano.} El Problema del Agente Viajero, conocido como TSP por sus siglas en inglés, plantea un recorrido que debe visitar un conjunto de puntos y regresar al origen buscando reducir la distancia total. \textcite{contreras2021aplicacion} explican que este problema se utiliza para generar rutas en contextos donde intervienen elementos de transporte y describen el Vecino Más Cercano como una técnica que va incorporando el siguiente punto a partir de la menor distancia disponible (p. 11). Esta idea se relaciona directamente con los viajes de múltiples destinos que se estudiarán en TravelDLS.
+
+\subsection{Bases Teóricas}
+
+\subsubsection{Sistemas de gestión de transporte (TMS)}
+
+Un Sistema de Gestión de Transporte (TMS, por sus siglas en inglés) es un software diseñado para organizar y optimizar la cadena de suministro de transporte, incluyendo la planificación, la ejecución y el seguimiento de los envíos de mercancías \parencite[p. 10]{sepulveda2023propuesta}. Su propósito es mejorar la eficiencia, reducir los costos de transporte y aumentar la visibilidad y el control sobre la cadena de suministro \parencite[p. 11]{sepulveda2023propuesta}.
+
+Entre las funcionalidades que puede ofrecer un TMS se encuentran la gestión de pedidos, la planificación de rutas, la asignación de cargas, el seguimiento de vehículos y la facturación \parencite[p. 11]{sepulveda2023propuesta}. También permite medir indicadores clave de rendimiento, como el costo por envío, el tiempo de entrega, la precisión en el cumplimiento de los plazos y el nivel de utilización del equipo de transporte \parencite[p. 11]{sepulveda2023propuesta}.
+
+La selección de un TMS depende de las necesidades de cada compañía, su tamaño, su misión y la región donde opera \parencite[p. 12]{sepulveda2023propuesta}. En el mercado mundial existen desde soluciones empresariales como SAP Transportation Management u Oracle Transportation Management, hasta plataformas más especializadas como Manhattan Associates TMS o Blue Yonder \parencite[p. 15]{sepulveda2023propuesta}. Para el contexto latinoamericano, han surgido TMS desarrollados localmente, como Beetrack (Chile), Drivin (México), Simple Route (México) y Logix, que buscan adaptarse a las condiciones específicas de la región \parencite[pp. 16-17]{sepulveda2023propuesta}.
+
+\subsubsection{Transporte terrestre de carga pesada}
+
+El transporte terrestre de carga pesada comprende el traslado de mercancías cuyo peso o dimensiones no permiten moverlas en unidades de carga convencionales, como los contenedores. En algunos casos, se requiere un vehículo diseñado específicamente para ese tipo de carga \parencite[p. 66]{laura2024tecnologias}. Esta actividad tiene una importancia considerable para la economía de un país, aunque en ocasiones no se le reconoce de esa manera \parencite[pp. 66-67]{laura2024tecnologias}.
+
+Dentro de este tipo de transporte, las empresas enfrentan desafíos relacionados con la gestión de flotas, la planificación de rutas, la coordinación de conductores y la optimización de los tiempos de entrega \parencite[p. 67]{laura2024tecnologias}. A esto se suman las regulaciones, como los límites de carga y las restricciones de horarios de conducción, que agregan complejidad al proceso \parencite[p. 67]{laura2024tecnologias}. Para atender estas dificultades, muchas empresas han incorporado tecnologías de planificación de recursos empresariales (ERP), que permiten centralizar y automatizar la gestión de flotas, la planificación de rutas y el control de inventario, mejorando la eficiencia operativa y la rentabilidad \parencite[p. 67]{laura2024tecnologias}.
+
+\subsubsection{Modelo SaaS y arquitectura multitenant}
+
+El Software como Servicio (SaaS) es un modelo de entrega de software ampliamente utilizado dentro de la computación en la nube. \textcite{lasluisa2026diseno} explican que, bajo este esquema, el software se ofrece como servicio a través de Internet para varios usuarios, en lugar de comercializarse como producto tradicional. El proveedor se encarga de la instalación, el mantenimiento y las actualizaciones en sus propios sistemas, lo que libera al cliente de esas responsabilidades (p. 33). El costo suele basarse en un modelo de pago por uso, lo que permite acceder a distintos servicios sin adquirir ni mantener infraestructura propia (p. 33).
+
+Un aspecto central de este modelo es la multi-tenencia, que permite que una sola aplicación atienda a varios clientes mediante una única instancia de servidor y servicio \parencite[p. 33]{lasluisa2026diseno}. La arquitectura multitenant permite que una misma infraestructura sirva a múltiples organizaciones, conocidas como tenants o inquilinos (p. 34). Esto mejora el uso de recursos y facilita el mantenimiento y el despliegue (p. 34).
+
+El uso compartido de recursos también implica riesgos. La seguridad y la privacidad de la información adquieren mayor criticidad, y se requiere gestionar la disponibilidad y la tolerancia a fallos \parencite[p. 34]{lasluisa2026diseno}. Para que cada tenant acceda únicamente a la información que le corresponde, se implementan mecanismos de autorización como el Control de Acceso Basado en Roles (RBAC), que asigna permisos según roles predefinidos y aplica el principio de menor privilegio (p. 36). También se presenta el problema del ``vecino ruidoso'', donde un tenant consume recursos de forma desproporcionada y afecta el rendimiento de los demás (p. 36).

@@ -1,10 +1,99 @@
 % Capítulo 1: Introducción
 % Propósito: Describir los antecedentes, planteamiento del problema, justificación, formulación y los objetivos (general y específicos) del proyecto de grado.
 
-\parencite{sommerville2011}
 
-\parencite{chavez2025propuesta}
 \section{Introducción}
 
-El desarrollo de sistemas de software requiere la aplicación rigurosa de principios de ingeniería de software \parencite{sommerville2011}. Como señala \textcite{pressman2010}, la calidad del software está directamente vinculada al proceso empleado durante su construcción.
+El transporte terrestre de carga forma parte del movimiento diario de mercancías entre empresas, ciudades y diferentes puntos de distribución. Con el paso del tiempo, la forma de administrar estas operaciones también ha cambiado, especialmente por la incorporación de tecnologías que permiten manejar una mayor cantidad de información durante los procesos logísticos. En este sentido, la logística inteligente ha comenzado a apoyarse en herramientas digitales para automatizar actividades, monitorear envíos y mejorar la organización de las operaciones \parencite{kalkha2023rising}.
 
+Este avance tecnológico ha hecho que la gestión del transporte ya no se observe únicamente desde el traslado físico de una mercancía. Actualmente también se estudian aspectos relacionados con el seguimiento de los envíos y la planificación de los recorridos. \textcite{zhang2024ecommerce}, por ejemplo, desarrollaron una propuesta en la que el seguimiento de paquetes y la planificación de rutas forman parte de una misma solución logística. Por otro lado, \textcite{xin2022logistics} muestran que la búsqueda de recorridos más adecuados continúa siendo un tema de interés dentro de la distribución de mercancías, debido a su relación con el uso de los vehículos, los tiempos de recorrido y la organización de las entregas.
+
+Tomando como referencia esta evolución de los sistemas logísticos surge TravelDLS, un proyecto orientado al transporte terrestre de carga pesada. La propuesta consiste en desarrollar una plataforma web que permita reunir diferentes empresas transportistas dentro de un mismo entorno y facilitar la relación entre empresas, conductores y clientes. Además de servir como espacio para administrar las operaciones propias de cada empresa, se busca que las empresas transportistas puedan dar a conocer sus servicios y tener mayor visibilidad ante personas o negocios que necesiten contratar transporte de carga. El sistema también incorporará funciones relacionadas con los viajes, la ubicación de las unidades y la planificación de recorridos, manteniendo cada una de estas funciones conectada con el servicio que se está realizando.
+
+A partir de esta propuesta, el desarrollo del proyecto requiere comprender tanto el funcionamiento del transporte de carga como las tecnologías y métodos que pueden utilizarse para apoyarlo. Por ello, a lo largo del marco teórico se abordarán temas relacionados con los sistemas de gestión de transporte, la trazabilidad y geolocalización, la planificación y optimización de rutas, el Problema del Agente Viajero y algunos métodos utilizados para resolver este tipo de recorridos. También se estudiará el modelo de Software como Servicio y la arquitectura multitenant, debido a que TravelDLS está pensado para ser utilizado por distintas empresas desde una misma plataforma.
+
+\subsection{Planteamiento del Proyecto}
+
+El transporte terrestre de carga pesada implica mucho más que mover una mercancía de un punto a otro. En cada servicio también deben coordinarse vehículos, conductores, cargas, recorridos, tiempos y comunicación con el cliente. Cuando esa información se encuentra separada o no se actualiza de forma oportuna, resulta más difícil saber qué está ocurriendo durante el viaje y reaccionar ante cambios, atrasos o inconvenientes. Esta necesidad de mantener una mejor comunicación también aparece en estudios sobre logística, donde se señalan dificultades entre clientes, conductores y empresas, además de la necesidad de conocer el estado de los envíos durante el traslado \parencite[p. 2]{sultan2022real}.
+
+El seguimiento y la planificación de rutas son dos apoyos que pueden ayudar a ordenar este tipo de operaciones. \textcite{pauzuoliene2024smart} encontraron que, en una muestra de 46 empresas logísticas de Lituania, el 69.6 \% utilizaba tecnologías para dar seguimiento a la carga en tiempo real y el 60.9 \% empleaba programas para planificar o seleccionar rutas (p. 988). En Centroamérica también se han señalado necesidades de digitalización y coordinación. En Panamá, por ejemplo, se han identificado barreras tecnológicas, baja digitalización y dificultades de coordinación dentro del transporte terrestre \parencite[p. 10]{castillo2025potenciando}. Aunque estos estudios corresponden a otros contextos, ayudan a entender que mantener conectada la información del viaje sigue siendo una necesidad presente en distintas operaciones de transporte.
+
+En Nicaragua ya existen trabajos que atienden partes de esta situación. \textcite{aragon2018implementacion} desarrollaron un sistema para administrar fletes terrestres con la intención de ordenar los controles y facilitar el acceso a la información logística (p. 2). Por su parte, \textcite{garcia2022desarrollo} abordaron en León la necesidad de conocer recorridos y ubicación de unidades de transporte mediante una aplicación con funciones de geolocalización en tiempo real (pp. 3, 7). Son proyectos diferentes a TravelDLS, pero muestran que tanto la organización de la información como la ubicación de los vehículos ya han sido necesidades abordadas desde la informática en el país.
+
+A partir de este panorama, TravelDLS se concentra en una necesidad más específica: que las empresas dedicadas al transporte terrestre de carga pesada puedan organizar sus operaciones y, al mismo tiempo, mantener conectada la información que necesitan los conductores y los clientes durante el servicio. El problema no consiste únicamente en registrar un viaje. También implica relacionar el vehículo, el conductor, la carga, la ruta, la ubicación y el estado del servicio para que la información tenga sentido durante todo el recorrido.
+
+Por ello, la pregunta que guía el proyecto es la siguiente: ¿Cómo mejorar la gestión, coordinación, localización, seguimiento y planificación de rutas de las operaciones de transporte terrestre de carga pesada, de manera que empresas transportistas, conductores y clientes dispongan de información centralizada y oportuna durante el servicio?
+
+Como respuesta a esta necesidad se propone TravelDLS, una plataforma web bajo el modelo de Software como Servicio (SaaS). La idea es reunir en un mismo entorno la información de empresas transportistas, vehículos, conductores, cargas, viajes, rutas y clientes, de manera que las distintas partes del servicio no queden aisladas. La plataforma también contempla la publicación y contratación de servicios, el seguimiento de los viajes, la consulta del estado de la carga y un módulo para apoyar la planificación de rutas con varios destinos. TravelDLS no pretende reemplazar las decisiones de la empresa, sino ofrecer un medio más ordenado para consultar información y apoyar la gestión diaria de los viajes.
+
+\subsection{Objetivos}
+
+\subsubsection{Objetivo General}
+Diseñar un sistema web denominado TravelDLS para la gestión, localización y trazabilidad en tiempo real de las operaciones de transporte terrestre de carga pesada, incorporando la optimización matemática de rutas para fortalecer los procesos administrativos y logísticos de las empresas transportistas y brindar mayor transparencia a los clientes durante el traslado de sus cargas.
+
+\subsubsection{Objetivos Específicos}
+\begin{itemize}
+	\item Analizar los requerimientos funcionales y no funcionales del sistema, evaluando y comparando métodos de optimización de rutas basados en el Problema del Agente Viajero (Vecino Más Cercano, 2-opt y Google OR-Tools) para seleccionar la solución más eficiente.
+	\item Diseñar la arquitectura del sistema, incluyendo la base de datos y la estructura de los módulos que conformarán la plataforma.
+	\item Desarrollar la plataforma web (backend y frontend), implementando el módulo de optimización con Google OR-Tools para la gestión eficiente de usuarios, vehículos, conductores, cargas, viajes y rutas.
+	\item Integrar los módulos del sistema y realizar pruebas funcionales que permitan validar su correcto funcionamiento y el cumplimiento de los objetivos establecidos.
+	\item Elaborar la documentación técnica del sistema y los manuales de usuario para garantizar la sostenibilidad, la correcta operación de la gestión logística y el mantenimiento continuo de la plataforma TravelDLS.
+\end{itemize}
+
+\subsection{Antecedentes}
+
+Para entender mejor de dónde parte TravelDLS, se revisaron investigaciones realizadas fuera y dentro de Nicaragua que abordan problemas parecidos desde distintos puntos de vista. Algunos trabajos se concentran en el seguimiento de la carga, otros en la planificación de rutas y otros en la administración de los servicios de transporte. Revisarlos permite reconocer qué soluciones se han probado, qué resultados han obtenido y qué ideas pueden servir como referencia para el proyecto, sin asumir que una propuesta aplicada en otro contexto funcionará de la misma manera en TravelDLS.
+
+En el ámbito internacional, \textcite{pauzuoliene2024smart} estudiaron el uso de tecnologías inteligentes en empresas logísticas de Lituania. La investigación contó con 46 representantes del sector y mostró que el 69.6 \% utilizaba seguimiento de carga en tiempo real y el 60.9 \% empleaba programas para planificar o seleccionar rutas. Los autores también relacionan estas herramientas con la posibilidad de conocer la ubicación, el estado de la carga y los tiempos esperados de entrega (pp. 988-989). Para TravelDLS, este trabajo es útil porque muestra que el seguimiento y la planificación pueden formar parte de una misma gestión logística, aunque el estudio se enfoca en la adopción de tecnologías y no en el desarrollo de una plataforma para carga pesada.
+
+También a nivel internacional, \textcite{sultan2022real} propusieron un sistema móvil y web para apoyar el transporte urbano de mercancías. La solución reúne funciones de registro, reservas, conductores, administración, inventario, seguimiento de pedidos y planificación de rutas (pp. 1-3). Los autores además señalan problemas de comunicación entre clientes, conductores y empresas, junto con la necesidad de que el cliente pueda conocer el estado de su envío durante el traslado (p. 2). Este trabajo se acerca a TravelDLS por la forma en que integra varios participantes y procesos dentro de una misma solución, aunque TravelDLS estará dirigido específicamente al transporte terrestre de carga pesada y a varias empresas usuarias.
+
+Al acercar la revisión a Centroamérica, \textcite{aguilar2022optimizacion}, en Honduras, estudió la optimización de rutas para compañías distribuidoras y surtidoras de Tegucigalpa. En el escenario analizado, el recorrido total pasó de 7,037.8 km a 4,008 km después de utilizar software de optimización y se estimó una reducción del 30 \% en los costos de distribución (p. 56). Más que tomar ese porcentaje como una meta para TravelDLS, el estudio sirve para mostrar que una propuesta de rutas puede evaluarse con datos concretos, como la distancia recorrida y los costos asociados.
+
+Otro trabajo realizado en Honduras por \textcite{hernandez2024evaluacion} comparó distintas alternativas de software para la planificación de rutas en la empresa Transporte Gonzales. El estudio evaluó herramientas como Route4Me, Geotab y DispatchTrack y reportó una reducción calculada del 17 \% en los costos totales, menor que la meta inicial del 20 \% (pp. 10, 111). A la vez, la opción seleccionada permitía visualizar rutas, estado de envíos y tiempos estimados de entrega (p. 111). Este resultado es importante para TravelDLS porque recuerda que no conviene asumir de antemano que una herramienta será la mejor: la comparación debe hacerse con criterios claros y tomando en cuenta el contexto en el que se va a utilizar.
+
+En Panamá, \textcite{castillo2025potenciando} analizó el transporte terrestre desde una perspectiva de competitividad logística e identificó, entre otros aspectos, costos elevados, limitaciones de infraestructura, baja digitalización y dificultades de coordinación (p. 10). Aunque el trabajo no desarrolla una aplicación informática, ayuda a entender que los problemas del transporte no dependen únicamente de la tecnología. TravelDLS puede apoyar la organización, el seguimiento y la planificación de los viajes, pero no pretende resolver por sí solo todos los factores que afectan al sector.
+
+En Nicaragua, \textcite{aragon2018implementacion} desarrollaron un sistema de información para administrar fletes terrestres en Master Logistics, S.A. El trabajo buscó ordenar controles, mejorar la exactitud de los datos y facilitar el acceso a la información de las actividades logísticas; además, su objetivo general fue implementar un sistema capaz de registrar los elementos que forman parte de la administración de fletes (pp. 2, 9). Este antecedente es cercano a TravelDLS por su relación con el transporte de carga, aunque la propuesta actual amplía ese enfoque al incorporar contratación, seguimiento y planificación de rutas dentro de una plataforma pensada para distintas empresas.
+
+También en Nicaragua, \textcite{garcia2022desarrollo} desarrollaron en la UNAN-León una aplicación Android para el seguimiento y localización de unidades de transporte público. El problema estudiado estuvo relacionado con la falta de información sobre recorridos, paradas y ubicación, y uno de sus objetivos fue mostrar en tiempo real la localización de las unidades mediante servicios de Google Maps (pp. 3, 7). Aunque se trata de transporte de pasajeros y no de carga pesada, el trabajo aporta una referencia nacional para el componente de ubicación de TravelDLS y demuestra que este tipo de tecnología ya se ha aplicado en proyectos de transporte desarrollados en el país.
+
+Al observar los trabajos en conjunto, se aprecia que la administración del transporte, el seguimiento y la planificación de rutas han sido tratados desde diferentes enfoques. Los estudios internacionales muestran experiencias donde seguimiento y planificación forman parte de soluciones logísticas, mientras que los trabajos regionales permiten comparar resultados de optimización que no siempre son iguales. En Nicaragua se encontraron propuestas para administrar fletes y para localizar unidades de transporte, pero esas capacidades aparecen en proyectos separados. Con la revisión realizada hasta este momento, TravelDLS encuentra una oportunidad en reunir varias de estas funciones dentro de una plataforma orientada a la carga pesada. Esta idea todavía debe comprobarse con el mapeo sistemático completo, por lo que se mantiene como una brecha preliminar y no como una conclusión definitiva.
+
+\subsection{Justificación}
+
+TravelDLS se justifica porque las actividades de una operación de carga están relacionadas entre sí. Registrar un viaje tiene poco valor si luego esa información no puede conectarse con el vehículo, el conductor, la carga, la ruta y el estado del servicio. La propuesta busca que esos datos puedan consultarse de una manera más ordenada durante el recorrido y que cada actor tenga acceso a la información que le corresponde. La importancia de estas funciones también se observa en empresas logísticas que ya utilizan herramientas de seguimiento y planificación de rutas como parte de sus operaciones \parencite[p. 988]{pauzuoliene2024smart}.
+
+El módulo de optimización se incorpora como un apoyo para planificar los recorridos, no como una promesa de que un algoritmo siempre encontrará la mejor opción para cualquier situación. Los antecedentes regionales muestran precisamente que los resultados cambian según los datos y la herramienta empleada: \textcite{aguilar2022optimizacion} obtuvo una reducción estimada del 30 \% en el escenario estudiado, mientras que \textcite{hernandez2024evaluacion} reportaron un 17 \% en su evaluación (p. 56; p. 111). Por eso, en TravelDLS será importante comparar los métodos definidos en el proyecto antes de valorar su comportamiento.
+
+En Nicaragua ya existen experiencias relacionadas con la administración de fletes y con la localización de unidades de transporte \parencite[pp. 2, 9]{aragon2018implementacion}; \parencite[pp. 3, 7]{garcia2022desarrollo}. TravelDLS busca continuar sobre esa base, pero reuniendo estas capacidades con otros procesos del servicio de carga pesada. Además, la sostenibilidad de la plataforma se contempla desde el modelo de pago: el porcentaje destinado al mantenimiento se agregará cuando la empresa transportista establezca el precio del viaje, de forma que el cliente vea desde el inicio el monto final antes de aceptar el servicio. Lo recaudado servirá para apoyar el funcionamiento de la plataforma, cubrir correcciones, mejoras y otros servicios necesarios para mantenerla disponible.
+
+\subsection{Alcance}
+
+TravelDLS se desarrollará como una plataforma web bajo el modelo SaaS, pensada para que distintas empresas de transporte de carga pesada puedan utilizarla. En esta primera etapa se contempla:
+
+\begin{itemize}
+	\item Registro y gestión de perfiles para empresas transportistas, conductores y clientes.
+	\item Administración de vehículos, conductores, cargas, viajes, rutas y servicios asociados a cada empresa.
+	\item Publicación de servicios de transporte y consulta o contratación por parte de los clientes.
+	\item Asignación de conductores y vehículos a los viajes, con consulta del estado de cada operación.
+	\item Localización y seguimiento de los viajes mediante servicios de mapas y funciones de ubicación disponibles en los dispositivos utilizados.
+	\item Consulta para el cliente del estado y ubicación de su carga durante el desarrollo del servicio.
+	\item Comparación de los resultados de Vecino Más Cercano y 2-opt con Google OR-Tools, siendo esta última la herramienta que se implementará en TravelDLS.
+	\item Integración de una pasarela de pago en la que el porcentaje destinado al mantenimiento forme parte del precio final mostrado al cliente antes de aceptar el servicio.
+	\item Realización de pruebas funcionales y elaboración de la documentación técnica y los manuales de usuario.
+\end{itemize}
+
+\subsection{Limitaciones}
+
+Como TravelDLS se desarrollará dentro del tiempo previsto para este proyecto académico y se concentrará en sus funciones principales, será necesario establecer algunos límites para mantener el trabajo enfocado y realizable:
+
+\begin{itemize}
+	\item La solución se desarrollará como aplicación web; en esta etapa no se contempla una aplicación móvil nativa independiente.
+	\item El proyecto estará enfocado en el transporte terrestre de carga pesada y no abarcará transporte aéreo, marítimo, ferroviario ni transporte público de pasajeros.
+	\item La optimización se probará en viajes con varios destinos y con los métodos definidos para el proyecto, por lo que no se pretende cubrir todos los tipos de problemas de rutas que existen.
+	\item La actualización de la ubicación dependerá de la conexión a internet, del dispositivo utilizado y de los servicios de ubicación disponibles.
+	\item Las pruebas se realizarán con los escenarios disponibles dentro del proyecto académico, por lo que sus resultados no representan todavía una evaluación de uso a gran escala.
+	\item En esta etapa no se incluirán conexiones especializadas con sistemas externos como plataformas contables, aduaneras, aseguradoras u otros servicios que requieran desarrollos adicionales.
+	\item TravelDLS se plantea para ser utilizado por distintas empresas transportistas y no como una solución exclusiva para una sola organización.
+\end{itemize}

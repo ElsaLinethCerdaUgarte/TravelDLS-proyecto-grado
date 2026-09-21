@@ -21,6 +21,27 @@
 \addbibresource{referencias.bib}
 
 % ==========================================
+% Justificar texto
+% ==========================================
+\usepackage{ragged2e}
+\justifying
+
+% ==========================================
+% Configuración de sangría
+% ==========================================
+\usepackage{indentfirst}
+\setlength{\parindent}{1.27cm}
+
+
+%Estilos tablas
+
+\usepackage{tabularx}   
+\usepackage{booktabs}   
+\usepackage{array}     
+\usepackage{ragged2e}  
+\usepackage{float}
+
+% ==========================================
 % Estilos Personalizados UNHSJM
 % ==========================================
 \usepackage{unhsjm-formato}
@@ -42,7 +63,7 @@
 % Título y Subtítulo del Trabajo
 \title{Título del Proyecto de Grado o Monografía}
 \subtitulo{Subtítulo del Trabajo (Opcional)}
-\shorttitle{Título Corto del Trabajo}
+\shorttitle{Sistema Web TravelDLS}
 
 % Autores (Trabajo Grupal o Individual)
 % Para agregar múltiples integrantes, separe las líneas con \\
@@ -71,11 +92,11 @@
 % ==========================================
 % Inclusión de Capítulos
 % ==========================================
-\include{capitulos/01-introduccion}
-\include{capitulos/02-marco-teorico}
-\include{capitulos/03-metodologia}
-\include{capitulos/04-desarrollo}
-\include{capitulos/05-conclusiones}
+\input{capitulos/01-introduccion}
+\input{capitulos/02-marco-teorico}
+\input{capitulos/03-metodologia}
+\input{capitulos/04-desarrollo}
+\input{capitulos/05-conclusiones}
 
 % ==========================================
 % Referencias Bibliográficas
