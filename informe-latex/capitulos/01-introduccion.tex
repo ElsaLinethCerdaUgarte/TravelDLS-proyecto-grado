@@ -102,7 +102,7 @@ Como TravelDLS se desarrollará en el marco de este proyecto académico y se con
 
 \subsubsection{Viabilidad Técnica}
 
-TravelDLS presenta viabilidad técnica debido a que las tecnologías seleccionadas permiten desarrollar una plataforma web con una separación clara entre la interfaz de usuario, la lógica del servidor y el almacenamiento de la información generada por empresas transportistas, conductores y clientes. Para el frontend se utilizará Next.js, mientras que el backend será desarrollado con AdonisJS. La información será almacenada en PostgreSQL y se utilizarán JSON Web Tokens (JWT) para apoyar los procesos de autenticación y control de acceso. El frontend será desplegado en Vercel y el backend en Render, utilizando un dominio adquirido mediante GoDaddy o Namecheap y conexiones HTTPS protegidas mediante certificados SSL/TLS.
+TravelDLS presenta viabilidad técnica debido a que las tecnologías seleccionadas permiten desarrollar una plataforma web con una separación clara entre la interfaz de usuario, la lógica del servidor, el almacenamiento de la información, la gestión de archivos multimedia y la visualización geográfica generada por empresas transportistas, conductores y clientes. Para el frontend se utilizará Next.js, mientras que el backend será desarrollado con AdonisJS. La información será almacenada en PostgreSQL, las fotografías de usuarios y empresas y el logotipo de la aplicación se gestionarán mediante Cloudinary, y los mapas, rutas y seguimiento de ubicación se apoyarán en Mapbox. Además, se utilizarán JSON Web Tokens (JWT) para apoyar los procesos de autenticación y control de acceso. El frontend será desplegado en Vercel y el backend en Render, utilizando un dominio adquirido mediante GoDaddy o Namecheap y conexiones HTTPS protegidas mediante certificados SSL/TLS.
 
 Como referencia para la organización interna del backend, se tomó en cuenta el trabajo de \textcite{arce2026arquitectura}, quienes desarrollaron una plataforma web utilizando una estructura basada en Modelo-Vista-Controlador (MVC) complementada con patrones como Service Layer, con el propósito de separar responsabilidades entre los distintos componentes del sistema y facilitar su mantenimiento (pp.~28, 33--35). Este antecedente resulta útil para TravelDLS porque muestra una forma de mantener la lógica de negocio separada de los controladores. Sin embargo, la arquitectura de TravelDLS no busca reproducir completamente la estructura utilizada en dicho trabajo, sino aplicar específicamente MVC + Service Layer dentro del backend desarrollado con AdonisJS.
 
@@ -111,6 +111,8 @@ En el backend de TravelDLS se implementará una estructura basada en el patrón 
 Next.js se utilizará como aplicación frontend independiente encargada de la interfaz de usuario y de consumir la API expuesta por AdonisJS. Esta separación permitirá desarrollar vistas específicas para empresas transportistas, conductores y clientes sin mezclar la lógica de presentación con las reglas del negocio. AdonisJS, por su parte, concentrará la lógica del servidor y facilitará la organización de módulos relacionados con usuarios, empresas, vehículos, cargas, viajes, rutas, servicios y pagos.
 
 PostgreSQL se selecciona porque la información de TravelDLS posee una naturaleza principalmente relacional. Las empresas estarán asociadas con usuarios, vehículos, conductores, cargas y viajes, mientras que cada viaje se relacionará con rutas, estados y clientes. Por ello, una base de datos relacional resulta adecuada para conservar estas dependencias y mantener consistencia entre los registros. JWT se utilizará como mecanismo de apoyo para la autenticación entre el frontend y el backend, complementado con controles de autorización que permitan diferenciar los permisos de cada tipo de usuario.
+
+Las fotografías de los usuarios y de las empresas, así como el logotipo de TravelDLS, se alojarán en Cloudinary para facilitar su carga, organización y visualización dentro de la plataforma. En PostgreSQL se conservarán las referencias necesarias para asociar cada imagen con su usuario, empresa o elemento de la aplicación. Esta integración tiene antecedentes en TaxiGo, que utiliza Cloudinary para gestionar archivos multimedia \parencite{yaqoub2024taxigo}, y en Truxi, donde las imágenes se almacenan en ese servicio y sus enlaces se relacionan con los registros del sistema \parencite{vad2020truxi}. Para los mapas se utilizará Mapbox, que permitirá representar las rutas y la ubicación de los vehículos durante los viajes. Su aplicación en soluciones de transporte y logística se observa en el sistema de seguimiento en tiempo real desarrollado por \textcite{aronsson2021tracking}, donde Mapbox se seleccionó como proveedor de mapas, y en Thunder Logistics, que integra Mapbox GL JS, Directions API y Geocoding API para mapas interactivos, rutas y seguimiento público \parencite{deyheralde2026thunder}. La posición se obtendrá de los servicios de ubicación del dispositivo del conductor, se enviará al backend y se actualizará en el mapa conforme se reciban nuevos datos; de esta manera, el seguimiento podrá mostrar la ubicación más reciente disponible.
 
 Para el despliegue, Vercel alojará el frontend desarrollado en Next.js y Render alojará el backend construido con AdonisJS. Esta distribución permitirá actualizar ambos componentes de forma independiente y mantener la aplicación disponible desde una infraestructura centralizada. El dominio será adquirido mediante GoDaddy o Namecheap y se utilizará HTTPS mediante certificados SSL/TLS para proteger la comunicación entre los usuarios y los servicios del sistema.
 
@@ -127,6 +129,87 @@ La utilidad operativa del seguimiento y la planificación también ha sido docum
 
 En TravelDLS, las empresas podrán administrar vehículos, conductores, cargas, viajes y servicios; los conductores podrán consultar la información de los recorridos asignados; y los clientes podrán conocer el estado de los servicios contratados. Al mantenerse la aplicación centralizada, las actualizaciones realizadas sobre la plataforma estarán disponibles para todos los usuarios sin requerir instalaciones adicionales en cada empresa.
 
+Como parte de esa gestión, los usuarios y las empresas podrán incorporar sus fotografías a los perfiles y registros que les correspondan, mientras que el logotipo de TravelDLS se mostrará de forma consistente en la interfaz. La experiencia de TaxiGo muestra la utilidad de integrar la gestión de imágenes y las funciones de seguimiento dentro de un sistema de transporte con distintos tipos de usuarios \parencite{yaqoub2024taxigo}. Durante un viaje activo, el conductor compartirá su ubicación mediante el dispositivo que utilice y Mapbox la presentará sobre el mapa para que la empresa y el cliente consulten el avance del servicio según sus permisos. Truxi ofrece un antecedente de uso de mapas para indicar lugares de recogida y entrega y apoyar los recorridos de los conductores \parencite{vad2020truxi}; además, Chalmers documenta el uso de Mapbox dentro de un sistema de seguimiento posicional en tiempo real para una empresa de transporte \parencite{aronsson2021tracking}, y Thunder Logistics lo emplea para visualizar rutas, envíos activos y páginas de tracking con ubicación actualizada \parencite{deyheralde2026thunder}. En TravelDLS, esta información se vinculará con el viaje registrado, de modo que el seguimiento y la consulta de la ruta formen parte del trabajo cotidiano de los participantes.
+
 El funcionamiento del sistema dependerá de factores como la conexión a Internet, la disponibilidad de los servicios de ubicación y los dispositivos utilizados por los conductores. Asimismo, la aceptación de la plataforma deberá comprobarse mediante las encuestas planteadas para administradores o propietarios y conductores. Los resultados permitirán conocer qué herramientas utilizan actualmente, qué acceso tienen a Internet y qué disposición existe para adoptar una plataforma web.
+
+\subsubsection{Viabilidad Económica}
+
+La viabilidad económica de TravelDLS se analiza mediante una proyección académica a cinco años que relaciona la inversión inicial, los costos de funcionamiento y los ingresos esperados por los servicios contratados en la plataforma. Los montos se expresan en córdobas nicaragüenses y, para convertir las tarifas de referencia publicadas en dólares, se adopta un tipo de cambio de C\$36.62 por USD~1.00, redondeado a dos decimales a partir de la referencia del \textcite{bcn2026tipocambio}. Los valores utilizados constituyen supuestos de planificación y deberán actualizarse con las condiciones de contratación y los resultados reales de operación.
+
+El modelo de ingresos contempla un recargo del 8\,\% sobre el precio establecido por la empresa transportista, incorporado en el monto final que el cliente conocerá antes de contratar el servicio. Para un envío promedio de C\$3,662.00, el cliente pagaría C\$3,954.96 y el recargo correspondiente a TravelDLS sería de C\$292.96. Si la pasarela de pago cobra una comisión estimada del 3\,\% sobre el total pagado, equivalente a C\$118.65, quedarían aproximadamente C\$174.31 por envío para cubrir los costos de la plataforma. Este importe representa la contribución disponible después de la comisión de pago y antes de los gastos operativos; el precio base del transporte corresponde a la empresa transportista. La comisión del 3\,\% es un supuesto que deberá confirmarse cuando se seleccione la pasarela.
+
+La inversión inicial estimada asciende a C\$56,834.24 y comprende el desarrollo del sistema, el dominio del primer año y las actividades de configuración, pruebas y puesta en marcha. Para el trabajo del equipo se asigna una valoración de C\$17,577.60 por integrante, con un total de C\$52,732.80 para tres integrantes. Como referencias salariales, \textcite{worldsalaries2026developer} reporta un promedio mensual de C\$18,158 para desarrolladores o programadores en Nicaragua, mientras que \textcite{wageindicator2026desarrolladores} presenta un rango mensual inicial de C\$15,612 a C\$31,324. La valoración adoptada es una estimación académica para una dedicación parcial y no equivale a la remuneración profesional completa de las dieciséis semanas de desarrollo. Por tanto, el monto inicial incluye el valor económico del trabajo aportado, aunque este no se desembolse como salario.
+
+\begin{table}[H]
+\centering
+\caption{Inversión inicial estimada de TravelDLS}
+\label{tab:inversion-inicial}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X r}
+\toprule
+Concepto & Monto (C\$) \\
+\midrule
+Desarrollo del sistema (tres integrantes) & 52,732.80 \\
+Dominio del primer año & 439.44 \\
+Configuración, pruebas y puesta en marcha & 3,662.00 \\
+GitHub Free y certificado SSL/TLS de Let's Encrypt & 0.00 \\
+Cloudinary y Mapbox dentro de sus niveles gratuitos & 0.00 \\
+\midrule
+Total & 56,834.24 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+El uso previsto de GitHub Free y de certificados de Let's Encrypt permite presupuestar estas herramientas sin un cargo directo \parencite{githubpricing,letsencrypt2021about}. Asimismo, se plantea iniciar con las opciones gratuitas de Cloudinary y Mapbox \parencite{cloudinarypricing,mapboxpricing}. Cloudinary alojará las fotografías de usuarios y empresas y el logotipo de la aplicación; Mapbox apoyará la visualización de mapas, rutas y posiciones, en correspondencia con la propuesta técnica. La optimización de recorridos seguirá a cargo de Google OR-Tools. La ausencia de un cargo inicial por estos servicios está condicionada a sus límites de uso: el número de envíos por sí solo no permite determinar el consumo de imágenes, cargas de mapas o solicitudes de rutas. Estos consumos deberán medirse durante las pruebas y revisarse conforme aumente el uso de TravelDLS.
+
+Los gastos recurrentes contemplan el backend y la base de datos en Render, el frontend en Vercel Pro, una asignación para soporte y mantenimiento y una reserva para consumos adicionales. Las tarifas de Render y Vercel sirven como referencia para la infraestructura \parencite{renderpricing,vercelpricing}; la base de datos se presupuesta en C\$366.20 mensuales como asignación de planificación, mientras que el soporte y la reserva corresponden a estimaciones internas. Con estos supuestos, el costo operativo es de C\$5,749.34 mensuales, equivalente a C\$68,992.08 anuales.
+
+\begin{table}[H]
+\centering
+\caption{Costos operativos estimados de TravelDLS}
+\label{tab:costos-operativos}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X r r}
+\toprule
+Concepto & Mensual (C\$) & Anual (C\$) \\
+\midrule
+Backend en Render & 256.34 & 3,076.08 \\
+PostgreSQL en Render & 366.20 & 4,394.40 \\
+Frontend en Vercel Pro & 732.40 & 8,788.80 \\
+Soporte y mantenimiento & 3,662.00 & 43,944.00 \\
+Reserva para consumos adicionales & 732.40 & 8,788.80 \\
+\midrule
+Total & 5,749.34 & 68,992.08 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+El dominio del primer año se incluye en la inversión inicial para evitar contabilizarlo nuevamente como gasto operativo. A partir del segundo año se incorpora una reserva anual de C\$439.44, por lo que los costos proyectados ascienden a C\$69,431.52 anuales. Esta reserva mantiene el supuesto del escenario base, pero no constituye una cotización de renovación: el precio deberá confirmarse con Namecheap o GoDaddy antes de contratar, considerando que el registro promocional y la renovación pueden tener importes diferentes \parencite{namecheapdomain,godaddy2026domain}.
+
+La proyección considera 60 envíos mensuales durante el primer año y un incremento de 30 envíos mensuales por cada año posterior, hasta alcanzar 180 en el quinto año. Se supone que ese promedio se mantiene durante los doce meses de cada año y que el precio del envío, los porcentajes aplicados y los costos presupuestados permanecen constantes. Los ingresos presentados corresponden únicamente a la contribución de TravelDLS después de descontar la comisión de la pasarela. Para evitar diferencias por redondeo, los cálculos conservan el valor de C\$174.3112 por envío y los resultados se muestran con dos decimales.
+
+\begin{table}[H]
+\centering
+\caption{Proyección económica de TravelDLS a cinco años}
+\label{tab:flujo-economico}
+{\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Año & \shortstack{Envíos\\mensuales} & \shortstack{Ingresos\\(C\$)} & \shortstack{Egresos\\(C\$)} & \shortstack{Flujo neto\\(C\$)} \\
+\midrule
+0 & -- & 0.00 & 56,834.24 & $-$56,834.24 \\
+1 & 60 & 125,504.06 & 68,992.08 & 56,511.98 \\
+2 & 90 & 188,256.10 & 69,431.52 & 118,824.58 \\
+3 & 120 & 251,008.13 & 69,431.52 & 181,576.61 \\
+4 & 150 & 313,760.16 & 69,431.52 & 244,328.64 \\
+5 & 180 & 376,512.19 & 69,431.52 & 307,080.67 \\
+\bottomrule
+\end{tabular*}
+}
+\end{table}
+
+Al descontar los flujos anuales al final de cada período con una tasa académica del 12\,\%, se obtiene un valor actual neto (VAN) de C\$547,112.84 y una tasa interna de retorno (TIR) de 161.59\,\%. El período de recuperación simple se sitúa al inicio del segundo año, ya que el flujo del primero cubre casi la totalidad de la inversión inicial. El punto de equilibrio operativo es de aproximadamente 33 envíos mensuales en el primer año y 34 al incluir la reserva de renovación del dominio en los años siguientes. Este umbral permite cubrir los gastos recurrentes considerados, sin implicar por sí mismo la recuperación de la inversión inicial.
+
+En estas condiciones, TravelDLS presenta una viabilidad económica preliminar favorable, pues los ingresos del escenario base cubren los gastos previstos desde el primer año y permiten recuperar el valor inicial del proyecto. No obstante, estos resultados dependen del volumen de envíos supuesto, de una valoración académica del desarrollo y de costos operativos constantes. La proyección no incorpora impuestos, financiamiento ni incrementos por inflación, y deberá revisarse cuando se conozcan la comisión definitiva de pago, el precio de renovación del dominio, la demanda efectiva, las necesidades de soporte y el consumo de Cloudinary y Mapbox. Su propósito es establecer una base para evaluar la sostenibilidad de la plataforma y orientar las decisiones de implementación.
 
 
