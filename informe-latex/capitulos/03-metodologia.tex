@@ -146,5 +146,94 @@ Las respuestas cerradas se analizarán mediante \textbf{estadística descriptiva
 
 Los hallazgos servirán para identificar y priorizar los requerimientos funcionales y no funcionales de TravelDLS.
 
+\subsection{Cronograma de Trabajo}
+
+El cronograma de trabajo presenta las actividades realizadas durante
+el proceso de documentación del proyecto TravelDLS y los períodos
+correspondientes a cada etapa.
+
+\begin{figure}[H]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{ganttchart}[
+			hgrid,
+			vgrid,
+			time slot format=isodate,
+			today=2025-09-27,
+			today rule/.style={draw=red, ultra thick, dashed},
+			today label=Hoy,
+			title/.style={draw=none, fill=gray!20},
+			title label font=\bfseries\footnotesize,
+			bar/.style={draw=none, rounded corners=2pt},
+			bar height=0.6,
+			group/.style={draw=none, fill=barGrupo},
+			group height=0.5,
+			milestone/.style={fill=hitoColor},
+			x unit=0.45cm,
+			y unit chart=0.7cm
+			]{2025-07-27}{2025-09-27}
+			
+			% ---- Encabezado de meses en español ----
+			\gantttitle{Julio}{5}
+			\gantttitle{Agosto}{31}
+			\gantttitle{Septiembre}{27} \\
+			
+			% ============================================
+			% FASE 1: Carta de aprobación (27 jul – 7 sep)
+			% ============================================
+			\ganttgroup{Fase 1: Carta de aprobación}{2025-07-27}{2025-09-07} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Redacción de carta}{2025-07-27}{2025-09-07} \\
+			\ganttmilestone{Aprobación}{2025-09-07} \\
+			
+			% ============================================
+			% FASE 2: Planteamiento del proyecto (7 sep – 20 sep)
+			% ============================================
+			\ganttgroup{Fase 2: Planteamiento del proyecto}{2025-09-07}{2025-09-20} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Antecedentes}{2025-09-07}{2025-09-20} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Alcance}{2025-09-07}{2025-09-20} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Limitaciones}{2025-09-07}{2025-09-20} \\
+			
+			% ============================================
+			% FASE 3: Marco Teórico (7 sep – 20 sep, en paralelo)
+			% ============================================
+			\ganttgroup{Fase 3: Marco Teórico}{2025-09-07}{2025-09-20} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Antecedentes del proyecto}{2025-09-07}{2025-09-20} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Definición de términos}{2025-09-07}{2025-09-20} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Bases teóricas}{2025-09-07}{2025-09-20} \\
+			
+			% ============================================
+			% FASE 4: Factibilidad (21 sep – 27 sep)
+			% ============================================
+			\ganttgroup{Fase 4: Factibilidad del Proyecto}{2025-09-21}{2025-09-27} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Viabilidad técnica}{2025-09-21}{2025-09-27} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Viabilidad operativa}{2025-09-21}{2025-09-27} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Viabilidad económica}{2025-09-21}{2025-09-27} \\
+			\ganttbar[bar/.append style={fill=barCompletado}]
+			{Viabilidad legal}{2025-09-21}{2025-09-27} \\
+			
+		\end{ganttchart}
+	}% ← cierra resizebox
+	
+	% ---- Leyenda FUERA del resizebox ----
+	\vspace{0.2cm}
+	{\footnotesize
+		\textbf{Leyenda:} \textcolor{barCompletado}{$\blacksquare$} Completado \quad
+		\textcolor{hitoColor}{$\blacklozenge$} Hito \quad
+		\textcolor{red}{- - -} Fecha actual (27 sep)\par
+	}
+	
+	\caption{Cronograma de fases completadas del proyecto}
+	\label{fig:cronograma}
+\end{figure}
 
 \subsection{Metodología de Desarrollo}
