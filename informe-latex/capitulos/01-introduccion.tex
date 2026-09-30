@@ -10,9 +10,10 @@ Este avance tecnológico ha hecho que la gestión del transporte ya no se observ
 
 Tomando como referencia esta evolución de los sistemas logísticos surge TravelDLS, un proyecto orientado al transporte terrestre de carga pesada. La propuesta consiste en desarrollar una plataforma web que permita reunir diferentes empresas transportistas dentro de un mismo entorno y facilitar la relación entre empresas, conductores y clientes. Además de servir como espacio para administrar las operaciones propias de cada empresa, se busca que las empresas transportistas puedan dar a conocer sus servicios y tener mayor visibilidad ante personas o negocios que necesiten contratar transporte de carga. El sistema también incorporará funciones relacionadas con los viajes, la ubicación de las unidades y la planificación de recorridos, manteniendo cada una de estas funciones conectada con el servicio que se está realizando.
 
-A partir de esta propuesta, el desarrollo del proyecto requiere comprender tanto el funcionamiento del transporte de carga como las tecnologías y métodos que pueden utilizarse para apoyarlo. Por ello, a lo largo del marco teórico se abordarán temas relacionados con los sistemas de gestión de transporte, la trazabilidad y geolocalización, la planificación y optimización de rutas, el Problema del Agente Viajero y algunos métodos utilizados para resolver este tipo de recorridos. También se estudiará el modelo de Software como Servicio y la arquitectura multitenant, debido a que TravelDLS está pensado para ser utilizado por distintas empresas desde una misma plataforma.
+A partir de esta propuesta, el presente proyecto se encuentra organizado en diferentes apartados que permiten desarrollar de manera progresiva la propuesta de TravelDLS. En primer lugar, se presenta el \textbf{\hyperref[sec:planteamiento]{Planteamiento del Proyecto}}, donde se describe la situación que da origen a la propuesta y las necesidades que se pretenden atender. Posteriormente, se establecen los \textbf{\hyperref[sec:objetivos]{Objetivos}} que orientan el desarrollo del proyecto y se presentan los \textbf{\hyperref[sec:antecedentes]{Antecedentes}}, los cuales permiten conocer investigaciones y soluciones relacionadas con la gestión del transporte, el seguimiento y la optimización de rutas. A continuación, la \textbf{\hyperref[sec:justificacion]{Justificación}} expone la importancia de la propuesta, mientras que el \textbf{\hyperref[sec:alcance]{Alcance}} y las \textbf{\hyperref[sec:limitaciones]{Limitaciones}} delimitan las funciones que serán desarrolladas y los aspectos que quedan fuera de esta etapa. Seguidamente, se analiza la \textbf{\hyperref[sec:viabilidad]{Viabilidad del Proyecto}} desde las perspectivas técnica, operativa, económica y legal. El \textbf{\hyperref[sec:marco-teorico]{Marco Teórico}} reúne los antecedentes del proyecto, los conceptos y las bases teóricas necesarias para comprender los componentes de TravelDLS. Finalmente, la \textbf{\hyperref[sec:metodologia]{Metodología}} describe el procedimiento seguido para la selección de investigaciones, la recolección y análisis de información y la organización del proceso de desarrollo de la plataforma.
 
 \subsection{Planteamiento del Proyecto}
+\label{sec:planteamiento}
 
 El transporte terrestre de carga pesada implica mucho más que mover una mercancía de un punto a otro. En cada servicio también deben coordinarse vehículos, conductores, cargas, recorridos, tiempos y comunicación con el cliente. Cuando esa información se encuentra separada o no se actualiza de forma oportuna, resulta más difícil saber qué está ocurriendo durante el viaje y reaccionar ante cambios, atrasos o inconvenientes. Esta necesidad de mantener una mejor comunicación también aparece en estudios sobre logística, donde se señalan dificultades entre clientes, conductores y empresas, además de la necesidad de conocer el estado de los envíos durante el traslado \parencite[p. 2]{sultan2022real}.
 
@@ -27,20 +28,20 @@ Por ello, la pregunta que guía el proyecto es la siguiente: ¿Cómo mejorar la 
 Como respuesta a esta necesidad se propone TravelDLS, una plataforma web bajo el modelo de Software como Servicio (SaaS). La idea es reunir en un mismo entorno la información de empresas transportistas, vehículos, conductores, cargas, viajes, rutas y clientes, de manera que las distintas partes del servicio no queden aisladas. La plataforma también contempla la publicación y contratación de servicios, el seguimiento de los viajes, la consulta del estado de la carga y un módulo para apoyar la planificación de rutas con varios destinos. TravelDLS no pretende reemplazar las decisiones de la empresa, sino ofrecer un medio más ordenado para consultar información y apoyar la gestión diaria de los viajes.
 
 \subsection{Objetivos}
+\label{sec:objetivos}
 
 \subsubsection{Objetivo General}
-Diseñar un sistema web denominado TravelDLS para la gestión, localización y trazabilidad en tiempo real de las operaciones de transporte terrestre de carga pesada, incorporando la optimización matemática de rutas para fortalecer los procesos administrativos y logísticos de las empresas transportistas y brindar mayor transparencia a los clientes durante el traslado de sus cargas.
+ Desarrollar un sistema web denominado TravelDLS para la gestión, localización y trazabilidad en tiempo real de las operaciones de transporte terrestre de carga pesada, incorporando la optimización matemática de rutas para fortalecer los procesos administrativos y logísticos de las empresas transportistas y brindar mayor transparencia a los clientes durante el traslado de sus cargas.
 
 \subsubsection{Objetivos Específicos}
 \begin{itemize}
 	\item Analizar los requerimientos funcionales y no funcionales del sistema, evaluando y comparando métodos de optimización de rutas basados en el Problema del Agente Viajero (Vecino Más Cercano, 2-opt y Google OR-Tools) para seleccionar la solución más eficiente.
 	\item Diseñar la arquitectura del sistema, incluyendo la base de datos y la estructura de los módulos que conformarán la plataforma.
-	\item Desarrollar la plataforma web (backend y frontend), implementando el módulo de optimización con Google OR-Tools para la gestión eficiente de usuarios, vehículos, conductores, cargas, viajes y rutas.
-	\item Integrar los módulos del sistema y realizar pruebas funcionales que permitan validar su correcto funcionamiento y el cumplimiento de los objetivos establecidos.
-	\item Elaborar la documentación técnica del sistema y los manuales de usuario para garantizar la sostenibilidad, la correcta operación de la gestión logística y el mantenimiento continuo de la plataforma TravelDLS.
+	\item Proponer un prototipo de plataforma web (backend y frontend), implementando el módulo de optimización con Google OR-Tools para la gestión eficiente de usuarios, vehículos, conductores, cargas, viajes y rutas.
 \end{itemize}
 
 \subsection{Antecedentes}
+\label{sec:antecedentes}
 
 Para entender mejor de dónde parte TravelDLS, se revisaron investigaciones realizadas de manera Internacional como Nacional que abordan problemas parecidos desde distintos puntos de vista. Algunos trabajos se concentran en el seguimiento de la carga, otros en la planificación de rutas y otros en la administración de los servicios de transporte. Revisarlos permite reconocer qué soluciones se han probado, qué resultados han obtenido y qué ideas pueden servir como referencia para el proyecto, sin asumir que una propuesta aplicada en otro contexto funcionará de la misma manera en TravelDLS.
 
@@ -61,6 +62,7 @@ También en Nicaragua, \textcite{garcia2022desarrollo} presentaron la investigac
 Al observar los trabajos en conjunto, se aprecia que la administración del transporte, el seguimiento y la planificación de rutas han sido tratados desde diferentes enfoques. Los estudios internacionales muestran experiencias donde seguimiento y planificación forman parte de soluciones logísticas, mientras que los trabajos regionales permiten comparar resultados de optimización que no siempre son iguales. En Nicaragua se encontraron propuestas para administrar fletes y para localizar unidades de transporte, pero esas capacidades aparecen en proyectos separados. Con la revisión realizada hasta este momento, TravelDLS encuentra una oportunidad en reunir varias de estas funciones dentro de una plataforma orientada a la carga pesada. Esta idea todavía debe comprobarse con el mapeo sistemático completo, por lo que se mantiene como una brecha preliminar y no como una conclusión definitiva.
 
 \subsection{Justificación}
+\label{justificacion}
 
 TravelDLS se justifica porque las actividades de una operación de carga están relacionadas entre sí. Registrar un viaje tiene poco valor si luego esa información no puede conectarse con el vehículo, el conductor, la carga, la ruta y el estado del servicio. La propuesta busca que esos datos puedan consultarse de una manera más ordenada durante el recorrido y que cada actor tenga acceso a la información que le corresponde. La importancia de estas funciones también se observa en empresas logísticas que ya utilizan herramientas de seguimiento y planificación de rutas como parte de sus operaciones \parencite[p. 988]{pauzuoliene2024smart}.
 
@@ -68,7 +70,10 @@ El módulo de optimización se incorpora como un apoyo para planificar los recor
 
 En Nicaragua ya existen experiencias relacionadas con la administración de fletes y con la localización de unidades de transporte \parencite[pp. 2, 9]{aragon2018implementacion}; \parencite[pp. 3, 7]{garcia2022desarrollo}. TravelDLS busca continuar sobre esa base, pero reuniendo estas capacidades con otros procesos del servicio de carga pesada. Además, la sostenibilidad de la plataforma se contempla desde el modelo de pago: el porcentaje destinado al mantenimiento se agregará cuando la empresa transportista establezca el precio del viaje, de forma que el cliente vea desde el inicio el monto final antes de aceptar el servicio. Lo recaudado servirá para apoyar el funcionamiento de la plataforma, cubrir correcciones, mejoras y otros servicios necesarios para mantenerla disponible.
 
+A partir de estas razones, resulta necesario delimitar de manera concreta qué componentes y funcionalidades formarán parte de TravelDLS durante esta etapa del proyecto. Por ello, a continuación se establece el alcance de la propuesta, definiendo hasta dónde llegará el desarrollo del sistema y qué elementos serán considerados dentro de su implementación.
+
 \subsection{Alcance}
+\label{alcance}
 
 TravelDLS se desarrollará como una plataforma web bajo el modelo SaaS, pensada para que distintas empresas de transporte de carga pesada puedan utilizarla. En esta primera etapa se contempla:
 
@@ -84,7 +89,10 @@ TravelDLS se desarrollará como una plataforma web bajo el modelo SaaS, pensada 
 	\item Realización de pruebas funcionales y elaboración de la documentación técnica y los manuales de usuario.
 \end{itemize}
 
+Aunque estas funcionalidades permiten establecer lo que se pretende desarrollar en TravelDLS, el proyecto también debe reconocer aquellos aspectos que no serán cubiertos durante esta primera etapa. Definir estos límites permite mantener el trabajo dentro de las condiciones académicas, técnicas y temporales disponibles.
+
 \subsection{Limitaciones}
+\label{limitaciones}
 
 Como TravelDLS se desarrollará en el marco de este proyecto académico y se concentrará en sus funciones principales, será necesario establecer algunos límites para mantener el trabajo enfocado y realizable:
 
@@ -99,6 +107,9 @@ Como TravelDLS se desarrollará en el marco de este proyecto académico y se con
 \end{itemize}
 
 \subsection{Viabilidad del proyecto}
+\label{sec:viabilidad}
+
+Una vez definido lo que formará parte del proyecto y los límites bajo los cuales será desarrollado, corresponde analizar si la propuesta puede llevarse a la práctica con los recursos, tecnologías y condiciones disponibles. Para ello, la viabilidad de TravelDLS se estudia desde diferentes perspectivas.
 
 \subsubsection{Viabilidad Técnica}
 
@@ -118,6 +129,7 @@ Para el despliegue, Vercel alojará el frontend desarrollado en Next.js y Render
 
 En conjunto, la propuesta se considera técnicamente viable porque las tecnologías seleccionadas permiten separar la interfaz, la lógica del servidor y la persistencia de datos de acuerdo con las necesidades definidas para TravelDLS. La adopción de MVC + Service Layer específicamente en el backend permitirá ordenar el código y separar responsabilidades, mientras que la división entre frontend, backend y base de datos facilitará el mantenimiento y futuras ampliaciones de la plataforma.
 
+Contar con tecnologías adecuadas y una estructura definida permite establecer que el sistema puede construirse desde el punto de vista técnico. Sin embargo, también es necesario analizar cómo estas herramientas podrán utilizarse dentro de las actividades diarias de empresas, conductores y clientes, lo que conduce al estudio de la viabilidad operativa.
 
 \subsubsection{Viabilidad Operativa}
 
@@ -132,6 +144,8 @@ En TravelDLS, las empresas podrán administrar vehículos, conductores, cargas, 
 Como parte de esa gestión, los usuarios y las empresas podrán incorporar sus fotografías a los perfiles y registros que les correspondan, mientras que el logotipo de TravelDLS se mostrará de forma consistente en la interfaz. La experiencia de TaxiGo muestra la utilidad de integrar la gestión de imágenes y las funciones de seguimiento dentro de un sistema de transporte con distintos tipos de usuarios \parencite{yaqoub2024taxigo}. Durante un viaje activo, el conductor compartirá su ubicación mediante el dispositivo que utilice y Mapbox la presentará sobre el mapa para que la empresa y el cliente consulten el avance del servicio según sus permisos. Truxi ofrece un antecedente de uso de mapas para indicar lugares de recogida y entrega y apoyar los recorridos de los conductores \parencite{vad2020truxi}; además, Chalmers documenta el uso de Mapbox dentro de un sistema de seguimiento posicional en tiempo real para una empresa de transporte \parencite{aronsson2021tracking}, y Thunder Logistics lo emplea para visualizar rutas, envíos activos y páginas de tracking con ubicación actualizada \parencite{deyheralde2026thunder}. En TravelDLS, esta información se vinculará con el viaje registrado, de modo que el seguimiento y la consulta de la ruta formen parte del trabajo cotidiano de los participantes.
 
 El funcionamiento del sistema dependerá de factores como la conexión a Internet, la disponibilidad de los servicios de ubicación y los dispositivos utilizados por los conductores. Asimismo, la aceptación de la plataforma deberá comprobarse mediante las encuestas planteadas para administradores o propietarios y conductores. Los resultados permitirán conocer qué herramientas utilizan actualmente, qué acceso tienen a Internet y qué disposición existe para adoptar una plataforma web.
+
+Además de comprobar que TravelDLS puede integrarse a las actividades de sus posibles usuarios, es necesario determinar si su desarrollo y funcionamiento pueden sostenerse económicamente. Por esta razón, el siguiente análisis considera la inversión inicial, los costos operativos y los ingresos que podrían generarse mediante el modelo propuesto para la plataforma.
 
 \subsubsection{Viabilidad Económica}
 
@@ -213,6 +227,8 @@ Al descontar los flujos anuales al final de cada período con una tasa académic
 
 En estas condiciones, TravelDLS presenta una viabilidad económica preliminar favorable, pues los ingresos del escenario base cubren los gastos previstos desde el primer año y permiten recuperar el valor inicial del proyecto. No obstante, estos resultados dependen del volumen de envíos supuesto, de una valoración académica del desarrollo y de costos operativos constantes. La proyección no incorpora impuestos, financiamiento ni incrementos por inflación, y deberá revisarse cuando se conozcan la comisión definitiva de pago, el precio de renovación del dominio, la demanda efectiva, las necesidades de soporte y el consumo de Cloudinary y Mapbox. Su propósito es establecer una base para evaluar la sostenibilidad de la plataforma y orientar las decisiones de implementación.
 
+No obstante, la sostenibilidad económica no constituye el único aspecto que debe considerarse antes de implementar TravelDLS. Debido a que la plataforma gestionará datos personales, ubicaciones, contrataciones y servicios relacionados con el transporte terrestre, también debe revisarse el marco legal aplicable a su funcionamiento.
+
 \subsubsection{Viabilidad Legal}
 
 La viabilidad legal de TravelDLS se sustenta en las normas nicaragüenses que regulan la protección de datos, el comercio electrónico y el transporte terrestre de carga. La Ley No. 787, Ley de Protección de Datos Personales, es necesaria porque la plataforma manejará información de empresas, conductores y clientes, incluyendo ubicaciones en tiempo real, fotografías de perfil y documentos de identidad. Su artículo 4 condiciona la creación de ficheros de datos personales a que exista autorización y consentimiento del titular, lo cual obliga a TravelDLS a implementar mecanismos de consentimiento informado durante el registro de usuarios. El artículo 5 pide que los datos sean los necesarios para el fin que se persigue, de modo que la plataforma no puede recolectar información más allá de la que realmente utiliza para gestionar los viajes (Ley 787 de 2012, art. 5). El artículo 7 obliga a informar al titular para qué se usarán sus datos, quién los verá y cómo puede ejercer sus derechos de acceso, rectificación o cancelación \parencite[Arts.4--5]{ley787_2012}. Sin esta ley, TravelDLS no tendría un marco claro para tratar la información de los usuarios, y las empresas transportistas podrían exponerse a reclamos por el mal uso de datos de sus conductores o clientes.
@@ -227,3 +243,4 @@ La Ley No. 842, Ley de Protección de los Derechos de las Personas Consumidoras 
 
 Estas leyes no solo dan respaldo jurídico a TravelDLS, sino que definen cómo debe operar la plataforma en aspectos concretos como el consentimiento de datos, la validez de los contratos electrónicos, la seguridad de la información, el cumplimiento normativo del transporte y la protección del cliente. Sin este marco, la plataforma podría funcionar técnicamente, pero quedaría expuesta a reclamos legales y no sería una herramienta confiable para las empresas transportistas que la utilicen.
 
+Definidas las condiciones técnicas, operativas, económicas y legales que rodean la propuesta, también es necesario establecer los fundamentos conceptuales y teóricos que permiten comprender los componentes principales de TravelDLS. Estos fundamentos se desarrollan en el marco teórico a partir de antecedentes, conceptos y enfoques relacionados con la gestión del transporte y las tecnologías utilizadas en el proyecto.

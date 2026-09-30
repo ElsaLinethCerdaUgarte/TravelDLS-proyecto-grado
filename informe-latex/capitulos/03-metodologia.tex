@@ -4,27 +4,7 @@
 % de desarrollo de software seleccionada.
 
 \section{Metodología}
-
-La metodología de TravelDLS define el enfoque y tipo de investigación, la selección de estudios relevantes, la población y muestra, las variables y los procedimientos de recolección y análisis de datos. Su propósito es vincular el diagnóstico de las necesidades con las decisiones de diseño y desarrollo de la plataforma.
-
-
-\subsection{Enfoque de la Investigación}
-
-La investigación tendrá un \textbf{enfoque cuantitativo}, basado principalmente en preguntas cerradas dirigidas a administradores o propietarios y conductores de empresas de transporte terrestre de carga pesada. Se identificarán prácticas, necesidades y problemas relacionados con la gestión de viajes, el seguimiento, la comunicación y la planificación de rutas.
-
-De acuerdo con \textcite{queiros2017strengths}, este enfoque permite obtener mediciones precisas y confiables para el análisis estadístico. En TravelDLS, se utilizarán frecuencias, porcentajes, tablas y gráficos para representar los resultados.
-
-El cuestionario incluirá preguntas abiertas para recoger situaciones no previstas en las opciones de respuesta. Estas complementarán la interpretación de los datos cuantitativos, sin constituir un enfoque cualitativo independiente.
-
-
-\subsection{Tipo de Estudio}
-
-TravelDLS corresponde a una \textbf{investigación aplicada}, pues utilizará la revisión académica y el estudio de campo para definir requerimientos y desarrollar una solución a necesidades concretas del transporte de carga pesada. Esta finalidad coincide con la orientación hacia objetivos prácticos descrita por \textcite{gulbrandsen2010concepts}.
-
-El diagnóstico tendrá un \textbf{alcance descriptivo}: examinará la gestión de viajes, vehículos y conductores, la comunicación, el seguimiento y la planificación de rutas, sin manipular las condiciones estudiadas. Según \textcite{siedlecki2020understanding}, este alcance permite describir las características de una población o fenómeno tal como se presentan.
-
-Asimismo, incorporará un \textbf{componente de desarrollo tecnológico} al emplear los resultados para diseñar, construir, integrar y probar la plataforma web. Esto responde a la aplicación del conocimiento para crear o mejorar sistemas y procesos planteada por \textcite{delacruz2016metodologia}.
-
+\label{sec:metodologia}
 
 \subsection{Procedimiento para la Selección de Investigaciones Relevantes}
 
@@ -34,117 +14,7 @@ Se incluyeron artículos científicos y trabajos académicos pertinentes para es
 
 Los estudios seleccionados se agruparon por palabras clave en categorías de gestión logística, seguimiento y geolocalización, optimización de rutas, sistemas de gestión de transporte, plataformas SaaS y tecnologías de desarrollo web.
 
-
-\subsection{Población y Muestra}
-
-La población estará conformada por personas vinculadas con empresas de transporte terrestre de carga pesada en \textbf{[indicar el área geográfica definitiva del estudio]}. Se considerarán administradores o propietarios, por su participación en la organización de viajes, asignación de recursos y comunicación con clientes, y conductores, por su experiencia en la ejecución de viajes, navegación y comunicación con la empresa.
-
-El método de muestreo y el tamaño de la muestra se definirán al conocer la población accesible y el marco muestral, siguiendo los criterios de \textcite{taherdoost2016sampling}. Si no existe un registro completo que permita una selección aleatoria, se empleará un \textbf{muestreo no probabilístico intencional}, con participantes que cumplan los perfiles definidos y tengan experiencia directa en estas operaciones.
-
-
-\subsection{Operacionalización de Variables}
-
-Las variables de estudio se organizan en dimensiones e indicadores para orientar la recolección y el análisis de datos durante el diagnóstico, el desarrollo y las pruebas de TravelDLS, como se muestra en la Tabla~\ref{tab:operacionalizacion}.
-
-\begin{table}[H]
-	\centering
-	\caption{Operacionalización de Variables}
-	\label{tab:operacionalizacion}
-	\small
-	\renewcommand{\arraystretch}{1.3}
-	\begin{tabularx}{\textwidth}{|>{\RaggedRight\arraybackslash}p{2.5cm}|>{\RaggedRight\arraybackslash}p{3.5cm}|>{\RaggedRight\arraybackslash}p{2.8cm}|>{\RaggedRight\arraybackslash}X|}
-		\hline
-		\textbf{Variable} & \textbf{Definición conceptual} & \textbf{Dimensiones} & \textbf{Indicadores} \\
-		\hline
-		
-		\textbf{Sistema web TravelDLS} &
-		Plataforma web SaaS que centraliza y gestiona información del transporte de carga pesada. &
-		Gestión de información \newline
-		Gestión de operaciones \newline
-		Integración &
-		Registro y consulta de información \newline
-		Viajes, vehículos, conductores y cargas gestionados \newline
-		Módulos integrados y funcionamiento conjunto \\
-		\hline
-		
-		\textbf{Gestión de operaciones de transporte} &
-		Organización de información y actividades para coordinar servicios de transporte. &
-		Administración \newline
-		Coordinación \newline
-		Servicios &
-		Viajes, cargas, vehículos y conductores gestionados \newline
-		Asignación de vehículos y conductores \newline
-		Servicios publicados y contratados \\
-		\hline
-		
-		\textbf{Localización y trazabilidad} &
-		Identificación de la ubicación y evolución del servicio durante el traslado. &
-		Geolocalización \newline
-		Seguimiento \newline
-		Trazabilidad &
-		Ubicación actual de la unidad \newline
-		Estado actualizado del viaje \newline
-		Historial del recorrido y estados \\
-		\hline
-		
-		\textbf{Optimización de rutas} &
-		Comparación de rutas según distancia, tiempo u otros costos. &
-		Distancia \newline
-		Tiempo \newline
-		Comparación de métodos \newline
-		Eficiencia &
-		Distancia total de la ruta \newline
-		Tiempo estimado del recorrido \newline
-		Resultados de Vecino Más Cercano, 2-opt y OR-Tools \newline
-		Diferencia entre resultados obtenidos \\
-		\hline
-		
-		\textbf{Transparencia para el cliente} &
-		Disponibilidad de información sobre el servicio contratado. &
-		Estado \newline
-		Ubicación \newline
-		Información económica &
-		Estado de la carga \newline
-		Ubicación del viaje \newline
-		Precio final mostrado antes de aceptar \\
-		\hline
-		
-	\end{tabularx}
-\end{table}
-
-
-\subsection{Técnicas e Instrumentos de Recolección de Datos}
-
-Se utilizará la \textbf{encuesta} como técnica y un \textbf{cuestionario estructurado} como instrumento, con preguntas cerradas de selección, frecuencia y escalas de respuesta, además de preguntas abiertas complementarias. Su aplicación considerará la definición de la población, la selección de participantes y la planificación del análisis recomendadas por \textcite{kelley2003good}.
-
-El cuestionario se organizará según el rol del participante:
-\begin{itemize}
-	\item \textbf{Administradores o propietarios:} cantidad de vehículos y conductores, almacenamiento de información, asignación de viajes, seguimiento de unidades, planificación de rutas, comunicación con clientes y disposición para utilizar una plataforma web.
-	\item \textbf{Conductores:} recepción de datos del viaje, herramientas de navegación, recorridos con varios destinos, cambios de ruta, comunicación durante el viaje, disponibilidad de teléfonos inteligentes y acceso a Internet.
-\end{itemize}
-
-El diseño del instrumento incluirá revisión de literatura, definición de los aspectos a medir, elaboración y revisión de preguntas, conforme al proceso propuesto por \textcite{artino2014developing}.
-
-
-\subsubsection{Validación del Instrumento}
-
-El cuestionario se someterá a una \textbf{validación de contenido mediante juicio de expertos} para comprobar que las preguntas representen los aspectos estudiados, como señalan \textcite{boateng2018best}. Se revisarán la claridad, la coherencia con los objetivos y variables, la pertinencia de las opciones de respuesta y la presencia de ambigüedades o repeticiones.
-
-Las observaciones permitirán ajustar el instrumento antes de su aplicación. El número de expertos se definirá posteriormente según las orientaciones metodológicas del proyecto.
-
-
-\subsubsection{Prueba Piloto}
-
-Tras la validación, se realizará una \textbf{prueba piloto} con un grupo reducido de personas de características similares a la población objetivo. Se comprobará la comprensión de las preguntas y opciones de respuesta, se detectarán dificultades y se estimará el tiempo necesario para completar el cuestionario, siguiendo las recomendaciones de \textcite{artino2014developing} y \textcite{boateng2018best}.
-
-El número de participantes se establecerá según las características de la población y las recomendaciones del tutor metodológico.
-
-
-\subsection{Procesamiento y Análisis de los Datos}
-
-Las respuestas cerradas se analizarán mediante \textbf{estadística descriptiva}, utilizando frecuencias y porcentajes presentados en tablas y gráficos. Las respuestas abiertas permitirán identificar necesidades o problemas adicionales y contextualizar los resultados cuantitativos.
-
-Los hallazgos servirán para identificar y priorizar los requerimientos funcionales y no funcionales de TravelDLS.
+Una vez establecido el procedimiento seguido para identificar y organizar las investigaciones relevantes, resulta necesario ordenar las actividades realizadas y pendientes dentro del desarrollo del proyecto. Para ello, el cronograma presenta las principales etapas de trabajo y el período correspondiente a cada una.
 
 \subsection{Cronograma de Trabajo}
 
