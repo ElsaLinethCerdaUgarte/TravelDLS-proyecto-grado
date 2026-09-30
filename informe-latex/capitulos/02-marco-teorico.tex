@@ -2,12 +2,16 @@
 % Propósito: Presentar las bases teóricas, conceptos clave, antecedentes de investigación y el estado del arte que fundamentan el proyecto.
 
 \section{Marco Teórico}
+\label{sec:marco-teorico}
 
 \subsection{Antecedentes del Proyecto}
+
 
 TravelDLS surge de observar que varias necesidades del transporte ya han sido atendidas mediante soluciones tecnológicas, pero no siempre dentro de una misma propuesta. Los sistemas revisados muestran funciones relacionadas con administración, seguimiento y planificación de rutas. \textcite{sultan2022real}, por ejemplo, presentan una solución que reúne gestión de clientes, conductores, reservas, envíos y seguimiento dentro de un mismo entorno (pp. 1-4). Por su parte, \textcite{pauzuoliene2024smart} muestran que el seguimiento de carga y la planificación de rutas forman parte de las tecnologías utilizadas por empresas logísticas (pp. 988-989). Estas experiencias ayudan a ubicar TravelDLS dentro de una línea de desarrollo donde la información del viaje deja de verse como datos separados y comienza a tratarse como parte de un mismo proceso.
 
 En el contexto nacional, los trabajos de \textcite{aragon2018implementacion} y \textcite{garcia2022desarrollo} sirven como referencias cercanas porque abordan dos componentes que TravelDLS también necesita: la organización de los fletes y la ubicación de unidades de transporte. El proyecto toma esas ideas como punto de partida, pero busca llevarlas a un entorno orientado a carga pesada donde empresa, conductor y cliente puedan consultar información relacionada con el mismo servicio. Esta relación con trabajos previos no significa que TravelDLS sea una copia de esas soluciones; permite reconocer qué partes del problema ya han sido abordadas y desde dónde puede construirse una propuesta más integrada.
+
+La revisión de estas experiencias permite identificar los principales elementos que se relacionan con TravelDLS. A partir de ellos, resulta conveniente precisar algunos conceptos que serán utilizados a lo largo del proyecto para mantener una comprensión común de las funciones y procesos que forman parte de la propuesta.
 
 \subsection{Definición de Términos}
 
@@ -23,6 +27,7 @@ Además de conocer dónde se encuentra un vehículo, resulta necesario determina
 
 La optimización de recorridos conduce al \textbf{Problema del Agente Viajero}, conocido como TSP por sus siglas en inglés. Este problema plantea la necesidad de visitar un conjunto de puntos y regresar al lugar de origen procurando reducir la distancia total recorrida. Dentro de las técnicas que pueden utilizarse para construir una solución se encuentra el \textbf{Vecino Más Cercano}, que selecciona progresivamente el siguiente destino tomando como referencia la menor distancia disponible desde el punto actual. \textcite{contreras2021aplicacion} describen la utilización de este método en situaciones relacionadas con transporte y generación de rutas (p. 11). Para TravelDLS, estos conceptos resultan especialmente importantes debido a que el proyecto contempla el análisis de viajes con múltiples destinos y la comparación de diferentes métodos de optimización.
 
+Estos conceptos permiten comprender los principales procesos que TravelDLS busca integrar. Sin embargo, para explicar de manera más amplia cómo estos elementos pueden organizarse dentro de una plataforma tecnológica, es necesario relacionarlos con enfoques teóricos sobre gestión de transporte, transporte de carga pesada y prestación de software.
 
 \subsection{Bases Teóricas}
 
@@ -35,3 +40,5 @@ La forma en que TravelDLS será ofrecido también encuentra sustento en el model
 Relacionado con lo anterior, la \textbf{arquitectura multitenant} permite que varias organizaciones utilicen una misma aplicación manteniendo separada la información correspondiente a cada una. \textcite{lasluisa2026diseno} señalan que este enfoque facilita el uso compartido de recursos y el mantenimiento del sistema, aunque también exige mecanismos de seguridad y control de acceso que eviten que un tenant pueda consultar información que no le corresponde (pp. 34--36). En TravelDLS, esta separación será necesaria para que cada empresa administre sus propios vehículos, conductores, viajes y cargas, mientras que los clientes solo puedan acceder a la información relacionada con los servicios que han contratado.
 
 En conjunto, estas bases teóricas permiten entender que TravelDLS no se limita a ser una aplicación para registrar viajes, sino que se apoya en principios de gestión de transporte, centralización de procesos y prestación de software mediante una plataforma compartida. Los TMS aportan el enfoque de organización y seguimiento, el transporte de carga pesada define el contexto operativo y el modelo SaaS junto con la arquitectura multitenant explican cómo el sistema puede ser utilizado por diferentes empresas dentro de una misma solución tecnológica.
+
+Con estos fundamentos se establece la base conceptual que orienta la propuesta de TravelDLS. A partir de ella, el siguiente paso consiste en definir el procedimiento metodológico utilizado para seleccionar y analizar la información que sustenta el proyecto, así como organizar las actividades necesarias para continuar con su desarrollo.
