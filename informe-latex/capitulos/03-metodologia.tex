@@ -34,19 +34,19 @@ De manera complementaria, \textcite{garcia2022desarrollo} abordaron el seguimien
 
 Estos antecedentes contribuyen a comprender dos necesidades relacionadas con TravelDLS. La primera corresponde a la organización de los registros y procesos administrativos de las empresas transportistas. La segunda se relaciona con la posibilidad de consultar información sobre la ubicación y el desplazamiento de los vehículos durante la prestación de un servicio.
 
-Desde la perspectiva administrativa, una empresa dedicada al transporte de carga pesada necesita mantener relacionados los datos de los recursos que utiliza y las solicitudes que recibe. No resulta suficiente disponer de un registro de conductores y vehículos si esa información no puede relacionarse con las órdenes de transporte que se encuentran pendientes o en ejecución. Por esta razón, la propuesta contempla que las operaciones se organicen mediante una \hyperlink{concepto-orden}{orden de transporte}, que permita vincular los datos del servicio con la empresa, el cliente y los recursos correspondientes.
+Desde la perspectiva administrativa, una empresa dedicada al transporte de carga pesada necesita mantener relacionados los datos de los recursos que utiliza y las solicitudes que recibe. No resulta suficiente disponer de un registro de conductores y vehículos si esa información no puede relacionarse con las órdenes de transporte que se encuentran pendientes o en ejecución. Por esta razón, la propuesta contempla que las operaciones se organicen mediante una \textbf{\hyperlink{concepto-orden}{orden de transporte}}, que permita vincular los datos del servicio con la empresa, el cliente y los recursos correspondientes.
 
-Asimismo, las solicitudes requieren pasar por diferentes etapas, desde su creación hasta la conclusión del servicio. Esto introduce la necesidad de establecer un \hyperlink{concepto-estados}{ciclo de atención y estados de una orden}, mediante el cual se identifique cuándo una solicitud se encuentra pendiente, cuándo ha recibido un precio y cuándo ha sido aceptada o rechazada por el cliente. La definición de estos estados permitirá representar el avance administrativo y operativo de una solicitud, manteniendo una relación entre las acciones realizadas y la situación actual del servicio.
+Asimismo, las solicitudes requieren pasar por diferentes etapas, desde su creación hasta la conclusión del servicio. Esto introduce la necesidad de establecer un \textbf{\hyperlink{concepto-estados}{ciclo de atención}} \textbf{\hyperlink{concepto-estados}{y estados de una orden}}, mediante el cual se identifique cuándo una solicitud se encuentra pendiente, cuándo ha recibido un precio y cuándo ha sido aceptada o rechazada por el cliente. La definición de estos estados permitirá representar el avance administrativo y operativo de una solicitud, manteniendo una relación entre las acciones realizadas y la situación actual del servicio.
 
-Otra dificultad relacionada con la administración del transporte corresponde a la \hyperlink{concepto-asignacion}{asignación de recursos}. Cada solicitud requiere identificar los medios que participarán en su atención, principalmente el conductor y el vehículo. Cuando esta relación no se mantiene dentro de un mismo registro, la consulta de la operación depende de información adicional que puede encontrarse en medios diferentes. TravelDLS busca organizar estos datos para que la empresa pueda identificar los recursos asociados a las órdenes que administra.
+Otra dificultad relacionada con la administración del transporte corresponde a la \textbf{\hyperlink{concepto-asignacion}{asignación de recursos}}. Cada solicitud requiere identificar los medios que participarán en su atención, principalmente el conductor y el vehículo. Cuando esta relación no se mantiene dentro de un mismo registro, la consulta de la operación depende de información adicional que puede encontrarse en medios diferentes. TravelDLS busca organizar estos datos para que la empresa pueda identificar los recursos asociados a las órdenes que administra.
 
 Desde la perspectiva del cliente, una de las principales necesidades consiste en disponer de información sobre el servicio contratado. Después de aceptar una solicitud de transporte, resulta importante conocer si la carga ha comenzado a trasladarse, cuál es el estado del servicio y dónde se encuentra la unidad encargada del recorrido.
 
 Cuando esta información no puede consultarse de manera directa, el cliente depende de la comunicación individual con la empresa o el conductor para conocer el avance de su carga. Esto puede generar incertidumbre sobre la situación del traslado, especialmente cuando no existen mecanismos que permitan consultar la ubicación reportada y los cambios de estado de la operación.
 
-La incorporación de funciones de \hyperlink{concepto-trazabilidad}{trazabilidad} y \hyperlink{concepto-seguimiento}{seguimiento en tiempo real} responde a esta necesidad. Mediante estas funcionalidades se pretende mantener vinculados los registros de ubicación y los estados de la operación con la orden correspondiente, permitiendo que los usuarios autorizados consulten información relacionada con el desarrollo del servicio.
+La incorporación de funciones de \textbf{\hyperlink{concepto-trazabilidad}{trazabilidad}} y \textbf{\hyperlink{concepto-seguimiento-tiempo-real}{seguimiento en tiempo real}} responde a esta necesidad. Mediante estas funcionalidades se pretende mantener vinculados los registros de ubicación y los estados de la operación con la orden correspondiente, permitiendo que los usuarios autorizados consulten información relacionada con el desarrollo del servicio.
 
-La \hyperlink{concepto-geolocalizacion}{geolocalización} constituye un elemento necesario para representar la posición de la unidad durante el traslado. Sin embargo, conocer únicamente la ubicación más reciente no permite reconstruir los desplazamientos realizados anteriormente. Por esta razón, también se contempla el \hyperlink{concepto-historial}{historial de seguimiento}, que permitirá conservar registros sucesivos asociados a una misma operación.
+La \textbf{\hyperlink{concepto-geolocalizacion}{geolocalización}} constituye un elemento necesario para representar la posición de la unidad durante el traslado. Sin embargo, conocer únicamente la ubicación más reciente no permite reconstruir los desplazamientos realizados anteriormente. Por esta razón, también se contempla el \textbf{\hyperlink{concepto-historial}{historial de seguimiento}}, que permitirá conservar registros sucesivos asociados a una misma operación.
 
 Esta diferencia resulta importante porque el seguimiento de un servicio no depende solamente de mostrar un punto sobre un mapa. También requiere relacionar la ubicación reportada con el conductor, la orden correspondiente y el estado del traslado. De esta manera, la información consultada podrá interpretarse dentro del contexto de la operación que se está desarrollando.
 
@@ -54,7 +54,7 @@ No obstante, el seguimiento estará condicionado por la disponibilidad de conexi
 
 Además de la administración y el seguimiento, otra necesidad identificada corresponde a la organización de recorridos con múltiples destinos. Una empresa transportista puede requerir visitar diferentes puntos durante un mismo servicio, por lo que resulta pertinente analizar el orden en que se realizará el desplazamiento.
 
-La \hyperlink{concepto-planificacion}{planificación de rutas} permite organizar estos destinos, mientras que la \hyperlink{concepto-optimizacion}{optimización de rutas} introduce la posibilidad de comparar diferentes alternativas de recorrido según criterios como distancia o tiempo. Esto resulta relevante debido a que el orden de visita influye en la distancia total que puede representar una operación.
+La \textbf{\hyperlink{concepto-planificacion-rutas}{planificación de rutas}} permite organizar estos destinos, mientras que la \textbf{\hyperlink{concepto-optimizacion-rutas}{optimización de rutas}} introduce la posibilidad de comparar diferentes alternativas de recorrido según criterios como distancia o tiempo. Esto resulta relevante debido a que el orden de visita influye en la distancia total que puede representar una operación.
 
 
 En el contexto nacional, \textcite{aragon2018implementacion}
@@ -79,13 +79,13 @@ desarrollar en TravelDLS.
 
 Estas investigaciones permiten fundamentar la pertinencia de estudiar alternativas de optimización, aunque los resultados obtenidos corresponden a los escenarios particulares de cada trabajo y no pueden considerarse mejoras garantizadas para TravelDLS.
 
-Por esta razón, el proyecto contempla analizar el \hyperlink{concepto-tsp}{Problema del Agente Viajero} y comparar procedimientos como \hyperlink{concepto-vecino}{Vecino Más Cercano} y \hyperlink{concepto-dos-opt}{2-opt} con las soluciones generadas mediante \hyperlink{concepto-ortools}{Google OR-Tools}. El propósito de esta comparación será conocer el comportamiento de las alternativas consideradas y establecer una base técnica para el módulo de planificación de rutas del prototipo.
+Por esta razón, el proyecto contempla analizar el \textbf{\hyperlink{concepto-tsp}{Problema del Agente Viajero}} y comparar procedimientos como \textbf{\hyperlink{concepto-vecino-mas-cercano}{Vecino Más Cercano}} y \textbf{\hyperlink{concepto-dos-opt}{2-opt}} con las soluciones generadas mediante \textbf{\hyperlink{concepto-ortools}{Google OR-Tools}}. El propósito de esta comparación será conocer el comportamiento de las alternativas consideradas y establecer una base técnica para el módulo de planificación de rutas del prototipo.
 
 La problemática también se relaciona con la presencia tecnológica de las empresas transportistas. TravelDLS contempla reunir diferentes organizaciones dentro de una misma plataforma, permitiendo que puedan presentar sus servicios a clientes interesados en contratar transporte de carga pesada. Esta característica busca conectar la administración interna con las actividades de búsqueda y contratación, ofreciendo un espacio común para empresas y clientes.
 
 La posibilidad de mejorar la visibilidad de las empresas constituye un beneficio esperado de la propuesta. Sin embargo, no debe presentarse como un resultado demostrado, debido a que todavía sería necesario evaluar el uso de la plataforma y su aceptación dentro del entorno operativo correspondiente.
 
-Como respuesta a las necesidades identificadas, TravelDLS propone desarrollar una plataforma bajo el modelo \hyperlink{concepto-saas}{Software como Servicio}, destinada a integrar información administrativa, operativa y de seguimiento dentro de un mismo entorno. La \hyperlink{concepto-multitenant}{arquitectura multitenant} y la \hyperlink{concepto-separacion}{separación de información operativa} permitirán orientar el diseño para que diferentes empresas puedan utilizar la plataforma manteniendo diferenciados sus registros y las funciones correspondientes a cada perfil.
+Como respuesta a las necesidades identificadas, TravelDLS propone desarrollar una plataforma bajo el modelo \textbf{\hyperlink{concepto-saas}{Software como Servicio}}, destinada a integrar información administrativa, operativa y de seguimiento dentro de un mismo entorno. La \textbf{\hyperlink{concepto-multitenant}{arquitectura multitenant}} y la \textbf{\hyperlink{concepto-separacion}{separación de información operativa}} permitirán orientar el diseño para que diferentes empresas puedan utilizar la plataforma manteniendo diferenciados sus registros y las funciones correspondientes a cada perfil.
 
 De esta manera, la motivación principal del proyecto consiste en ofrecer una alternativa tecnológica que permita relacionar las operaciones de transporte, mantener información accesible para los participantes autorizados y apoyar la planificación de recorridos. TravelDLS no busca sustituir las decisiones administrativas de las empresas, sino proporcionar una herramienta que contribuya a organizar los procesos y facilitar la consulta de información durante la prestación del servicio.
 
@@ -135,15 +135,15 @@ La siguiente matriz presenta esta relación inicial, sin asignar porcentajes de 
 	\label{tab:meta-requisitos-traveldls}
 	
 	\small
-	\setlength{\tabcolsep}{3pt}
-	\renewcommand{\arraystretch}{1.3}
+	\setlength{\tabcolsep}{4.5pt}
+	\renewcommand{\arraystretch}{1.45}
 	
 	\begin{tabularx}{\textwidth}{
 			@{}
-			p{1.15cm}
-			p{3cm}
-			X
-			p{3cm}
+			>{\RaggedRight\arraybackslash}p{1.35cm}
+			>{\RaggedRight\arraybackslash}p{3.05cm}
+			>{\RaggedRight\arraybackslash}X
+			>{\RaggedRight\arraybackslash}p{2.85cm}
 			@{}
 		}
 		
@@ -159,49 +159,49 @@ La siguiente matriz presenta esta relación inicial, sin asignar porcentajes de 
 		MR-01 &
 		Organización de información administrativa y operativa. &
 		Registrar y consultar clientes, empresas, vehículos, conductores y órdenes desde una plataforma compartida. &
-		Diagrama de clases y diagrama entidad-relación. \\
+		Figuras~\ref{fig:diagrama-clases} y~\ref{fig:diagrama-er}. \\
 		
 		\midrule
 		
 		MR-02 &
 		Administración de solicitudes de transporte. &
 		Permitir la creación, cotización, aceptación, rechazo y consulta de estados de una orden. &
-		Diagramas de estados y secuencia. \\
+		Figuras~\ref{fig:diagrama-estados} y~\ref{fig:diagrama-secuencia}. \\
 		
 		\midrule
 		
 		MR-03 &
 		Consulta de información sobre las cargas. &
 		Asociar registros de ubicación y estado a las órdenes, permitiendo su consulta por usuarios autorizados. &
-		Modelo de seguimiento y diagrama de secuencia. \\
+		Figuras~\ref{fig:diagrama-clases},~\ref{fig:diagrama-er} y~\ref{fig:diagrama-secuencia}. \\
 		
 		\midrule
 		
 		MR-04 &
 		Coordinación de recursos de transporte. &
 		Relacionar conductores y vehículos con las operaciones según las reglas establecidas. &
-		Modelos de conductores, vehículos y órdenes. \\
+		Figuras~\ref{fig:diagrama-clases} y~\ref{fig:diagrama-er}. \\
 		
 		\midrule
 		
 		MR-05 &
 		Planificación de recorridos con múltiples destinos. &
 		Comparar métodos de optimización con entradas equivalentes y desarrollar el módulo previsto para el prototipo. &
-		Objetivos del proyecto y módulo de optimización. \\
+		\textbf{\hyperref[sec:objetivos-especificos]{Objetivos del proyecto}} y módulo de optimización. \\
 		
 		\midrule
 		
 		MR-06 &
 		Claridad en el precio del servicio. &
 		Mostrar el monto final de la contratación, incluyendo el porcentaje de mantenimiento, antes de su aceptación. &
-		Proceso de cotización y contratación. \\
+		Figuras~\ref{fig:diagrama-estados} y~\ref{fig:diagrama-secuencia}. \\
 		
 		\midrule
 		
 		MR-07 &
 		Uso de la plataforma por diferentes empresas. &
 		Mantener diferenciados los registros operativos de cada empresa y establecer controles de acceso según los perfiles. &
-		Modelo de datos y arquitectura multitenant. \\
+		Figuras~\ref{fig:diagrama-clases} y~\ref{fig:diagrama-er}. \\
 		
 		\bottomrule
 		
@@ -227,13 +227,49 @@ La tercera fase de la metodología DSRM comprende el diseño y la construcción 
 
 Los meta-diseños representan las decisiones técnicas destinadas a satisfacer las capacidades esperadas del sistema. En este proyecto, dichas decisiones se encuentran relacionadas con la organización de los módulos, el almacenamiento de información, las interacciones entre los usuarios y la definición de los procedimientos que permitirán desarrollar las operaciones de transporte.
 
-Como parte del diseño actual de TravelDLS se dispone de un \hyperlink{diagrama-clases}{diagrama de clases}, que representa las principales entidades y servicios del sistema, y de un \hyperlink{diagrama-er}{diagrama entidad-relación}, que permite comprender la estructura prevista para el almacenamiento de datos. Ambos modelos constituyen una base para establecer las relaciones necesarias entre usuarios, empresas, clientes, conductores, vehículos, órdenes, detalles de carga, pagos y registros de seguimiento.
+Como parte del diseño actual de TravelDLS se dispone de un diagrama de clases y de un diagrama entidad-relación. El primero representa las principales entidades y servicios del sistema, mientras que el segundo permite comprender la estructura prevista para el almacenamiento de datos. Ambos modelos constituyen una base para establecer las relaciones necesarias entre usuarios, empresas, clientes, conductores, vehículos, órdenes, detalles de carga, pagos y registros de seguimiento.
 
 El modelo de clases también permite reconocer los servicios destinados a administrar operaciones específicas, como la autenticación de usuarios, la gestión de órdenes y el procesamiento de pagos. Estas responsabilidades contribuyen a establecer una separación entre los componentes que representan los datos y aquellos que participan en la ejecución de determinadas funciones.
 
-En relación con el comportamiento del sistema, el \hyperlink{diagrama-estados}{diagrama de estados} permite representar las situaciones que puede experimentar una orden de transporte. Su utilización contribuye a establecer las transiciones necesarias durante la creación, cotización, aceptación, ejecución y finalización de una solicitud.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-clases.png}
+	\caption{Diagrama de clases de TravelDLS}
+	\label{fig:diagrama-clases}
+\end{figure}
 
-Por su parte, el \hyperlink{diagrama-secuencia}{diagrama de secuencia} describe la interacción prevista entre el cliente, la empresa transportista, el conductor, el frontend, el backend y la base de datos. Este modelo permite observar cómo se intercambiará información durante los procesos de creación de órdenes, asignación de precios, registro de pagos, asignación de conductores y seguimiento de los servicios.
+El diagrama de clases presentado en la Figura~\ref{fig:diagrama-clases} organiza los componentes principales del sistema alrededor de usuarios, roles, empresas, clientes, conductores, vehículos, órdenes, detalles de carga, pagos y seguimiento. Esta representación permite observar cómo los servicios de autenticación, órdenes y pagos se relacionan con las entidades del dominio, de manera que las operaciones previstas mantengan una separación entre responsabilidades funcionales y estructuras de información.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-er.png}
+	\caption{Diagrama entidad-relación de TravelDLS}
+	\label{fig:diagrama-er}
+\end{figure}
+
+El diagrama entidad-relación de la Figura~\ref{fig:diagrama-er} complementa el modelo anterior al presentar las tablas, claves y asociaciones previstas para la persistencia de datos. Su incorporación permite relacionar el diseño conceptual con la estructura de almacenamiento, especialmente en los elementos asociados a empresas, clientes, conductores, vehículos, órdenes, detalles de carga, pagos y registros de ubicación.
+
+En relación con el comportamiento del sistema, el diagrama de estados permite representar las situaciones que puede experimentar una orden de transporte. Su utilización contribuye a establecer las transiciones necesarias durante la creación, cotización, aceptación, ejecución y finalización de una solicitud.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.82\textheight,keepaspectratio]{diagrama-estado.jpeg}
+	\caption{Diagrama de estados de una orden de transporte}
+	\label{fig:diagrama-estados}
+\end{figure}
+
+Como se muestra en la Figura~\ref{fig:diagrama-estados}, la orden inicia en estado pendiente y avanza según las acciones realizadas por la empresa y el cliente. La asignación de precio, la aceptación o rechazo, la posible anulación, el inicio del viaje, la entrega y el proceso de pago establecen reglas que ayudan a mantener coherencia entre el avance administrativo de la solicitud y su ejecución operativa.
+
+Por su parte, el diagrama de secuencia describe la interacción prevista entre el cliente, la empresa transportista, el conductor, el frontend, el backend y la base de datos. Este modelo permite observar cómo se intercambiará información durante los procesos de creación de órdenes, asignación de precios, registro de pagos, asignación de conductores y seguimiento de los servicios.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[height=0.86\textheight,keepaspectratio]{diagrama-secuencia.png}
+	\caption{Diagrama de secuencia del proceso principal de una orden}
+	\label{fig:diagrama-secuencia}
+\end{figure}
+
+La Figura~\ref{fig:diagrama-secuencia} muestra el flujo principal de una orden desde su creación hasta el seguimiento del viaje. En este proceso, el cliente registra la solicitud, la empresa asigna el precio, el cliente acepta la cotización, se registra el pago, se asigna el conductor y posteriormente se consultan los registros de seguimiento. Esta secuencia permite vincular las operaciones de interfaz, backend y base de datos con los estados definidos para la orden.
 
 La relación entre ambos diagramas es importante porque las operaciones representadas en las secuencias deben mantener coherencia con los estados definidos para las órdenes. Por esta razón, durante la consolidación del diseño será necesario revisar las reglas relacionadas con el momento de procesamiento del pago, la asignación del conductor y el inicio del traslado, evitando que un mismo proceso tenga interpretaciones diferentes entre los modelos.
 
