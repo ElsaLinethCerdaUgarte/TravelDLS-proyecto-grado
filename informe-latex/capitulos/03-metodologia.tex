@@ -6,6 +6,240 @@
 \section{Metodología}
 \label{sec:metodologia}
 
+\subsubsection{Enfoque metodológico y tipología del artefacto}
+\label{sec:metodo-enfoque}
+
+Para orientar el desarrollo de TravelDLS se adopta como enfoque general la Metodología de Investigación en Ciencia del Diseño, conocida por sus siglas en inglés como DSRM (\textit{Design Science Research Methodology}), propuesta por \textcite{peffers2007dsrm}. Este enfoque resulta pertinente para el proyecto porque la investigación no se limita a describir las dificultades relacionadas con la administración y el seguimiento del transporte terrestre de carga pesada, sino que también busca desarrollar una solución informática que responda a las necesidades identificadas.
+
+La metodología DSRM permite relacionar la identificación de un problema con la definición de los objetivos de la solución, su diseño, construcción y posterior comprobación. Dentro de TravelDLS, esta relación es importante porque permite mantener una conexión entre la problemática que motiva el proyecto y las funcionalidades que se incorporarán a la plataforma. De esta manera, las decisiones técnicas no se consideran actividades aisladas, sino parte de un proceso orientado a responder a las necesidades de gestión, localización, seguimiento y planificación de rutas.
+
+En el ámbito de los sistemas de información, \textcite{hevner2004design} explican que la investigación basada en Ciencia del Diseño puede generar diferentes tipos de artefactos, entre ellos constructos, modelos, métodos e instanciaciones. Estos elementos representan distintas formas de conocimiento que contribuyen a comprender un problema y desarrollar soluciones tecnológicas. Para TravelDLS, el artefacto principal previsto corresponde a una instanciación, representada por la plataforma web que integrará las funciones de administración de empresas transportistas, conductores, vehículos, cargas, órdenes, pagos y seguimiento de los servicios.
+
+La construcción de esta instanciación se apoya en tres elementos complementarios. Los constructos proporcionan los conceptos y el vocabulario necesarios para comprender el dominio de aplicación. Los modelos permiten representar la estructura de la información y el comportamiento esperado del sistema. Por su parte, los métodos comprenden los procedimientos que se utilizarán para organizar la investigación, desarrollar las funcionalidades y resolver problemas específicos, como la planificación de recorridos con múltiples destinos.
+
+Esta organización permite que los fundamentos desarrollados en el marco teórico tengan una aplicación dentro del marco metodológico, evitando repetir definiciones y manteniendo una relación entre los conceptos estudiados, los modelos elaborados y las decisiones que orientarán el desarrollo de TravelDLS.
+
+\subsubsection{Fase 1. Identificación del Problema y Motivación}
+\label{sec:metodo-fase1}
+
+La primera fase de la metodología DSRM se orienta a identificar el problema que motiva la investigación y fundamentar la necesidad de desarrollar una solución tecnológica \parencite{peffers2007dsrm}. En TravelDLS, esta etapa parte del análisis de las actividades que intervienen en la gestión del transporte terrestre de carga pesada y de las dificultades que surgen cuando la información necesaria para desarrollar un servicio no se encuentra debidamente relacionada.
+
+El transporte de carga pesada comprende diferentes actividades que deben coordinarse para completar una operación. Además del traslado físico de la mercancía, es necesario administrar solicitudes, vehículos, conductores, cargas, recorridos y comunicaciones entre los participantes del servicio. Estos elementos mantienen una relación directa, debido a que una operación requiere identificar quién contrata el transporte, qué empresa prestará el servicio, cuáles son los recursos asignados y en qué situación se encuentra el traslado.
+
+Cuando esta información se administra mediante registros separados, hojas de cálculo, llamadas o mensajes individuales, resulta más difícil mantener una visión organizada del servicio. Para consultar el avance de una operación es necesario reunir datos provenientes de diferentes medios, lo que dificulta identificar con rapidez su estado y los recursos asociados. Esta situación evidencia la importancia de establecer mecanismos que permitan centralizar la información y mantener una relación entre las diferentes actividades operativas.
+
+En Nicaragua existen investigaciones que han abordado necesidades relacionadas con la administración del transporte mediante herramientas informáticas. \textcite{aragon2018implementacion} desarrollaron un sistema de información para la administración de fletes terrestres, orientado a mejorar la organización de los registros y procesos correspondientes a una empresa de transporte. Este antecedente permite reconocer la importancia que tiene la administración de la información dentro de las operaciones logísticas.
+
+De manera complementaria, \textcite{garcia2022desarrollo} abordaron el seguimiento y la localización de unidades de transporte público en la ciudad de León mediante una aplicación móvil. Aunque este trabajo corresponde a un contexto diferente al transporte de carga pesada, permite reconocer la utilidad de las tecnologías de localización para consultar información sobre el desplazamiento de las unidades.
+
+Estos antecedentes contribuyen a comprender dos necesidades relacionadas con TravelDLS. La primera corresponde a la organización de los registros y procesos administrativos de las empresas transportistas. La segunda se relaciona con la posibilidad de consultar información sobre la ubicación y el desplazamiento de los vehículos durante la prestación de un servicio.
+
+Desde la perspectiva administrativa, una empresa dedicada al transporte de carga pesada necesita mantener relacionados los datos de los recursos que utiliza y las solicitudes que recibe. No resulta suficiente disponer de un registro de conductores y vehículos si esa información no puede relacionarse con las órdenes de transporte que se encuentran pendientes o en ejecución. Por esta razón, la propuesta contempla que las operaciones se organicen mediante una \hyperlink{concepto-orden}{orden de transporte}, que permita vincular los datos del servicio con la empresa, el cliente y los recursos correspondientes.
+
+Asimismo, las solicitudes requieren pasar por diferentes etapas, desde su creación hasta la conclusión del servicio. Esto introduce la necesidad de establecer un \hyperlink{concepto-estados}{ciclo de atención y estados de una orden}, mediante el cual se identifique cuándo una solicitud se encuentra pendiente, cuándo ha recibido un precio y cuándo ha sido aceptada o rechazada por el cliente. La definición de estos estados permitirá representar el avance administrativo y operativo de una solicitud, manteniendo una relación entre las acciones realizadas y la situación actual del servicio.
+
+Otra dificultad relacionada con la administración del transporte corresponde a la \hyperlink{concepto-asignacion}{asignación de recursos}. Cada solicitud requiere identificar los medios que participarán en su atención, principalmente el conductor y el vehículo. Cuando esta relación no se mantiene dentro de un mismo registro, la consulta de la operación depende de información adicional que puede encontrarse en medios diferentes. TravelDLS busca organizar estos datos para que la empresa pueda identificar los recursos asociados a las órdenes que administra.
+
+Desde la perspectiva del cliente, una de las principales necesidades consiste en disponer de información sobre el servicio contratado. Después de aceptar una solicitud de transporte, resulta importante conocer si la carga ha comenzado a trasladarse, cuál es el estado del servicio y dónde se encuentra la unidad encargada del recorrido.
+
+Cuando esta información no puede consultarse de manera directa, el cliente depende de la comunicación individual con la empresa o el conductor para conocer el avance de su carga. Esto puede generar incertidumbre sobre la situación del traslado, especialmente cuando no existen mecanismos que permitan consultar la ubicación reportada y los cambios de estado de la operación.
+
+La incorporación de funciones de \hyperlink{concepto-trazabilidad}{trazabilidad} y \hyperlink{concepto-seguimiento}{seguimiento en tiempo real} responde a esta necesidad. Mediante estas funcionalidades se pretende mantener vinculados los registros de ubicación y los estados de la operación con la orden correspondiente, permitiendo que los usuarios autorizados consulten información relacionada con el desarrollo del servicio.
+
+La \hyperlink{concepto-geolocalizacion}{geolocalización} constituye un elemento necesario para representar la posición de la unidad durante el traslado. Sin embargo, conocer únicamente la ubicación más reciente no permite reconstruir los desplazamientos realizados anteriormente. Por esta razón, también se contempla el \hyperlink{concepto-historial}{historial de seguimiento}, que permitirá conservar registros sucesivos asociados a una misma operación.
+
+Esta diferencia resulta importante porque el seguimiento de un servicio no depende solamente de mostrar un punto sobre un mapa. También requiere relacionar la ubicación reportada con el conductor, la orden correspondiente y el estado del traslado. De esta manera, la información consultada podrá interpretarse dentro del contexto de la operación que se está desarrollando.
+
+No obstante, el seguimiento estará condicionado por la disponibilidad de conexión a Internet, los permisos de localización y las características de los dispositivos utilizados. Estas condiciones deben considerarse al establecer las funcionalidades y limitaciones del proyecto, evitando afirmar que la plataforma garantizará una actualización continua de ubicaciones bajo cualquier circunstancia.
+
+Además de la administración y el seguimiento, otra necesidad identificada corresponde a la organización de recorridos con múltiples destinos. Una empresa transportista puede requerir visitar diferentes puntos durante un mismo servicio, por lo que resulta pertinente analizar el orden en que se realizará el desplazamiento.
+
+La \hyperlink{concepto-planificacion}{planificación de rutas} permite organizar estos destinos, mientras que la \hyperlink{concepto-optimizacion}{optimización de rutas} introduce la posibilidad de comparar diferentes alternativas de recorrido según criterios como distancia o tiempo. Esto resulta relevante debido a que el orden de visita influye en la distancia total que puede representar una operación.
+
+
+En el contexto nacional, \textcite{aragon2018implementacion}
+abordaron la administración de fletes terrestres mediante
+un sistema de información, mientras que
+\textcite{garcia2022desarrollo} estudiaron el seguimiento
+y localización de unidades de transporte. Aunque estas
+investigaciones no se centran directamente en la
+optimización de rutas de carga pesada, permiten
+reconocer la aplicación de herramientas tecnológicas
+en el sector del transporte nicaragüense.
+
+Por otra parte, los antecedentes regionales de
+\textcite{aguilar2022optimizacion} y
+\textcite{hernandez2024evaluacion} abordan la
+planificación y optimización de rutas mediante
+diferentes alternativas. Estas investigaciones
+constituyen una referencia para el componente de
+planificación de recorridos que se contempla
+desarrollar en TravelDLS.
+
+
+Estas investigaciones permiten fundamentar la pertinencia de estudiar alternativas de optimización, aunque los resultados obtenidos corresponden a los escenarios particulares de cada trabajo y no pueden considerarse mejoras garantizadas para TravelDLS.
+
+Por esta razón, el proyecto contempla analizar el \hyperlink{concepto-tsp}{Problema del Agente Viajero} y comparar procedimientos como \hyperlink{concepto-vecino}{Vecino Más Cercano} y \hyperlink{concepto-dos-opt}{2-opt} con las soluciones generadas mediante \hyperlink{concepto-ortools}{Google OR-Tools}. El propósito de esta comparación será conocer el comportamiento de las alternativas consideradas y establecer una base técnica para el módulo de planificación de rutas del prototipo.
+
+La problemática también se relaciona con la presencia tecnológica de las empresas transportistas. TravelDLS contempla reunir diferentes organizaciones dentro de una misma plataforma, permitiendo que puedan presentar sus servicios a clientes interesados en contratar transporte de carga pesada. Esta característica busca conectar la administración interna con las actividades de búsqueda y contratación, ofreciendo un espacio común para empresas y clientes.
+
+La posibilidad de mejorar la visibilidad de las empresas constituye un beneficio esperado de la propuesta. Sin embargo, no debe presentarse como un resultado demostrado, debido a que todavía sería necesario evaluar el uso de la plataforma y su aceptación dentro del entorno operativo correspondiente.
+
+Como respuesta a las necesidades identificadas, TravelDLS propone desarrollar una plataforma bajo el modelo \hyperlink{concepto-saas}{Software como Servicio}, destinada a integrar información administrativa, operativa y de seguimiento dentro de un mismo entorno. La \hyperlink{concepto-multitenant}{arquitectura multitenant} y la \hyperlink{concepto-separacion}{separación de información operativa} permitirán orientar el diseño para que diferentes empresas puedan utilizar la plataforma manteniendo diferenciados sus registros y las funciones correspondientes a cada perfil.
+
+De esta manera, la motivación principal del proyecto consiste en ofrecer una alternativa tecnológica que permita relacionar las operaciones de transporte, mantener información accesible para los participantes autorizados y apoyar la planificación de recorridos. TravelDLS no busca sustituir las decisiones administrativas de las empresas, sino proporcionar una herramienta que contribuya a organizar los procesos y facilitar la consulta de información durante la prestación del servicio.
+
+La identificación del problema permite establecer una base para definir las características que deberá cumplir la solución. No obstante, las dificultades descritas a partir del análisis documental y los antecedentes deberán diferenciarse de aquellas que puedan comprobarse posteriormente mediante información obtenida directamente del entorno operativo.
+
+En consecuencia, esta primera fase delimita las necesidades que motivan TravelDLS y proporciona los fundamentos para formular los objetivos de la solución, sin considerar como demostrados los beneficios que todavía requieren comprobación.
+
+
+% =========================================================
+% FASE 2
+% =========================================================
+
+\subsubsection{Fase 2. Definición de Objetivos de la Solución (Meta-requisitos)}
+\label{sec:metodo-fase2}
+
+La segunda fase de la metodología DSRM consiste en establecer las características que deberá cumplir la solución propuesta para responder a las necesidades identificadas durante la etapa anterior \parencite{peffers2007dsrm}. En TravelDLS, esta fase permite relacionar la problemática con los objetivos del proyecto y formular los meta-requisitos que orientarán el diseño de la plataforma.
+
+Los meta-requisitos representan las capacidades generales que se espera que el sistema proporcione. Su formulación permite describir qué necesita resolver TravelDLS antes de establecer cómo serán implementadas técnicamente sus funcionalidades. Esta diferencia es importante porque permite separar las necesidades del sistema de las herramientas, estructuras y procedimientos que se utilizarán posteriormente para atenderlas.
+
+A partir del problema identificado, uno de los principales meta-requisitos corresponde a la centralización de la información administrativa y operativa. La plataforma deberá permitir registrar y consultar los datos relacionados con empresas, clientes, conductores, vehículos y órdenes de transporte, manteniendo las asociaciones necesarias entre estos elementos.
+
+Otro meta-requisito se relaciona con la administración de las solicitudes de transporte. TravelDLS deberá permitir que el cliente registre una solicitud, que la empresa establezca el precio correspondiente y que el cliente pueda aceptar o rechazar las condiciones del servicio. Asimismo, será necesario mantener un estado que permita identificar la situación actual de cada orden.
+
+En relación con el seguimiento, la solución deberá permitir vincular los registros de ubicación y estado con las órdenes correspondientes, de manera que los usuarios autorizados puedan consultar información sobre el desplazamiento de sus cargas. Esta capacidad deberá considerar las limitaciones de conectividad y disponibilidad de los dispositivos utilizados.
+
+La plataforma también deberá contemplar la asignación de recursos de transporte, permitiendo relacionar las operaciones con los conductores y vehículos correspondientes. Esta característica contribuirá a mantener organizada la información necesaria para identificar los recursos involucrados en cada servicio.
+
+En cuanto a la planificación de rutas, TravelDLS deberá proporcionar un mecanismo que permita analizar recorridos con múltiples destinos. Para este componente se contempla la comparación de Vecino Más Cercano y 2-opt con Google OR-Tools, utilizando criterios equivalentes para estudiar sus resultados. La integración del módulo de optimización se orientará a apoyar la planificación, sin sustituir las decisiones que correspondan a la empresa transportista.
+
+Asimismo, el sistema deberá mantener la separación de la información perteneciente a diferentes empresas transportistas, estableciendo las restricciones necesarias para que los usuarios accedan únicamente a los datos relacionados con sus funciones y servicios autorizados.
+
+Finalmente, el proceso de contratación deberá mostrar el precio final del servicio antes de que el cliente lo acepte, incorporando el porcentaje destinado al mantenimiento de la plataforma. Esta condición responde al modelo de funcionamiento económico definido para TravelDLS y busca que el cliente conozca el monto correspondiente antes de confirmar la contratación.
+
+Estos meta-requisitos constituyen una propuesta inicial que relaciona las necesidades identificadas con las capacidades esperadas del sistema. Su organización permitirá orientar las decisiones de diseño y establecer posteriormente los criterios necesarios para comprobar el funcionamiento de cada componente.
+
+La siguiente matriz presenta esta relación inicial, sin asignar porcentajes de mejora o resultados cuantitativos que todavía no hayan sido determinados mediante procedimientos de evaluación.
+
+
+
+% =========================================================
+% MATRIZ DE META-REQUISITOS DE TRAVELDLS
+% =========================================================
+
+\begin{table}[H]
+	\centering
+	\caption{Matriz inicial de meta-requisitos de TravelDLS}
+	\label{tab:meta-requisitos-traveldls}
+	
+	\small
+	\setlength{\tabcolsep}{3pt}
+	\renewcommand{\arraystretch}{1.3}
+	
+	\begin{tabularx}{\textwidth}{
+			@{}
+			p{1.15cm}
+			p{3cm}
+			X
+			p{3cm}
+			@{}
+		}
+		
+		\toprule
+		
+		\textbf{Código} &
+		\textbf{Necesidad identificada} &
+		\textbf{Meta-requisito previsto} &
+		\textbf{Relación con el diseño} \\
+		
+		\midrule
+		
+		MR-01 &
+		Organización de información administrativa y operativa. &
+		Registrar y consultar clientes, empresas, vehículos, conductores y órdenes desde una plataforma compartida. &
+		Diagrama de clases y diagrama entidad-relación. \\
+		
+		\midrule
+		
+		MR-02 &
+		Administración de solicitudes de transporte. &
+		Permitir la creación, cotización, aceptación, rechazo y consulta de estados de una orden. &
+		Diagramas de estados y secuencia. \\
+		
+		\midrule
+		
+		MR-03 &
+		Consulta de información sobre las cargas. &
+		Asociar registros de ubicación y estado a las órdenes, permitiendo su consulta por usuarios autorizados. &
+		Modelo de seguimiento y diagrama de secuencia. \\
+		
+		\midrule
+		
+		MR-04 &
+		Coordinación de recursos de transporte. &
+		Relacionar conductores y vehículos con las operaciones según las reglas establecidas. &
+		Modelos de conductores, vehículos y órdenes. \\
+		
+		\midrule
+		
+		MR-05 &
+		Planificación de recorridos con múltiples destinos. &
+		Comparar métodos de optimización con entradas equivalentes y desarrollar el módulo previsto para el prototipo. &
+		Objetivos del proyecto y módulo de optimización. \\
+		
+		\midrule
+		
+		MR-06 &
+		Claridad en el precio del servicio. &
+		Mostrar el monto final de la contratación, incluyendo el porcentaje de mantenimiento, antes de su aceptación. &
+		Proceso de cotización y contratación. \\
+		
+		\midrule
+		
+		MR-07 &
+		Uso de la plataforma por diferentes empresas. &
+		Mantener diferenciados los registros operativos de cada empresa y establecer controles de acceso según los perfiles. &
+		Modelo de datos y arquitectura multitenant. \\
+		
+		\bottomrule
+		
+	\end{tabularx}
+	
+	\vspace{0.2cm}
+	
+	\begin{minipage}{\textwidth}
+		\footnotesize
+		\textit{Nota.} Los meta-requisitos representan capacidades
+		previstas para TravelDLS. Su cumplimiento deberá comprobarse
+		posteriormente mediante criterios de aceptación y las
+		evidencias correspondientes. La matriz no representa
+		resultados de una evaluación finalizada.
+	\end{minipage}
+	
+\end{table}
+
+\subsubsection{Fase 3. Diseño y Desarrollo del Artefacto (Meta-diseños)}
+\label{sec:metodo-fase3}
+
+La tercera fase de la metodología DSRM comprende el diseño y la construcción de la solución tecnológica a partir de los objetivos establecidos previamente \parencite{peffers2007dsrm}. En TravelDLS, esta etapa permite relacionar los meta-requisitos con las decisiones de arquitectura, los modelos de información y los componentes que conformarán la plataforma web.
+
+Los meta-diseños representan las decisiones técnicas destinadas a satisfacer las capacidades esperadas del sistema. En este proyecto, dichas decisiones se encuentran relacionadas con la organización de los módulos, el almacenamiento de información, las interacciones entre los usuarios y la definición de los procedimientos que permitirán desarrollar las operaciones de transporte.
+
+Como parte del diseño actual de TravelDLS se dispone de un \hyperlink{diagrama-clases}{diagrama de clases}, que representa las principales entidades y servicios del sistema, y de un \hyperlink{diagrama-er}{diagrama entidad-relación}, que permite comprender la estructura prevista para el almacenamiento de datos. Ambos modelos constituyen una base para establecer las relaciones necesarias entre usuarios, empresas, clientes, conductores, vehículos, órdenes, detalles de carga, pagos y registros de seguimiento.
+
+El modelo de clases también permite reconocer los servicios destinados a administrar operaciones específicas, como la autenticación de usuarios, la gestión de órdenes y el procesamiento de pagos. Estas responsabilidades contribuyen a establecer una separación entre los componentes que representan los datos y aquellos que participan en la ejecución de determinadas funciones.
+
+En relación con el comportamiento del sistema, el \hyperlink{diagrama-estados}{diagrama de estados} permite representar las situaciones que puede experimentar una orden de transporte. Su utilización contribuye a establecer las transiciones necesarias durante la creación, cotización, aceptación, ejecución y finalización de una solicitud.
+
+Por su parte, el \hyperlink{diagrama-secuencia}{diagrama de secuencia} describe la interacción prevista entre el cliente, la empresa transportista, el conductor, el frontend, el backend y la base de datos. Este modelo permite observar cómo se intercambiará información durante los procesos de creación de órdenes, asignación de precios, registro de pagos, asignación de conductores y seguimiento de los servicios.
+
+La relación entre ambos diagramas es importante porque las operaciones representadas en las secuencias deben mantener coherencia con los estados definidos para las órdenes. Por esta razón, durante la consolidación del diseño será necesario revisar las reglas relacionadas con el momento de procesamiento del pago, la asignación del conductor y el inicio del traslado, evitando que un mismo proceso tenga interpretaciones diferentes entre los modelos.
+
+En cuanto a la organización tecnológica, el diseño documentado contempla una plataforma web cuyo frontend utiliza Next.js y cuyo backend se desarrolla con AdonisJS. Estos componentes permiten separar la interfaz utilizada por los usuarios de los procedimientos encargados de procesar solicitudes, aplicar las reglas de negocio y administrar la información almacenada en la base de datos.
+
+
 \subsection{Procedimiento para la Selección de Investigaciones Relevantes}
 
 La selección de investigaciones tomó como referencia el mapeo sistemático de \textcite{petersen2008systematic}, que comprende la formulación de preguntas, búsqueda de estudios primarios, filtrado, clasificación por palabras clave y extracción de información (pp. 2--5). Las preguntas y búsquedas se centraron en gestión del transporte, trazabilidad, seguimiento, geolocalización, optimización de rutas y plataformas web para procesos logísticos.
