@@ -593,4 +593,43 @@ indicando el período establecido para cada una y su estado de avance.
 	\end{flushleft}
 	
 \end{center}
+\subsection{Plan de ejecución}
+
+El plan de ejecución organiza las acciones previstas para los tres objetivos específicos de TravelDLS, junto con sus instrumentos de verificación, protagonistas y resultados esperados. Para el primer objetivo se contempla una revisión documental con cadenas de búsqueda en Google Académico, tomando como referencia el mapeo sistemático de \textcite{petersen2008systematic}. La identificación de requisitos se fundamenta en la documentación y los modelos del proyecto; no corresponde a un levantamiento formal con usuarios.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{@{}>{\RaggedRight\arraybackslash}p{1.5cm}>{\RaggedRight\arraybackslash}p{2.3cm}>{\RaggedRight\arraybackslash}p{3.75cm}>{\RaggedRight\arraybackslash}p{2.9cm}>{\RaggedRight\arraybackslash}p{2.1cm}>{\RaggedRight\arraybackslash}p{2.85cm}@{}}
+\caption{Plan de ejecución de TravelDLS}\label{tab:plan_ejecucion}\\
+\toprule
+\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
+\midrule
+\endfirsthead
+\caption[]{Plan de ejecución de TravelDLS (continuación)}\\
+\toprule
+\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
+\midrule
+\endhead
+\endfoot
+\bottomrule
+\addlinespace[4pt]
+\multicolumn{6}{@{}p{15.4cm}@{}}{\textit{Nota.}\enspace La fila «Identificación de requisitos del sistema» expresa un resultado preliminar basado en documentos y diagramas, sin validación directa con usuarios. Las restantes formulaciones de la columna final describen resultados esperados y no deben interpretarse como actividades concluidas. Los avances efectivos deberán acreditarse con las evidencias indicadas.} \\
+\endlastfoot
+OE1 & Revisión documental y diagnóstico & Seleccionar antecedentes, examinar los procesos de transporte de carga pesada y delimitar necesidades de gestión, seguimiento y planificación de rutas. & Cadenas de búsqueda aplicadas en Google Académico, tomando como referencia el procedimiento de mapeo sistemático (Systematic Mapping) de Petersen et al. (2008). & Equipo investigador. & Problemática fundamentada y necesidades iniciales identificadas. \\ \midrule
+OE1 & Identificación de requisitos del sistema & Analizar los objetivos, el alcance y los modelos de TravelDLS para identificar las funcionalidades y necesidades técnicas de la plataforma. No se realizó levantamiento directo con usuarios. & Documento del proyecto, diagramas UML y entidad-relación. & Equipo investigador. & Se identificaron preliminarmente las funcionalidades y componentes de TravelDLS mediante análisis documental, sin validación directa con usuarios. \\ \midrule
+OE1 & Comparación de algoritmos & Definir escenarios con múltiples destinos, obtener una matriz de distancias y comparar Vecino Más Cercano, su mejora con 2-opt y Google OR-Tools. & Matriz de distancias, pruebas de recorridos y cuadro comparativo. & Equipo de desarrollo. & Comparación documentada para sustentar decisiones del módulo de optimización. \\ \midrule
+OE2 & Definición de arquitectura & Establecer la organización del frontend con Next.js, el backend con AdonisJS bajo MVC y capa de servicios, la base de datos PostgreSQL y los mecanismos de acceso por empresa. & Documento de arquitectura y esquema de componentes. & Equipo de desarrollo. & Arquitectura y responsabilidades técnicas de los componentes definidas. \\ \midrule
+OE2 & Modelado de datos y clases & Elaborar y revisar los diagramas de clases y entidad-relación, considerando usuarios, roles, empresas, vehículos, conductores, clientes, órdenes y pagos. & Diagramas UML y entidad-relación revisados. & Equipo de desarrollo. & Modelos coherentes con las entidades y relaciones previstas en TravelDLS. \\ \midrule
+OE2 & Modelado de procesos & Revisar los diagramas de casos de uso, estados y secuencia, unificando las reglas sobre cotización, pago, asignación del conductor y seguimiento de las órdenes. & Diagramas de casos de uso, estados y secuencia; registro de revisión. & Equipo de desarrollo y asesoría académica. & Flujos de negocio y responsabilidades consistentes entre los modelos. \\ \midrule
+OE3 & Construcción del backend & Desarrollar la autenticación mediante JWT y las operaciones de administración de usuarios, roles, empresas, clientes, conductores, vehículos y órdenes. & Repositorio de código, endpoints y pruebas de API. & Equipo de desarrollo. & Servicios principales del backend funcionales. \\ \midrule
+OE3 & Desarrollo del frontend & Construir las interfaces para los tres perfiles de TravelDLS e incorporar los procesos de consulta de empresas, solicitud de transporte, cotización y aceptación de servicios. & Pantallas implementadas y pruebas de navegación. & Equipo de desarrollo y usuarios de prueba. & Flujos de interacción disponibles en la plataforma web. \\ \midrule
+OE3 & Integración de seguimiento & Incorporar Mapbox, registrar las ubicaciones reportadas por el conductor y permitir consultas autorizadas del estado y el historial de cada orden. Gestionar con Cloudinary las fotografías de perfiles y empresas. & Pruebas de integración, registros de seguimiento y consultas del mapa. & Equipo de desarrollo y conductores de prueba. & Información de ubicación y progreso de las cargas disponible según los permisos. \\ \midrule
+OE3 & Implementación de pagos & Mostrar el precio final del servicio, incluido el recargo del 8\,\% para mantenimiento, antes de su aceptación. Desarrollar el registro o simulación del pago según el alcance del prototipo. & Casos de prueba de cotización, aceptación y pago. & Equipo de desarrollo y clientes de prueba. & Proceso de contratación y pago coherente con las reglas de negocio aprobadas. \\ \midrule
+OE3 & Módulo de optimización & Integrar Google OR-Tools con los destinos y costos de desplazamiento definidos para el prototipo, permitiendo calcular recorridos que apoyen la planificación. & Código del módulo, pruebas de rutas y resultados de ejecución. & Equipo de desarrollo. & Módulo de optimización integrado y recorridos calculados para escenarios establecidos. \\ \midrule
+OE3 & Pruebas y documentación & Ejecutar pruebas funcionales en escenarios académicos, registrar incidencias identificadas y elaborar documentación técnica y manuales de usuario. & Matriz de pruebas, registro de incidencias y manuales. & Equipo de desarrollo y participantes de las pruebas. & Prototipo verificado en los escenarios definidos y documentación inicial del sistema. \\
+\end{longtable}
+\endgroup
+
 \subsection{Metodología de Desarrollo}
