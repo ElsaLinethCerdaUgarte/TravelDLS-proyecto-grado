@@ -231,43 +231,15 @@ Como parte del diseño actual de TravelDLS se dispone de un diagrama de clases y
 
 El modelo de clases también permite reconocer los servicios destinados a administrar operaciones específicas, como la autenticación de usuarios, la gestión de órdenes y el procesamiento de pagos. Estas responsabilidades contribuyen a establecer una separación entre los componentes que representan los datos y aquellos que participan en la ejecución de determinadas funciones.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-clases.png}
-	\caption{Diagrama de clases de TravelDLS}
-	\label{fig:diagrama-clases}
-\end{figure}
-
 El diagrama de clases presentado en la Figura~\ref{fig:diagrama-clases} organiza los componentes principales del sistema alrededor de usuarios, roles, empresas, clientes, conductores, vehículos, órdenes, detalles de carga, pagos y seguimiento. Esta representación permite observar cómo los servicios de autenticación, órdenes y pagos se relacionan con las entidades del dominio, de manera que las operaciones previstas mantengan una separación entre responsabilidades funcionales y estructuras de información.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-er.png}
-	\caption{Diagrama entidad-relación de TravelDLS}
-	\label{fig:diagrama-er}
-\end{figure}
 
 El diagrama entidad-relación de la Figura~\ref{fig:diagrama-er} complementa el modelo anterior al presentar las tablas, claves y asociaciones previstas para la persistencia de datos. Su incorporación permite relacionar el diseño conceptual con la estructura de almacenamiento, especialmente en los elementos asociados a empresas, clientes, conductores, vehículos, órdenes, detalles de carga, pagos y registros de ubicación.
 
 En relación con el comportamiento del sistema, el diagrama de estados permite representar las situaciones que puede experimentar una orden de transporte. Su utilización contribuye a establecer las transiciones necesarias durante la creación, cotización, aceptación, ejecución y finalización de una solicitud.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.82\textheight,keepaspectratio]{diagrama-estado.jpeg}
-	\caption{Diagrama de estados de una orden de transporte}
-	\label{fig:diagrama-estados}
-\end{figure}
-
-Como se muestra en la Figura~\ref{fig:diagrama-estados}, la orden inicia en estado pendiente y avanza según las acciones realizadas por la empresa y el cliente. La asignación de precio, la aceptación o rechazo, la posible anulación, el inicio del viaje, la entrega y el proceso de pago establecen reglas que ayudan a mantener coherencia entre el avance administrativo de la solicitud y su ejecución operativa.
+Como se muestra en la Figura~\ref{fig:diagrama-estados}, la orden inicia en estado pendiente y avanza según las acciones realizadas por la empresa y el cliente. La asignación de precio, la aceptación o rechazo, la posible anulación, el pago, el inicio del viaje y la entrega establecen reglas que ayudan a mantener coherencia entre el avance administrativo de la solicitud y su ejecución operativa.
 
 Por su parte, el diagrama de secuencia describe la interacción prevista entre el cliente, la empresa transportista, el conductor, el frontend, el backend y la base de datos. Este modelo permite observar cómo se intercambiará información durante los procesos de creación de órdenes, asignación de precios, registro de pagos, asignación de conductores y seguimiento de los servicios.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[height=0.86\textheight,keepaspectratio]{diagrama-secuencia.png}
-	\caption{Diagrama de secuencia del proceso principal de una orden}
-	\label{fig:diagrama-secuencia}
-\end{figure}
 
 La Figura~\ref{fig:diagrama-secuencia} muestra el flujo principal de una orden desde su creación hasta el seguimiento del viaje. En este proceso, el cliente registra la solicitud, la empresa asigna el precio, el cliente acepta la cotización, se registra el pago, se asigna el conductor y posteriormente se consultan los registros de seguimiento. Esta secuencia permite vincular las operaciones de interfaz, backend y base de datos con los estados definidos para la orden.
 
@@ -275,7 +247,8 @@ La relación entre ambos diagramas es importante porque las operaciones represen
 
 En cuanto a la organización tecnológica, el diseño documentado contempla una plataforma web cuyo frontend utiliza Next.js y cuyo backend se desarrolla con AdonisJS. Estos componentes permiten separar la interfaz utilizada por los usuarios de los procedimientos encargados de procesar solicitudes, aplicar las reglas de negocio y administrar la información almacenada en la base de datos.
 
-\subsection{Nivel táctico - Ingeniería: Metodología ágil (Scrum / XP)}
+\subsection{Metodología de Desarrollo}
+\label{sec:metodologia-desarrollo}
 
 El nivel táctico de TravelDLS corresponde al proceso de desarrollo del software y se integra en la fase 3 de la metodología de investigación en ciencia del diseño (Design Science Research Methodology, DSRM), denominada Diseño y Desarrollo del Artefacto. En esta fase, las decisiones de diseño y arquitectura derivadas de los meta-requisitos se utilizan como base para construir la plataforma web. Para organizar este proceso, se propone combinar Scrum y Extreme Programming (XP): Scrum se utilizará para planificar y distribuir el trabajo de forma incremental, mientras que XP orientará las prácticas de ingeniería hacia la calidad técnica del software \parencite{beck2000xp, schwaber2020scrum}.
 
@@ -593,4 +566,83 @@ indicando el período establecido para cada una y su estado de avance.
 	\end{flushleft}
 	
 \end{center}
-\subsection{Metodología de Desarrollo}
+\subsection{Plan de ejecución}
+
+El plan de ejecución organiza las acciones previstas para los tres objetivos específicos de TravelDLS, junto con sus instrumentos de verificación, protagonistas y resultados esperados. Para el primer objetivo se contempla una revisión documental con cadenas de búsqueda en Google Académico, tomando como referencia el mapeo sistemático de \textcite{petersen2008systematic}. La identificación de requisitos se fundamenta en la documentación y los modelos del proyecto; no corresponde a un levantamiento formal con usuarios.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{@{}>{\RaggedRight\arraybackslash}p{1.5cm}>{\RaggedRight\arraybackslash}p{2.3cm}>{\RaggedRight\arraybackslash}p{3.75cm}>{\RaggedRight\arraybackslash}p{2.9cm}>{\RaggedRight\arraybackslash}p{2.1cm}>{\RaggedRight\arraybackslash}p{2.85cm}@{}}
+\caption{Plan de ejecución de TravelDLS}\label{tab:plan_ejecucion}\\
+\toprule
+\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
+\midrule
+\endfirsthead
+\caption[]{Plan de ejecución de TravelDLS (continuación)}\\
+\toprule
+\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
+\midrule
+\endhead
+\endfoot
+\bottomrule
+\endlastfoot
+OE1 & Revisión documental y diagnóstico & Seleccionar antecedentes, examinar los procesos de transporte de carga pesada y delimitar necesidades de gestión, seguimiento y planificación de rutas. & Cadenas de búsqueda aplicadas en Google Académico, tomando como referencia el procedimiento de mapeo sistemático (Systematic Mapping) de Petersen et al. (2008). & Equipo investigador. & Problemática fundamentada y necesidades iniciales identificadas. \\ \midrule
+OE1 & Identificación de requisitos del sistema & Analizar los objetivos, el alcance y los modelos de TravelDLS para identificar las funcionalidades y necesidades técnicas de la plataforma. No se realizó levantamiento directo con usuarios. & Documento del proyecto, diagramas UML y entidad-relación. & Equipo investigador. & Se identificaron preliminarmente las funcionalidades y componentes de TravelDLS mediante análisis documental, sin validación directa con usuarios. \\ \midrule
+OE1 & Comparación de algoritmos & Definir escenarios con múltiples destinos, obtener una matriz de distancias y comparar Vecino Más Cercano, su mejora con 2-opt y Google OR-Tools. & Matriz de distancias, pruebas de recorridos y cuadro comparativo. & Equipo de desarrollo. & Comparación documentada para sustentar decisiones del módulo de optimización. \\ \midrule
+OE2 & Definición de arquitectura & Establecer la organización del frontend con Next.js, el backend con AdonisJS bajo MVC y capa de servicios, la base de datos PostgreSQL y los mecanismos de acceso por empresa. & Documento de arquitectura y esquema de componentes. & Equipo de desarrollo. & Arquitectura y responsabilidades técnicas de los componentes definidas. \\ \midrule
+OE2 & Modelado de datos y clases & Elaborar y revisar los diagramas de clases y entidad-relación, considerando usuarios, roles, empresas, vehículos, conductores, clientes, órdenes y pagos. & Diagramas UML y entidad-relación revisados. & Equipo de desarrollo. & Modelos coherentes con las entidades y relaciones previstas en TravelDLS. \\ \midrule
+OE2 & Modelado de procesos & Revisar los diagramas de casos de uso, estados y secuencia, unificando las reglas sobre cotización, pago, asignación del conductor y seguimiento de las órdenes. & Diagramas de casos de uso, estados y secuencia; registro de revisión. & Equipo de desarrollo y asesoría académica. & Flujos de negocio y responsabilidades consistentes entre los modelos. \\ \midrule
+OE3 & Construcción del backend & Desarrollar la autenticación mediante JWT y las operaciones de administración de usuarios, roles, empresas, clientes, conductores, vehículos y órdenes. & Repositorio de código, endpoints y pruebas de API. & Equipo de desarrollo. & Servicios principales del backend funcionales. \\ \midrule
+OE3 & Desarrollo del frontend & Construir las interfaces para los tres perfiles de TravelDLS e incorporar los procesos de consulta de empresas, solicitud de transporte, cotización y aceptación de servicios. & Pantallas implementadas y pruebas de navegación. & Equipo de desarrollo y usuarios de prueba. & Flujos de interacción disponibles en la plataforma web. \\ \midrule
+OE3 & Integración de seguimiento & Incorporar Mapbox, registrar las ubicaciones reportadas por el conductor y permitir consultas autorizadas del estado y el historial de cada orden. Gestionar con Cloudinary las fotografías de perfiles y empresas. & Pruebas de integración, registros de seguimiento y consultas del mapa. & Equipo de desarrollo y conductores de prueba. & Información de ubicación y progreso de las cargas disponible según los permisos. \\ \midrule
+OE3 & Implementación de pagos & Mostrar el precio final del servicio, incluido el recargo del 8\,\% para mantenimiento, antes de su aceptación. Desarrollar el registro o simulación del pago según el alcance del prototipo. & Casos de prueba de cotización, aceptación y pago. & Equipo de desarrollo y clientes de prueba. & Proceso de contratación y pago coherente con las reglas de negocio aprobadas. \\ \midrule
+OE3 & Módulo de optimización & Integrar Google OR-Tools con los destinos y costos de desplazamiento definidos para el prototipo, permitiendo calcular recorridos que apoyen la planificación. & Código del módulo, pruebas de rutas y resultados de ejecución. & Equipo de desarrollo. & Módulo de optimización integrado y recorridos calculados para escenarios establecidos. \\ \midrule
+OE3 & Pruebas y documentación & Ejecutar pruebas funcionales en escenarios académicos, registrar incidencias identificadas y elaborar documentación técnica y manuales de usuario. & Matriz de pruebas, registro de incidencias y manuales. & Equipo de desarrollo y participantes de las pruebas. & Prototipo verificado en los escenarios definidos y documentación inicial del sistema. \\
+\end{longtable}
+\endgroup
+
+\clearpage
+\subsection{Resultados del plan de ejecución}
+\label{sec:resultados-plan-ejecucion}
+
+Los diagramas de clases y entidad-relación son productos de la acción «Modelado de datos y clases» del OE2, presentada en la Tabla~\ref{tab:plan_ejecucion}. Representan las entidades principales de TravelDLS y sus relaciones. Frente al resultado esperado de contar con modelos coherentes con la estructura prevista, se observa un avance, pero el informe aún no documenta una revisión cruzada de clases, tablas y relaciones. Por ello, el cumplimiento de esta acción se considera parcial.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-clases.png}
+	\caption{Diagrama de clases de TravelDLS}
+	\label{fig:diagrama-clases}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-er.png}
+	\caption{Diagrama entidad-relación de TravelDLS}
+	\label{fig:diagrama-er}
+\end{figure}
+
+\clearpage
+Los diagramas de casos de uso, estados y secuencia corresponden a la acción «Modelado de procesos» del OE2. El primero presenta las funciones por actor; el segundo, los estados de una orden; y el tercero, las interacciones del flujo principal de transporte. En comparación con el resultado esperado de obtener flujos y responsabilidades consistentes entre los modelos, también se considera un cumplimiento parcial: los procesos previstos están representados, pero no se incorpora un registro de revisión comparativa que confirme la coherencia de todas sus reglas.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-casos-uso.png}
+	\caption{Diagrama de casos de uso de TravelDLS}
+	\label{fig:diagrama-casos-uso}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-estado-actualizado.png}
+	\caption{Diagrama de estados de una orden de transporte}
+	\label{fig:diagrama-estados}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{diagrama-secuencia.png}
+	\caption{Diagrama de secuencia del proceso principal de una orden}
+	\label{fig:diagrama-secuencia}
+\end{figure}
