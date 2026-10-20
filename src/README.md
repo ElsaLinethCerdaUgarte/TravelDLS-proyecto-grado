@@ -1,10 +1,53 @@
-# Código Fuente
+# Código Fuente de TravelDLS
 
-Esta carpeta está destinada a alojar todo el código fuente del sistema. 
+Esta carpeta contiene el código fuente del sistema TravelDLS. Actualmente, la aplicación está organizada de la siguiente manera:
 
-Dado que cada proyecto de grado tiene requerimientos distintos, son libres de estructurar este directorio según la arquitectura que mejor se adapte a su solución:
-- Si usan una arquitectura monolítica (ej. MVC), coloquen su proyecto base aquí.
-- Si usan cliente-servidor, pueden crear carpetas como `api/` y `client/`.
-- Si es una aplicación móvil, pueden inicializar aquí su entorno de Flutter, React Native, Kotlin, etc.
+```text
+src/
+├── backend/                 # API y lógica del servidor
+│   ├── app/
+│   │   ├── controllers/     # Controladores HTTP
+│   │   ├── enums/           # Enumeraciones del dominio
+│   │   ├── middleware/      # Middleware de autenticación y seguridad
+│   │   ├── models/          # Modelos y relaciones de base de datos
+│   │   ├── services/        # Lógica de negocio
+│   │   └── validators/      # Validación de datos de entrada
+│   ├── config/              # Configuración de AdonisJS
+│   ├── database/
+│   │   ├── migrations/      # Estructura y cambios de la base de datos
+│   │   └── seeders/         # Datos iniciales
+│   ├── start/               # Rutas y configuración de inicio
+│   ├── tests/               # Pruebas automatizadas
+│   ├── package.json         # Dependencias y scripts del backend
+│   ├── adonisrc.ts          # Configuración principal de AdonisJS
+│   └── .env.example         # Variables de entorno de referencia
+└── README.md                # Esta guía
+```
 
-**Nota:** Asegúrense de configurar correctamente su archivo `.gitignore` en la raíz del repositorio para evitar subir carpetas pesadas o archivos temporales generados por sus frameworks (como `node_modules`, `bin/`, `obj/`, o entornos virtuales).
+## Backend
+
+El backend está desarrollado con **AdonisJS**, **TypeScript**, **Lucid ORM** y **PostgreSQL**. La carpeta `src/backend` es la raíz de la aplicación AdonisJS.
+
+Para instalar las dependencias y ejecutar el backend:
+
+```bash
+cd src/backend
+pnpm install
+pnpm dev
+```
+
+Comandos útiles:
+
+```bash
+pnpm typecheck    # Comprueba los tipos de TypeScript
+pnpm test         # Ejecuta las pruebas
+pnpm build        # Genera la compilación de producción
+```
+
+Las variables de entorno deben configurarse copiando `src/backend/.env.example` como `.env`. El archivo `.env` puede contener credenciales y no debe subirse al repositorio.
+
+## Organización futura
+
+Si se incorpora una interfaz web, puede agregarse como `src/frontend/`, manteniendo su propio `package.json` y configuración independiente del backend.
+
+Las dependencias instaladas, archivos compilados y temporales deben mantenerse fuera del control de versiones mediante los archivos `.gitignore` correspondientes.
