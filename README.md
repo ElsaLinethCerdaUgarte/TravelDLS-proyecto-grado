@@ -1,17 +1,18 @@
-# Plantilla de Proyecto de Grado - Ingeniería en Sistemas (UNHSJM)
+# TravelDLS - Proyecto de Grado
 
-Este repositorio constituye la plantilla estandarizada para el desarrollo de los Proyectos de Grado de la carrera de **Ingeniería en Sistemas de Información** de la **Universidad Nacional Héroes San José de las Mulas (UNHSJM)**.
+Este repositorio contiene el desarrollo del sistema **TravelDLS**, junto con la documentación técnica y el informe académico del proyecto de grado de la carrera de **Ingeniería en Sistemas de Información** de la **Universidad Nacional Héroes San José de las Mulas (UNHSJM)**.
 
-Su estructura está diseñada para mantener una clara separación de responsabilidades entre el desarrollo del código fuente (`src/`), la documentación técnica del proyecto (`docs/`) y el informe académico escrito final (`informe-latex/`).
+La estructura mantiene separadas las responsabilidades del sistema, la documentación técnica y el informe académico final.
 
 ---
 
 ## 📁 Estructura del Repositorio
 
 ```text
-unhsjm-plantilla-proyecto-grado/
+TravelDLS-proyecto-grado/
 ├── .github/
 │   └── ISSUE_TEMPLATE/       # Plantillas para la gestión de tareas e incidencias
+├── .vscode/                   # Configuración recomendada para Visual Studio Code
 ├── docs/                     # Documentación técnica y artefactos de diseño
 │   ├── actas-reuniones/      # Minutas y registros de seguimiento con tutores
 │   ├── diagramas/            # Diagramas de arquitectura, UML, entidad-relación, etc.
@@ -23,12 +24,47 @@ unhsjm-plantilla-proyecto-grado/
 │   ├── main.tex              # Archivo principal de compilación y configuración
 │   ├── referencias.bib       # Archivo de fuentes bibliográficas (BibLaTeX)
 │   └── unhsjm-formato.sty    # Paquete de estilos y formato institucional de la UNHSJM
-├── src/                      # Código fuente del sistema desarrollado (libre estructuración)
-│   └── README.md             # Guía de estructuración del código fuente
+├── src/                      # Código fuente del sistema
+│   ├── backend/              # API y lógica del servidor desarrollada con AdonisJS
+│   │   ├── app/              # Controladores, modelos, servicios, validadores y middleware
+│   │   ├── config/           # Configuración de la aplicación
+│   │   ├── database/         # Migraciones y seeders
+│   │   ├── start/             # Rutas y arranque del servidor
+│   │   ├── tests/             # Pruebas automatizadas
+│   │   ├── package.json       # Dependencias y scripts del backend
+│   │   ├── adonisrc.ts        # Configuración de AdonisJS
+│   │   └── .env.example       # Variables de entorno de referencia
+│   └── README.md              # Guía adicional sobre el código fuente
+├── output/                   # Archivos generados durante el desarrollo
+├── tmp/                      # Archivos temporales locales
 ├── .gitignore                # Exclusión de archivos temporales y basura de desarrollo
 ├── LICENSE                   # Licencia del proyecto
 └── README.md                 # Guía general del repositorio
 ```
+
+---
+
+## ⚙️ Backend
+
+El backend se encuentra en `src/backend/` y está desarrollado con **AdonisJS**, **TypeScript** y **PostgreSQL**. Esta carpeta funciona como la raíz de la aplicación AdonisJS, por lo que los comandos deben ejecutarse desde allí.
+
+### Instalación de dependencias
+
+```bash
+cd src/backend
+pnpm install
+```
+
+### Comandos principales
+
+```bash
+pnpm dev          # Inicia el servidor en modo desarrollo
+pnpm typecheck    # Comprueba los tipos de TypeScript
+pnpm test         # Ejecuta las pruebas
+pnpm build        # Genera la compilación de producción
+```
+
+Las variables de entorno deben configurarse a partir de `src/backend/.env.example`. El archivo `.env` local no debe subirse al repositorio.
 
 ---
 
