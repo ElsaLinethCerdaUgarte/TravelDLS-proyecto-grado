@@ -433,17 +433,26 @@ el proceso de documentación y desarrollo del software TravelDLS,
 indicando el período establecido para cada una y su estado de avance.
 
 \begin{center}
-	
 	\begin{ganttchart}[
 		hgrid,
 		vgrid,
+<<<<<<< HEAD
 		x unit=1.45cm,          
+=======
+<<<<<<< Updated upstream
+		x unit=1.95cm,
+>>>>>>> 4cfcd69 (Cronograma actualizado)
 		y unit title=0.55cm,
 		y unit chart=0.70cm,
+=======
+		x unit=1.35cm,
+		y unit title=0.75cm,
+		y unit chart=0.60cm,
+>>>>>>> Stashed changes
 		title height=1,
-		bar height=0.45,
-		group height=0.55,
-		title label font=\bfseries\tiny,
+		bar height=0.32,
+		group height=0.36,
+		title label font=\scriptsize,
 		bar label font=\scriptsize,
 		group label font=\bfseries\scriptsize,
 		title/.style={
@@ -456,13 +465,39 @@ indicando el período establecido para cada una y su estado de avance.
 		},
 		bar/.style={
 			draw=none
+		},
+		bar label node/.append style={
+			align=right,
+			text width=6.1cm,
+			anchor=east,
+			xshift=-0.2cm
+		},
+		group label node/.append style={
+			align=right,
+			text width=6.1cm,
+			anchor=east,
+			xshift=-0.2cm
 		}
+<<<<<<< HEAD
 		]{1}{6}                  
+=======
+<<<<<<< Updated upstream
+		]{1}{4}
+=======
+		]{1}{7}
+>>>>>>> Stashed changes
+>>>>>>> 4cfcd69 (Cronograma actualizado)
 		
-		% =========================================================
 		% ENCABEZADO
-		% =========================================================
+		\gantttitle{\shortstack{\scriptsize Semana 1\\\tiny 7--11 sep}}{1}
+		\gantttitle{\shortstack{\scriptsize Semana 2\\\tiny 14--18 sep}}{1}
+		\gantttitle{\shortstack{\scriptsize Semana 3\\\tiny 21--25 sep}}{1}
+		\gantttitle{\shortstack{\scriptsize Semana 4\\\tiny 28 sep--2 oct}}{1}
+		\gantttitle{\shortstack{\scriptsize Semana 5\\\tiny 5--9 oct}}{1}
+		\gantttitle{\shortstack{\scriptsize Semana 6\\\tiny 12--16 oct}}{1}
+		\gantttitle{\shortstack{\scriptsize Semana 7\\\tiny 19--23 oct}}{1}\\
 		
+<<<<<<< Updated upstream
 		\gantttitle{\shortstack{\textbf{Semana 1}\\[-1pt]7--11 sep}}{1}
 		\gantttitle{\shortstack{\textbf{Semana 2}\\[-1pt]14--18 sep}}{1}
 		\gantttitle{\shortstack{\textbf{Semana 3}\\[-1pt]21--25 sep}}{1}
@@ -472,54 +507,69 @@ indicando el período establecido para cada una y su estado de avance.
 		\\
 		
 		% =========================================================
+=======
+>>>>>>> Stashed changes
 		% DOCUMENTACIÓN
-		% =========================================================
+		\ganttgroup{DOCUMENTACIÓN}{1}{7}\\
+
 		
+<<<<<<< HEAD
 		\ganttgroup{DOCUMENTACIÓN}{1}{6}  
+=======
+<<<<<<< Updated upstream
+		\ganttgroup{DOCUMENTACIÓN}{1}{4}
+>>>>>>> 4cfcd69 (Cronograma actualizado)
 		\\
+=======
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Revisión bibliográfica}{1}{1}\\
+>>>>>>> Stashed changes
 		
-		\ganttbar[
-		bar/.style={fill=completado, draw=none}
-		]{Revisión bibliográfica}{1}{1}
-		\\
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Objetivos y tema}{1}{1}\\
 		
-		\ganttbar[
-		bar/.style={fill=completado, draw=none}
-		]{Objetivos y tema}{1}{1}
-		\\
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Planteamiento, alcance y limitaciones}{2}{2}\\
 		
-		\ganttbar[
-		bar/.style={fill=completado, draw=none}
-		]{Planteamiento del proyecto, alcance y limitaciones}{2}{2}
-		\\
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Marco teórico}{2}{2}\\
 		
-		\ganttbar[
-		bar/.style={fill=completado, draw=none}
-		]{Marco teórico}{2}{2}
-		\\
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Factibilidad del proyecto}{3}{3}\\
 		
-		\ganttbar[
-		bar/.style={fill=completado, draw=none}
-		]{Factibilidad del proyecto}{3}{3}
-		\\
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Metodología}{4}{6}\\
 		
+<<<<<<< Updated upstream
 		\ganttbar[
 		bar/.style={fill=proceso, draw=none}
 		]{Metodología}{4}{6}  % <-- CAMBIO 3: Extendido hasta la semana 6
 		\\
+=======
+		\ganttbar[bar/.style={fill=proceso,draw=none}]
+		{Plan de ejecución}{6}{6}\\
+>>>>>>> Stashed changes
 		
-		% =========================================================
-		% DESARROLLO DEL SOFTWARE -- BACKEND
-		% =========================================================
+		\ganttbar[bar/.style={fill=proceso,draw=none}]
+		{Resultados del plan de ejecución}{7}{7}\\
 		
+<<<<<<< HEAD
 		\ganttgroup{DESARROLLO DEL SOFTWARE -- BACKEND}{1}{6}  % <-- CAMBIO 4: de {1}{5} a {1}{6}
+=======
+<<<<<<< Updated upstream
+		\ganttgroup{DESARROLLO DEL SOFTWARE -- BACKEND}{1}{4}
+>>>>>>> 4cfcd69 (Cronograma actualizado)
 		\\
+=======
+		% BACKEND
+		\ganttgroup{BACKEND}{1}{6}\\
+
+>>>>>>> Stashed changes
 		
-		\ganttbar[
-		bar/.style={fill=completado, draw=none}
-		]{Diagrama Entidad--Relación (DER)}{1}{1}
-		\\
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Diagrama entidad-relación (DER)}{1}{1}\\
 		
+<<<<<<< Updated upstream
 		\ganttbar[
 		bar/.style={fill=completado, draw=none}
 		]{Usuarios, roles y compañía -- CRUD}{2}{2}
@@ -539,6 +589,7 @@ indicando el período establecido para cada una y su estado de avance.
 		\ganttbar[
 		bar/.style={fill=completado, draw=none}
 		]{Autenticación JWT y pruebas de integración}{4}{4}
+<<<<<<< HEAD
 		\\
 		
 		\ganttbar[
@@ -549,6 +600,34 @@ indicando el período establecido para cada una y su estado de avance.
 		\ganttbar[
 		bar/.style={fill=proceso, draw=none}  
 		]{Completar CRUD y pruebas finales del Backend}{6}{6}
+=======
+=======
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Usuarios, roles y compañía -- CRUD}{2}{2}\\
+		
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Clientes, conductores y camiones -- CRUD}{3}{3}\\
+		
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Categorías de camiones y órdenes -- CRUD}{4}{4}\\
+		
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Autenticación JWT y pruebas de integración}{4}{4}\\
+		
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Migraciones, modelos y validaciones}{5}{5}\\
+		
+		\ganttbar[bar/.style={fill=completado,draw=none}]
+		{Finalización de CRUD y pruebas del backend}{6}{6}\\
+		
+		% FRONTEND
+		\ganttgroup{FRONTEND}{7}{7}\\
+		
+		
+		\ganttbar[bar/.style={fill=proceso,draw=none}]
+		{Configuración de Next.js y autenticación JWT}{7}{7}
+>>>>>>> Stashed changes
+>>>>>>> 4cfcd69 (Cronograma actualizado)
 		
 	\end{ganttchart}
 	
@@ -558,14 +637,21 @@ indicando el período establecido para cada una y su estado de avance.
 		\scriptsize
 		\textbf{Estado:}
 		\quad
-		\textcolor{completado}{\rule{0.55cm}{0.2cm}}
+		\textcolor{completado}{\rule{0.45cm}{0.16cm}}
 		\; Completado
 		\qquad
-		\textcolor{proceso}{\rule{0.55cm}{0.2cm}}
+		\textcolor{proceso}{\rule{0.45cm}{0.16cm}}
 		\; En proceso
 	\end{flushleft}
-	
 \end{center}
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+\subsection{Metodología de Desarrollo}
+=======
+
+
+>>>>>>> 4cfcd69 (Cronograma actualizado)
 \subsection{Plan de ejecución}
 
 El plan de ejecución organiza las acciones previstas para los tres objetivos específicos de TravelDLS, junto con sus instrumentos de verificación, protagonistas y resultados esperados. Para el primer objetivo se contempla una revisión documental con cadenas de búsqueda en Google Académico, tomando como referencia el mapeo sistemático de \textcite{petersen2008systematic}. La identificación de requisitos se fundamenta en la documentación y los modelos del proyecto; no corresponde a un levantamiento formal con usuarios.
@@ -646,3 +732,7 @@ Los diagramas de casos de uso, estados y secuencia corresponden a la acción «M
 	\caption{Diagrama de secuencia del proceso principal de una orden}
 	\label{fig:diagrama-secuencia}
 \end{figure}
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 4cfcd69 (Cronograma actualizado)
