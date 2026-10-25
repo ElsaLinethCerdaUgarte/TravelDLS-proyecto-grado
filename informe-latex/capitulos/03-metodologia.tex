@@ -627,12 +627,16 @@ OE3 & Pruebas y documentación & Ejecutar pruebas funcionales en escenarios acad
 
 Los diagramas de clases y entidad-relación son productos de la acción «Modelado de datos y clases» del OE2, presentada en la Tabla~\ref{tab:plan_ejecucion}. Representan las entidades principales de TravelDLS y sus relaciones. Frente al resultado esperado de contar con modelos coherentes con la estructura prevista, se observa un avance, pero el informe aún no documenta una revisión cruzada de clases, tablas y relaciones. Por ello, el cumplimiento de esta acción se considera parcial.
 
+En la Figura~\ref{fig:diagrama-clases} se presentan las clases principales de TravelDLS, sus atributos y las relaciones entre usuarios, empresas, clientes, conductores y órdenes. También se muestran los servicios encargados de la autenticación, la gestión de órdenes y los pagos simulados.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-clases.png}
 	\caption{Diagrama de clases de TravelDLS}
 	\label{fig:diagrama-clases}
 \end{figure}
+
+En la Figura~\ref{fig:diagrama-er} se presenta el diagrama entidad-relación de TravelDLS, que muestra las tablas de la base de datos y cómo se relacionan entre sí. Este diagrama permite comprender cómo se almacena la información del sistema y sirve como guía para organizar los datos durante el desarrollo.
 
 \begin{figure}[H]
 	\centering
@@ -644,6 +648,8 @@ Los diagramas de clases y entidad-relación son productos de la acción «Modela
 \clearpage
 Los diagramas de casos de uso, estados y secuencia corresponden a la acción «Modelado de procesos» del OE2. El primero presenta las funciones por actor; el segundo, los estados de una orden; y el tercero, las interacciones del flujo principal de transporte. En comparación con el resultado esperado de obtener flujos y responsabilidades consistentes entre los modelos, también se considera un cumplimiento parcial: los procesos previstos están representados, pero no se incorpora un registro de revisión comparativa que confirme la coherencia de todas sus reglas.
 
+En la Figura~\ref{fig:diagrama-casos-uso} se describen las funciones previstas para el cliente, la empresa transportista y el conductor, como solicitar transporte, gestionar recursos y reportar la ubicación del viaje. El actor «Usuario» agrupa las funciones compartidas de acceso y administración de la cuenta.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-casos-uso.png}
@@ -651,12 +657,16 @@ Los diagramas de casos de uso, estados y secuencia corresponden a la acción «M
 	\label{fig:diagrama-casos-uso}
 \end{figure}
 
+En la Figura~\ref{fig:diagrama-estados} se representa el recorrido de una orden desde su creación y cotización hasta la entrega o anulación. El diagrama incluye el procesamiento del pago, la asignación del conductor y las transiciones previstas ante fallos de pago o interrupciones del viaje.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,height=0.82\textheight,keepaspectratio]{diagrama-estado-actualizado.png}
 	\caption{Diagrama de estados de una orden de transporte}
 	\label{fig:diagrama-estados}
 \end{figure}
+
+En la Figura~\ref{fig:diagrama-secuencia} se muestra el intercambio de solicitudes y respuestas entre el cliente, la empresa, el conductor, el frontend, el backend y la base de datos. Las interacciones se organizan en creación del pedido, aprobación del precio, pago simulado, asignación del conductor y seguimiento hasta la entrega.
 
 \begin{figure}[H]
 	\centering
