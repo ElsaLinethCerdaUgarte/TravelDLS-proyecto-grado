@@ -183,12 +183,31 @@
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: #624579 #17131f;
+  animation: dataIn 260ms ease-out both;
 }
 .table {
   border-collapse: collapse;
   width: 100%;
   font-size: 12px;
   text-align: left;
+}
+.table tbody tr {
+  animation: rowIn 260ms ease-out both;
+}
+.table tbody tr:nth-child(2) {
+  animation-delay: 25ms;
+}
+.table tbody tr:nth-child(3) {
+  animation-delay: 50ms;
+}
+.table tbody tr:nth-child(4) {
+  animation-delay: 75ms;
+}
+.table tbody tr:nth-child(5) {
+  animation-delay: 100ms;
+}
+.table tbody tr:nth-child(n + 6) {
+  animation-delay: 125ms;
 }
 .table th {
   position: sticky;
@@ -898,6 +917,27 @@
   min-height: 0;
   overflow: auto;
   padding: 24px;
+  animation: dataIn 220ms ease-out both;
+}
+@keyframes dataIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .pagination {
   flex-wrap: wrap;
@@ -1010,6 +1050,11 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .tableScroll,
+  .table tbody tr,
+  .listCard > .empty {
+    animation: none;
+  }
   .welcomeArt > svg,
   .refreshing svg {
     animation: none;

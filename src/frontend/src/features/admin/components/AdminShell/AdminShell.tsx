@@ -13,6 +13,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/Icon/Icon";
 import { SessionTransition } from "@/components/ui/SessionTransition/SessionTransition";
+import { waitForSessionTransition } from "@/components/ui/SessionTransition/sessionTransitionTiming";
 import {
   getCurrentUser,
   logout,
@@ -130,12 +131,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
   async function signOut() {
     setLeaving(true);
     setMenu(false);
+    const transitionStartedAt = Date.now();
     try {
       await logout();
+      await waitForSessionTransition(transitionStartedAt);
       setUser(null);
       router.replace("/");
       return;
     } catch (cause) {
+      await waitForSessionTransition(transitionStartedAt);
       if (cause instanceof AuthRequestError && cause.status === 401) {
         setUser(null);
         router.replace("/");
@@ -267,7 +271,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <div className={styles.breadcrumb}>
               <span>Administración</span>
               <Icon name="chevron" size={12} />
-              <strong>{current?.label || "Panel"}</strong>
+              <strong key={pathname} className={styles.breadcrumbCurrent}>
+                {current?.label || "Panel"}
+              </strong>
             </div>
             <div className={styles.profile}>
               <span className={styles.avatar}>

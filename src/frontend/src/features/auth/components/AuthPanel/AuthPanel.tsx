@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { SessionTransition } from "@/components/ui/SessionTransition/SessionTransition";
+import { waitForSessionTransition } from "@/components/ui/SessionTransition/sessionTransitionTiming";
 import {
   AuthRequestError,
   login,
@@ -63,6 +64,7 @@ export function AuthPanel() {
 
     setIsSubmitting(true);
     setNotice(null);
+    const transitionStartedAt = isRegistering ? null : Date.now();
 
     try {
       const user = isRegistering
@@ -73,8 +75,14 @@ export function AuthPanel() {
           })
         : await login({ email, password });
 
+      if (transitionStartedAt !== null) {
+        await waitForSessionTransition(transitionStartedAt);
+      }
       finishAuthentication(user);
     } catch (error) {
+      if (transitionStartedAt !== null) {
+        await waitForSessionTransition(transitionStartedAt);
+      }
       setNotice({
         tone: "error",
         message:
