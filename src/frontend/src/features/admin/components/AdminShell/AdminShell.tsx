@@ -274,7 +274,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </header>
-          <main id="admin-content" className={styles.content} tabIndex={-1}>
+          <main
+            id="admin-content"
+            key={pathname}
+            className={`${styles.content} ${current?.path !== "dashboard" ? styles.listContent : ""}`}
+            tabIndex={-1}
+          >
             {error && (
               <p role="alert" className={styles.error}>
                 {error}

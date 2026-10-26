@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon/Icon";
+import { Select } from "@/components/ui/Select/Select";
 import { modules, labels } from "../../config/modules";
 import { listResource, deleteResource } from "../../services/adminApi";
 import {
@@ -32,6 +33,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
   const config = modules[resource];
   const [data, setData] = useState<PageResult | null>(null);
   const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const [draftSearch, setDraftSearch] = useState("");
   const [version, setVersion] = useState(0);
@@ -55,6 +57,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
           page,
           search,
           controller.signal,
+          perPage,
         );
         if (!controller.signal.aborted) {
           if (page > result.meta.lastPage && result.meta.lastPage > 0)
@@ -74,7 +77,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
     }
     void load();
     return () => controller.abort();
-  }, [resource, page, search, version]);
+  }, [resource, page, search, version, perPage]);
 
   function find(event: FormEvent) {
     event.preventDefault();
@@ -100,7 +103,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
   }
 
   return (
-    <>
+    <div className={styles.resourcePage}>
       <div className={styles.pageHeading}>
         <div>
           <p className={styles.eyebrow}>TU PLATAFORMA, EN ORDEN</p>
@@ -128,7 +131,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
         </div>
       )}
       <section
-        className={styles.card}
+        className={`${styles.card} ${styles.listCard}`}
         aria-label={`Listado de ${config.title.toLowerCase()}`}
       >
         <div className={styles.toolbar}>
@@ -156,7 +159,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
               </button>
             )}
             <button
-              className={styles.iconButton}
+              className={`${styles.iconButton} ${loading ? styles.refreshing : ""}`}
               onClick={() => setVersion(version + 1)}
               disabled={loading}
               aria-label="Actualizar listado"
@@ -305,34 +308,53 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
                 </tbody>
               </table>
             </div>
-            <div className={styles.pagination}>
-              <span>
-                {(page - 1) * data.meta.perPage + 1}–
-                {Math.min(page * data.meta.perPage, data.meta.total)} de{" "}
-                {data.meta.total} registros
-              </span>
-              <div>
-                <button
-                  className={styles.secondary}
-                  onClick={() => setPage(page - 1)}
-                  disabled={page <= 1}
-                >
-                  Anterior
-                </button>
-                <span>
-                  {page} / {Math.max(1, data.meta.lastPage)}
-                </span>
-                <button
-                  className={styles.secondary}
-                  onClick={() => setPage(page + 1)}
-                  disabled={page >= data.meta.lastPage}
-                >
-                  Siguiente
-                </button>
-              </div>
-            </div>
           </>
         )}
+        <div className={styles.pagination}>
+          <div className={styles.pageSize}>
+            <span id="page-size-label">Por página</span>
+            <Select
+              label="Elementos por página"
+              value={String(perPage)}
+              options={[10, 25, 50, 100].map((size) => ({
+                value: String(size),
+                label: String(size),
+              }))}
+              onChange={(value) => {
+                setPerPage(Number(value));
+                setPage(1);
+              }}
+            />
+          </div>
+          <span>
+            {loading
+              ? "Cargando…"
+              : error
+                ? "—"
+                : `${data?.data.length ? (page - 1) * perPage + 1 : 0}–${Math.min(page * perPage, data?.meta.total ?? 0)} de ${data?.meta.total ?? 0} registros`}
+          </span>
+          <div>
+            <button
+              className={styles.secondary}
+              onClick={() => setPage(page - 1)}
+              disabled={loading || Boolean(error) || page <= 1}
+            >
+              Anterior
+            </button>
+            <span>
+              {page} / {Math.max(1, data?.meta.lastPage ?? 1)}
+            </span>
+            <button
+              className={styles.secondary}
+              onClick={() => setPage(page + 1)}
+              disabled={
+                loading || Boolean(error) || page >= (data?.meta.lastPage ?? 1)
+              }
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
       </section>
       {resource === "users" && (
         <p className={styles.footnote}>
@@ -440,6 +462,6 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
           </div>
         </AdminModal>
       )}
-    </>
+    </div>
   );
 }

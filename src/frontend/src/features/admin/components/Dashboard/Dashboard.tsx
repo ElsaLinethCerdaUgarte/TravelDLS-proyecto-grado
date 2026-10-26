@@ -89,7 +89,7 @@ export function Dashboard() {
           </p>
         </div>
         <button
-          className={styles.secondary}
+          className={`${styles.secondary} ${loading ? styles.refreshing : ""}`}
           disabled={loading}
           onClick={() => setVersion(version + 1)}
         >

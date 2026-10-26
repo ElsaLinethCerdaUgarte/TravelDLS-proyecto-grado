@@ -141,10 +141,16 @@
   font-size: 12px;
 }
 .workspaceMain {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   margin-left: 244px;
   min-width: 0;
 }
 .topbar {
+  flex-shrink: 0;
+  background: var(--admin-bg);
   height: 83px;
   display: flex;
   align-items: center;
@@ -189,11 +195,16 @@
 .content {
   padding: 34px 36px 40px;
   max-width: 1640px;
-  min-height: calc(100svh - 142px);
-  margin: auto;
+  min-height: 0;
+  width: 100%;
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin: 0 auto;
   outline: none;
 }
 .footer {
+  flex-shrink: 0;
   border-top: 1px solid var(--admin-border);
   display: flex;
   justify-content: space-between;
@@ -204,6 +215,35 @@
 }
 .menuButton {
   display: none;
+}
+.listContent {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.workspaceMain:has(.listContent) .footer {
+  display: none;
+}
+.navLink svg {
+  transition: transform 0.2s;
+}
+.navLink:hover svg,
+.navLink:focus-visible svg {
+  transform: translateY(-2px) rotate(-7deg);
+}
+@media (max-width: 600px) {
+  .listContent.content {
+    padding: 16px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .navLink svg {
+    transition: none;
+  }
+  .navLink:hover svg,
+  .navLink:focus-visible svg {
+    transform: none;
+  }
 }
 .backdrop {
   display: none;
@@ -338,5 +378,10 @@
 @media (prefers-reduced-motion: reduce) {
   .sidebar {
     transition: none;
+  }
+}
+@media (max-height: 480px) {
+  .listContent {
+    overflow: auto;
   }
 }

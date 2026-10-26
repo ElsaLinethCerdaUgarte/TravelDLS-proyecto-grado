@@ -177,7 +177,12 @@
   color: #e1c9ff;
 }
 .tableScroll {
-  overflow-x: auto;
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #624579 #17131f;
 }
 .table {
   border-collapse: collapse;
@@ -186,6 +191,9 @@
   text-align: left;
 }
 .table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background: #191723;
   color: #9690a7;
   font-size: 10px;
@@ -556,8 +564,10 @@
   flex-direction: column;
   text-decoration: none;
   transition:
-    border-color 0.2s,
-    background 0.2s;
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s,
+    background 0.22s;
 }
 .stat:hover {
   background: #1b1628;
@@ -862,7 +872,164 @@
     flex-shrink: 0;
   }
 }
+.resourcePage {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+.resourcePage > .pageHeading,
+.resourcePage > .success,
+.resourcePage > .footnote {
+  flex-shrink: 0;
+}
+.listCard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.listCard > .toolbar,
+.listCard > .pagination {
+  flex-shrink: 0;
+}
+.listCard > .empty {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px;
+}
+.pagination {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pagination .pageSize {
+  gap: 8px;
+}
+.pageSize > span {
+  white-space: nowrap;
+}
+.pageSize > div {
+  width: 76px;
+}
+.pageSize button {
+  min-height: 34px;
+  padding: 7px 10px;
+}
+.statIcon svg,
+.iconButton svg,
+.primary svg,
+.quickLinks svg {
+  transition: transform 0.22s ease;
+}
+.quickLinks > a {
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s;
+}
+.primary:hover svg {
+  transform: translateX(3px);
+}
+.iconButton:hover svg {
+  transform: scale(1.13) rotate(-6deg);
+}
+.refreshing svg {
+  animation: spin 1s linear infinite;
+}
+.welcomeArt > svg {
+  animation: float 5s ease-in-out infinite;
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .stat:hover,
+  .stat:focus-visible {
+    transform: translateY(-4px) scale(1.025);
+    box-shadow: 0 14px 30px #0004;
+  }
+  .stat:hover .statIcon svg {
+    transform: scale(1.12) rotate(-6deg);
+  }
+  .quickLinks > a:hover {
+    transform: translateY(-3px) scale(1.012);
+    box-shadow: 0 10px 25px #0003;
+  }
+  .quickLinks > a:hover > svg:last-child {
+    transform: translateX(4px);
+  }
+}
+@media (max-width: 600px) {
+  .resourcePage .pageHeading {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .resourcePage .pageHeading p:not(.eyebrow) {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .resourcePage .pageHeading h1 {
+    font-size: 23px;
+    margin-bottom: 4px;
+  }
+  .resourcePage .eyebrow {
+    margin-bottom: 6px;
+  }
+  .listCard .pagination {
+    flex-direction: row;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .pagination > span {
+    margin-left: auto;
+    font-size: 10px;
+  }
+  .pagination > div:last-child {
+    flex: 1 0 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .listCard .toolbar {
+    padding: 10px;
+  }
+  .resourcePage > .footnote {
+    margin: 8px 0 0;
+    font-size: 10px;
+  }
+}
+@media (max-height: 480px) {
+  .resourcePage {
+    min-height: 500px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
+  .welcomeArt > svg,
+  .refreshing svg {
+    animation: none;
+  }
+  .statIcon svg,
+  .iconButton svg,
+  .primary svg,
+  .quickLinks svg,
+  .quickLinks > a {
+    transition: none;
+  }
+  .stat:hover,
+  .stat:focus-visible,
+  .quickLinks > a:hover,
+  .stat:hover .statIcon svg,
+  .primary:hover svg,
+  .iconButton:hover svg,
+  .quickLinks > a:hover > svg:last-child {
+    transform: none;
+  }
   .loadingDot {
     animation: none;
   }

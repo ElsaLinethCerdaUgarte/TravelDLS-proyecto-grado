@@ -121,6 +121,12 @@ El resumen usa datos del API; no hay registros de demostración en la aplicació
 El menú se convierte en un panel desplegable en móvil. Las tablas amplias tienen
 desplazamiento dentro de su contenedor y los formularios pasan a una columna.
 Los modales gestionan foco, Escape, confirmación de eliminación y estado de envío.
+La cabecera permanece visible al desplazar el dashboard. En los listados, las
+filas tienen scroll interno y la búsqueda y paginación quedan visibles. El selector
+permite 10, 25, 50 o 100 registros y vuelve a la primera página al cambiarlo.
+Los desplegables comparten `components/ui/Select`, con opciones moradas, manejo de
+teclado y validación de campos obligatorios. Las animaciones de iconos y tarjetas
+respetan la preferencia de movimiento reducido del sistema.
 
 ## Convenciones de código
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { Select } from "@/components/ui/Select/Select";
 import { modules, labels } from "../../config/modules";
 import { adminRequest, allRows, saveResource } from "../../services/adminApi";
 import {
@@ -202,47 +203,46 @@ export function ResourceForm({
                 ...options,
               ];
             return (
-              <label
+              <div
                 className={`${styles.field} ${field.type === "file" ? styles.fullWidth : ""}`}
                 key={field.name}
               >
-                <span>
+                <label htmlFor={`admin-field-${field.name}`}>
                   {field.label}
                   {field.required && (
                     <span className={styles.required}> *</span>
                   )}
-                </span>
+                </label>
                 {field.type === "select" ? (
-                  <select
+                  <Select
+                    id={`admin-field-${field.name}`}
+                    label={field.label}
                     name={field.name}
                     value={values[field.name]}
                     required={field.required}
                     disabled={busy || loading || Boolean(loadError)}
-                    onChange={(event) =>
+                    onChange={(value) =>
                       setValues({
                         ...values,
-                        [field.name]: event.target.value,
+                        [field.name]: value,
                       })
                     }
-                  >
-                    <option
-                      value=""
-                      disabled={Boolean(
-                        record &&
-                        field.source === "accounts" &&
-                        textAt(record, "userId"),
-                      )}
-                    >
-                      {field.required ? "Seleccionar…" : "Sin asignar"}
-                    </option>
-                    {options.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
+                    options={[
+                      {
+                        value: "",
+                        label: field.required ? "Seleccionar…" : "Sin asignar",
+                        disabled: Boolean(
+                          record &&
+                          field.source === "accounts" &&
+                          textAt(record, "userId"),
+                        ),
+                      },
+                      ...options,
+                    ]}
+                  />
                 ) : field.type === "file" ? (
                   <input
+                    id={`admin-field-${field.name}`}
                     type="file"
                     name="photo"
                     accept="image/jpeg,image/png,image/webp"
@@ -269,6 +269,7 @@ export function ResourceForm({
                   />
                 ) : (
                   <input
+                    id={`admin-field-${field.name}`}
                     name={field.name}
                     type={field.type || "text"}
                     value={values[field.name]}
@@ -301,7 +302,7 @@ export function ResourceForm({
                       vinculación en Conductores.
                     </small>
                   )}
-              </label>
+              </div>
             );
           })}
         </div>
