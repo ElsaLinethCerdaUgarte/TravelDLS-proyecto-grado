@@ -3,30 +3,87 @@
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon/Icon";
+import {
+  AuthRequestError,
+  login,
+  signup,
+} from "@/features/auth/services/authService";
+import type { SessionUser } from "@/features/auth/types/auth";
+import {
+  getRoleDestination,
+  getRoleLabel,
+} from "@/features/auth/utils/roleNavigation";
 import styles from "./AuthPanel.module.css";
 
 type AuthMode = "login" | "register";
+type FormNotice = {
+  tone: "error" | "success";
+  message: string;
+};
 
 export function AuthPanel() {
   const [mode, setMode] = useState<AuthMode>("login");
   const [showPassword, setShowPassword] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notice, setNotice] = useState<FormNotice | null>(null);
   const isRegistering = mode === "register";
 
   function changeMode(nextMode: AuthMode) {
+    if (isSubmitting) return;
     setMode(nextMode);
     setShowPassword(false);
-    setNotice("");
+    setNotice(null);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function finishAuthentication(user: SessionUser) {
+    const roleLabel = getRoleLabel(user.role);
+    const destination = getRoleDestination(user.role);
+
+    setNotice({
+      tone: "success",
+      message: isRegistering
+        ? `Cuenta de cliente creada correctamente. Bienvenido, ${user.name}.`
+        : `Sesión iniciada correctamente como ${roleLabel}.`,
+    });
+
+    if (destination) {
+      window.location.assign(destination);
+    }
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setNotice(
-      isRegistering
-        ? "Estás viendo una vista previa. El registro de cuentas estará disponible próximamente. No se guardaron tus datos."
-        : "Estás viendo una vista previa. El inicio de sesión estará disponible próximamente. No se enviaron tus datos.",
-    );
+    if (isSubmitting) return;
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+
+    setIsSubmitting(true);
+    setNotice(null);
+
+    try {
+      const user = isRegistering
+        ? await signup({
+            name: String(formData.get("fullName") ?? "").trim(),
+            email,
+            password,
+          })
+        : await login({ email, password });
+
+      finishAuthentication(user);
+    } catch (error) {
+      setNotice({
+        tone: "error",
+        message:
+          error instanceof AuthRequestError
+            ? error.message
+            : "No fue posible completar la solicitud. Inténtalo nuevamente.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -44,7 +101,7 @@ export function AuthPanel() {
       <h2>{isRegistering ? "Comienza tu camino" : "Bienvenido de nuevo"}</h2>
       <p className={styles.subtitle}>
         {isRegistering
-          ? "Crea tu cuenta y conecta con nuevas posibilidades."
+          ? "Crea tu cuenta de cliente y conecta con nuevas posibilidades."
           : "Qué bueno tenerte aquí. Continuemos el viaje."}
       </p>
 
@@ -57,6 +114,7 @@ export function AuthPanel() {
           type="button"
           aria-pressed={!isRegistering}
           onClick={() => changeMode("login")}
+          disabled={isSubmitting}
         >
           Iniciar sesión
         </button>
@@ -64,12 +122,18 @@ export function AuthPanel() {
           type="button"
           aria-pressed={isRegistering}
           onClick={() => changeMode("register")}
+          disabled={isSubmitting}
         >
           Crear cuenta
         </button>
       </div>
 
-      <form key={mode} onSubmit={handleSubmit} className={styles.form}>
+      <form
+        key={mode}
+        onSubmit={handleSubmit}
+        className={styles.form}
+        aria-busy={isSubmitting}
+      >
         {isRegistering && (
           <div className={styles.field}>
             <label htmlFor="full-name">Nombre completo</label>
@@ -81,7 +145,9 @@ export function AuthPanel() {
                 autoComplete="name"
                 placeholder="¿Cómo te llamas?"
                 required
+                minLength={2}
                 maxLength={100}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -98,6 +164,7 @@ export function AuthPanel() {
               placeholder="tu@correo.com"
               required
               maxLength={254}
+              disabled={isSubmitting}
             />
           </div>
         </div>
@@ -116,11 +183,13 @@ export function AuthPanel() {
               required
               minLength={isRegistering ? 8 : undefined}
               aria-describedby={isRegistering ? "password-hint" : undefined}
+              disabled={isSubmitting}
             />
             <button
               className={styles.passwordToggle}
               type="button"
               onClick={() => setShowPassword(!showPassword)}
+              disabled={isSubmitting}
               aria-label={
                 showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
               }
@@ -136,12 +205,22 @@ export function AuthPanel() {
           )}
         </div>
 
-        <button className={styles.submit} type="submit">
-          {isRegistering ? "Crear mi cuenta" : "Iniciar sesión"}
+        <button className={styles.submit} type="submit" disabled={isSubmitting}>
+          {isSubmitting
+            ? isRegistering
+              ? "Creando cuenta..."
+              : "Iniciando sesión..."
+            : isRegistering
+              ? "Crear mi cuenta"
+              : "Iniciar sesión"}
           <Icon name="arrow" size={18} />
         </button>
-        <p className={styles.notice} role="status">
-          {notice}
+        <p
+          className={styles.notice}
+          data-tone={notice?.tone}
+          role={notice?.tone === "error" ? "alert" : "status"}
+        >
+          {notice?.message}
         </p>
       </form>
 
@@ -156,6 +235,7 @@ export function AuthPanel() {
         className={styles.secondary}
         type="button"
         onClick={() => changeMode(isRegistering ? "login" : "register")}
+        disabled={isSubmitting}
       >
         {isRegistering ? "Volver a iniciar sesión" : "Únete a TravelDLS"}
         <Icon name="arrow" size={16} />

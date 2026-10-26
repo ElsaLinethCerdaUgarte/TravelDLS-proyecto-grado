@@ -1,12 +1,12 @@
 # Frontend de TravelDLS
 
 Frontend con Next.js, App Router, TypeScript estricto y CSS Modules. Incluye una
-pantalla de bienvenida responsive con formularios visuales de inicio de sesión
-y registro. No consulta la API ni necesita variables de entorno o el backend encendido.
+pantalla de bienvenida responsive con inicio de sesión y registro conectados al
+API AdonisJS mediante una cookie httpOnly.
 
-Se puede cambiar de formulario, mostrar u ocultar la contraseña y comprobar los
-campos obligatorios. El envío solo presenta un aviso de vista previa: no crea
-cuentas, inicia sesiones, persiste datos ni realiza peticiones de autenticación.
+El registro público crea únicamente cuentas de cliente. El inicio de sesión
+reconoce los roles `platform_admin`, `client`, `driver` y `company`, confirma la
+sesión mediante `GET /api/auth/me` y puede redirigir al panel correspondiente.
 
 ## Ejecutar
 
@@ -20,6 +20,18 @@ pnpm dev
 ```
 
 Abre http://localhost:3000. Detén el servidor con `Ctrl+C`.
+
+El backend debe estar disponible en http://localhost:3333. Copia `.env.example`
+como `.env.local` para cambiar el API o configurar el frontend que contiene los
+paneles de cada rol:
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:3333
+NEXT_PUBLIC_DASHBOARD_URL=http://localhost:4200
+```
+
+Si `NEXT_PUBLIC_DASHBOARD_URL` no está definida, el acceso se completa y se
+muestra el rol autenticado sin navegar a una ruta que todavía no existe en Next.
 
 ```bash
 pnpm lint       # ESLint: reglas de Next.js y TypeScript
@@ -42,9 +54,11 @@ src/frontend/
 │   │   ├── page.tsx    # Compone la pantalla principal
 │   │   └── globals.css
 │   ├── components/ui/Icon/Icon.tsx
-│   └── features/auth/components/
-│       ├── WelcomeScreen/ # Presentación de la marca y diseño responsive
-│       └── AuthPanel/     # Formularios visuales e interacción local
+│   └── features/auth/
+│       ├── components/    # Pantalla, formularios y soporte
+│       ├── services/      # Cliente del API de autenticación
+│       ├── types/         # Sesión y cuatro roles permitidos
+│       └── utils/         # Destinos y nombres visibles por rol
 ├── eslint.config.mjs
 ├── next.config.mjs      # Raíz explícita del frontend para Turbopack
 ├── tsconfig.json
