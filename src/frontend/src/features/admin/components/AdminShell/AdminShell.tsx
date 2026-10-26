@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/Icon/Icon";
+import { SessionTransition } from "@/components/ui/SessionTransition/SessionTransition";
 import {
   getCurrentUser,
   logout,
@@ -128,16 +129,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   async function signOut() {
     setLeaving(true);
+    setMenu(false);
     try {
       await logout();
       setUser(null);
       router.replace("/");
+      return;
     } catch (cause) {
       if (cause instanceof AuthRequestError && cause.status === 401) {
         setUser(null);
         router.replace("/");
-      } else setError("No se pudo cerrar la sesión. Inténtalo de nuevo.");
-    } finally {
+        return;
+      }
+      setError("No se pudo cerrar la sesión. Inténtalo de nuevo.");
       setLeaving(false);
     }
   }
@@ -169,6 +173,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <SessionContext.Provider value={user}>
+      <SessionTransition active={leaving} mode="logout" />
       <div className={styles.shell}>
         <a className={styles.skip} href="#admin-content">
           Ir al contenido

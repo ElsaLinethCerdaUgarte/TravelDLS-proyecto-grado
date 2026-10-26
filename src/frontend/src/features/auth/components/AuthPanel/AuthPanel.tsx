@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon/Icon";
+import { SessionTransition } from "@/components/ui/SessionTransition/SessionTransition";
 import {
   AuthRequestError,
   login,
@@ -87,7 +88,12 @@ export function AuthPanel() {
   }
 
   return (
-    <div className={styles.panel}>
+    <>
+      <SessionTransition
+        active={isSubmitting && !isRegistering}
+        mode="login"
+      />
+      <div className={styles.panel}>
       <div className={styles.welcomeIcon}>
         <Image
           className={styles.welcomeLogo}
@@ -330,6 +336,7 @@ export function AuthPanel() {
           <Icon name={showSupport ? "close" : "help"} size={22} />
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
