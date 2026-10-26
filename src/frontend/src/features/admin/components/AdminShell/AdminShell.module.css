@@ -259,13 +259,6 @@
 .workspaceMain:has(.listContent) .footer {
   display: none;
 }
-.navLink svg {
-  transition: transform 0.2s;
-}
-.navLink:hover svg,
-.navLink:focus-visible svg {
-  transform: translateY(-2px) rotate(-7deg);
-}
 @media (max-width: 600px) {
   .listContent.content {
     padding: 16px 12px;
@@ -276,13 +269,6 @@
   .breadcrumbCurrent,
   .activeMark {
     animation: none;
-  }
-  .navLink svg {
-    transition: none;
-  }
-  .navLink:hover svg,
-  .navLink:focus-visible svg {
-    transform: none;
   }
 }
 .backdrop {

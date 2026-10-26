@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon, type IconName } from "@/components/ui/Icon/Icon";
+import { AnimatedIcon } from "@/components/ui/AnimatedIcon/AnimatedIcon";
 import { SessionTransition } from "@/components/ui/SessionTransition/SessionTransition";
 import { waitForSessionTransition } from "@/components/ui/SessionTransition/sessionTransitionTiming";
 import {
@@ -231,7 +232,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 className={styles.navLink}
                 onClick={() => setMenu(false)}
               >
-                <Icon name={item.icon} size={19} />
+                <AnimatedIcon name={item.icon} size={19} motion="nav" />
                 <span>{item.label}</span>
                 {pathname === `/admin/${item.path}` && (
                   <span className={styles.activeMark} />
