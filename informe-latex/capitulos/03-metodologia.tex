@@ -588,44 +588,117 @@ indicando el período establecido para cada una y su estado de avance.
 
 El plan de ejecución organiza las acciones previstas para los tres objetivos específicos de TravelDLS, junto con sus instrumentos de verificación, protagonistas y resultados esperados. Para el primer objetivo se contempla una revisión documental con cadenas de búsqueda en Google Académico, tomando como referencia el mapeo sistemático de \textcite{petersen2008systematic}. La identificación de requisitos se fundamenta en la documentación y los modelos del proyecto; no corresponde a un levantamiento formal con usuarios.
 
-\begingroup
-\scriptsize
-\setlength{\tabcolsep}{2pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{longtable}{@{}>{\RaggedRight\arraybackslash}p{1.5cm}>{\RaggedRight\arraybackslash}p{2.3cm}>{\RaggedRight\arraybackslash}p{3.75cm}>{\RaggedRight\arraybackslash}p{2.9cm}>{\RaggedRight\arraybackslash}p{2.1cm}>{\RaggedRight\arraybackslash}p{2.85cm}@{}}
-\caption{Plan de ejecución de TravelDLS}\label{tab:plan_ejecucion}\\
-\toprule
-\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
-\midrule
-\endfirsthead
-\caption[]{Plan de ejecución de TravelDLS (continuación)}\\
-\toprule
-\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
-\midrule
-\endhead
-\endfoot
-\bottomrule
-\endlastfoot
-OE1 & Revisión documental y diagnóstico & Seleccionar antecedentes, examinar los procesos de transporte de carga pesada y delimitar necesidades de gestión, seguimiento y planificación de rutas. & Cadenas de búsqueda aplicadas en Google Académico, tomando como referencia el procedimiento de mapeo sistemático (Systematic Mapping) de Petersen et al. (2008). & Equipo investigador. & Problemática fundamentada y necesidades iniciales identificadas. \\ \midrule
-OE1 & Identificación de requisitos del sistema & Analizar los objetivos, el alcance y los modelos de TravelDLS para identificar las funcionalidades y necesidades técnicas de la plataforma. No se realizó levantamiento directo con usuarios. & Documento del proyecto, diagramas UML y entidad-relación. & Equipo investigador. & Se identificaron preliminarmente las funcionalidades y componentes de TravelDLS mediante análisis documental, sin validación directa con usuarios. \\ \midrule
-OE1 & Comparación de algoritmos & Definir escenarios con múltiples destinos, obtener una matriz de distancias y comparar Vecino Más Cercano, su mejora con 2-opt y Google OR-Tools. & Matriz de distancias, pruebas de recorridos y cuadro comparativo. & Equipo de desarrollo. & Comparación documentada para sustentar decisiones del módulo de optimización. \\ \midrule
-OE2 & Definición de arquitectura & Establecer la organización del frontend con Next.js, el backend con AdonisJS bajo MVC y capa de servicios, la base de datos PostgreSQL y los mecanismos de acceso por empresa. & Documento de arquitectura y esquema de componentes. & Equipo de desarrollo. & Arquitectura y responsabilidades técnicas de los componentes definidas. \\ \midrule
-OE2 & Modelado de datos y clases & Elaborar y revisar los diagramas de clases y entidad-relación, considerando usuarios, roles, empresas, vehículos, conductores, clientes, órdenes y pagos. & Diagramas UML y entidad-relación revisados. & Equipo de desarrollo. & Modelos coherentes con las entidades y relaciones previstas en TravelDLS. \\ \midrule
-OE2 & Modelado de procesos & Revisar los diagramas de casos de uso, estados y secuencia, unificando las reglas sobre cotización, pago, asignación del conductor y seguimiento de las órdenes. & Diagramas de casos de uso, estados y secuencia; registro de revisión. & Equipo de desarrollo y asesoría académica. & Flujos de negocio y responsabilidades consistentes entre los modelos. \\ \midrule
-OE3 & Construcción del backend & Desarrollar la autenticación mediante JWT y las operaciones de administración de usuarios, roles, empresas, clientes, conductores, vehículos y órdenes. & Repositorio de código, endpoints y pruebas de API. & Equipo de desarrollo. & Servicios principales del backend funcionales. \\ \midrule
-OE3 & Desarrollo del frontend & Construir las interfaces para los tres perfiles de TravelDLS e incorporar los procesos de consulta de empresas, solicitud de transporte, cotización y aceptación de servicios. & Pantallas implementadas y pruebas de navegación. & Equipo de desarrollo y usuarios de prueba. & Flujos de interacción disponibles en la plataforma web. \\ \midrule
-OE3 & Integración de seguimiento & Incorporar Mapbox, registrar las ubicaciones reportadas por el conductor y permitir consultas autorizadas del estado y el historial de cada orden. Gestionar con Cloudinary las fotografías de perfiles y empresas. & Pruebas de integración, registros de seguimiento y consultas del mapa. & Equipo de desarrollo y conductores de prueba. & Información de ubicación y progreso de las cargas disponible según los permisos. \\ \midrule
-OE3 & Implementación de pagos & Mostrar el precio final del servicio, incluido el recargo del 8\,\% para mantenimiento, antes de su aceptación. Desarrollar el registro o simulación del pago según el alcance del prototipo. & Casos de prueba de cotización, aceptación y pago. & Equipo de desarrollo y clientes de prueba. & Proceso de contratación y pago coherente con las reglas de negocio aprobadas. \\ \midrule
-OE3 & Módulo de optimización & Integrar Google OR-Tools con los destinos y costos de desplazamiento definidos para el prototipo, permitiendo calcular recorridos que apoyen la planificación. & Código del módulo, pruebas de rutas y resultados de ejecución. & Equipo de desarrollo. & Módulo de optimización integrado y recorridos calculados para escenarios establecidos. \\ \midrule
-OE3 & Pruebas y documentación & Ejecutar pruebas funcionales en escenarios académicos, registrar incidencias identificadas y elaborar documentación técnica y manuales de usuario. & Matriz de pruebas, registro de incidencias y manuales. & Equipo de desarrollo y participantes de las pruebas. & Prototipo verificado en los escenarios definidos y documentación inicial del sistema. \\
-\end{longtable}
-\endgroup
+	\begingroup
+	\scriptsize
+	\setlength{\tabcolsep}{2pt}
+	\renewcommand{\arraystretch}{1.15}
+	\begin{longtable}{@{}>{\RaggedRight\arraybackslash}p{1.5cm}>{\RaggedRight\arraybackslash}p{2.3cm}>{\RaggedRight\arraybackslash}p{3.75cm}>{\RaggedRight\arraybackslash}p{2.9cm}>{\RaggedRight\arraybackslash}p{2.1cm}>{\RaggedRight\arraybackslash}p{2.85cm}@{}}
+	\caption{Plan de ejecución de TravelDLS}\label{tab:plan_ejecucion}\\
+	\toprule
+	\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
+	\midrule
+	\endfirsthead
+	\caption[]{Plan de ejecución de TravelDLS (continuación)}\\
+	\toprule
+	\textbf{Objetivos} & \textbf{Acciones} & \textbf{Descripción de las acciones} & \textbf{Instrumento de verificación} & \textbf{Protagonistas} & \textbf{Resultados esperados} \\
+	\midrule
+	\endhead
+	\endfoot
+	\bottomrule
+	\endlastfoot
+	\hypertarget{plan-oe1}{OE1} & Revisión documental y diagnóstico & Seleccionar antecedentes, examinar los procesos de transporte de carga pesada y delimitar necesidades de gestión, seguimiento y planificación de rutas. & Cadenas de búsqueda aplicadas en Google Académico, tomando como referencia el procedimiento de mapeo sistemático (Systematic Mapping) de Petersen et al. (2008). & Equipo investigador. & Problemática fundamentada y necesidades iniciales identificadas. \\ \midrule
+	OE1 & Identificación de requisitos del sistema & Analizar los objetivos, el alcance y los modelos de TravelDLS para identificar las funcionalidades y necesidades técnicas de la plataforma. No se realizó levantamiento directo con usuarios. & Documento del proyecto, diagramas UML y entidad-relación. & Equipo investigador. & Se identificaron preliminarmente las funcionalidades y componentes de TravelDLS mediante análisis documental, sin validación directa con usuarios. \\ \midrule
+	OE1 & Comparación de algoritmos & Definir escenarios con múltiples destinos, obtener una matriz de distancias y comparar Vecino Más Cercano, su mejora con 2-opt y Google OR-Tools. & Matriz de distancias, pruebas de recorridos y cuadro comparativo. & Equipo de desarrollo. & Comparación documentada para sustentar decisiones del módulo de optimización. \\ \midrule
+	OE2 & Definición de arquitectura & Establecer la organización del frontend con Next.js, el backend con AdonisJS bajo MVC y capa de servicios, la base de datos PostgreSQL y los mecanismos de acceso por empresa. & Documento de arquitectura y esquema de componentes. & Equipo de desarrollo. & Arquitectura y responsabilidades técnicas de los componentes definidas. \\ \midrule
+	\hypertarget{plan-oe2}{OE2} & Modelado de datos y clases & Elaborar y revisar los diagramas de clases y entidad-relación, considerando usuarios, roles, empresas, vehículos, conductores, clientes, órdenes y pagos. & Diagramas UML y entidad-relación revisados. & Equipo de desarrollo. & Modelos coherentes con las entidades y relaciones previstas en TravelDLS. \\ \midrule
+	OE2 & Modelado de procesos & Revisar los diagramas de casos de uso, estados y secuencia, unificando las reglas sobre cotización, pago, asignación del conductor y seguimiento de las órdenes. & Diagramas de casos de uso, estados y secuencia; registro de revisión. & Equipo de desarrollo y asesoría académica. & Flujos de negocio y responsabilidades consistentes entre los modelos. \\ \midrule
+	OE3 & Construcción del backend & Desarrollar la autenticación mediante JWT y las operaciones de administración de usuarios, roles, empresas, clientes, conductores, vehículos y órdenes. & Repositorio de código, endpoints y pruebas de API. & Equipo de desarrollo. & Servicios principales del backend funcionales. \\ \midrule
+	\hypertarget{plan-oe3}{OE3} & Desarrollo del frontend & Construir las interfaces para los tres perfiles de TravelDLS e incorporar los procesos de consulta de empresas, solicitud de transporte, cotización y aceptación de servicios. & Pantallas implementadas y pruebas de navegación. & Equipo de desarrollo y usuarios de prueba. & Flujos de interacción disponibles en la plataforma web. \\ \midrule
+	OE3 & Integración de seguimiento & Incorporar Mapbox, registrar las ubicaciones reportadas por el conductor y permitir consultas autorizadas del estado y el historial de cada orden. Gestionar con Cloudinary las fotografías de perfiles y empresas. & Pruebas de integración, registros de seguimiento y consultas del mapa. & Equipo de desarrollo y conductores de prueba. & Información de ubicación y progreso de las cargas disponible según los permisos. \\ \midrule
+	OE3 & Implementación de pagos & Mostrar el precio final del servicio, incluido el recargo del 8\,\% para mantenimiento, antes de su aceptación. Desarrollar el registro o simulación del pago según el alcance del prototipo. & Casos de prueba de cotización, aceptación y pago. & Equipo de desarrollo y clientes de prueba. & Proceso de contratación y pago coherente con las reglas de negocio aprobadas. \\ \midrule
+	OE3 & Módulo de optimización & Integrar Google OR-Tools con los destinos y costos de desplazamiento definidos para el prototipo, permitiendo calcular recorridos que apoyen la planificación. & Código del módulo, pruebas de rutas y resultados de ejecución. & Equipo de desarrollo. & Módulo de optimización integrado y recorridos calculados para escenarios establecidos. \\ \midrule
+	OE3 & Pruebas y documentación & Ejecutar pruebas funcionales en escenarios académicos, registrar incidencias identificadas y elaborar documentación técnica y manuales de usuario. & Matriz de pruebas, registro de incidencias y manuales. & Equipo de desarrollo y participantes de las pruebas. & Prototipo verificado en los escenarios definidos y documentación inicial del sistema. \\
+	\end{longtable}
+	\endgroup
 
 \clearpage
 \subsection{Resultados del plan de ejecución}
 \label{sec:resultados-plan-ejecucion}
 
-Los diagramas de clases y entidad-relación son productos de la acción «Modelado de datos y clases» del OE2, presentada en la Tabla~\ref{tab:plan_ejecucion}. Representan las entidades principales de TravelDLS y sus relaciones. Frente al resultado esperado de contar con modelos coherentes con la estructura prevista, se observa un avance, pero el informe aún no documenta una revisión cruzada de clases, tablas y relaciones. Por ello, el cumplimiento de esta acción se considera parcial.
+Los resultados obtenidos durante el desarrollo de TravelDLS se presentan de acuerdo con los objetivos y las acciones establecidos en el plan de ejecución. En relación con el \hyperlink{plan-oe1}{OE1}, se realizó la revisión documental y la identificación preliminar de los requisitos del sistema, lo que permitió fundamentar la problemática e identificar las necesidades iniciales de la plataforma. Para orientar la búsqueda de información, se definieron términos en español e inglés relacionados con el seguimiento y rastreo de vehículos y carga, el transporte de mercancías, la logística, los envíos y la optimización de rutas. Asimismo, se analizaron los objetivos, el alcance y los modelos del proyecto para establecer las funcionalidades y los componentes principales de TravelDLS, sin realizar un levantamiento directo con usuarios.
+
+Las cadenas de búsqueda utilizadas para la revisión documental combinan palabras clave y operadores booleanos, como \texttt{AND} y \texttt{OR}, con el propósito de orientar la consulta de información relacionada con el transporte de carga, el seguimiento de vehículos, la optimización de rutas y las herramientas tecnológicas consideradas para el desarrollo de TravelDLS.
+
+\textbf{Cadenas de búsqueda utilizadas}
+
+\textbf{1. Seguimiento y transporte de carga}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("tracking" OR "seguimiento" OR "rastreo" OR "monitoreo") AND ("carga" OR "transporte de carga" OR "freight" OR "freight transportation" OR "logistics")
+	\end{lstlisting}
+\end{quote}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("freight transportation" OR "heavy freight" OR "cargo transportation" OR "logistics") AND ("tracking" OR "real-time tracking" OR "vehicle tracking" OR "cargo tracking") AND ("resource management" OR "fleet management" OR "transport management" OR "logistics management")
+	\end{lstlisting}
+\end{quote}
+
+\textbf{2. Optimización de rutas y algoritmos}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("traveling salesman problem" OR TSP OR "vehicle routing problem" OR VRP) AND ("nearest neighbor" OR "nearest neighbour" OR "2-opt" OR "OR-Tools") AND ("logistics" OR "freight transportation" OR "delivery routing")
+	\end{lstlisting}
+\end{quote}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("2-opt" OR "two-opt" OR "2 opt") AND ("traveling salesman problem" OR "vehicle routing problem" OR "route optimization") AND ("logistics" OR "transportation" OR "freight transport")
+	\end{lstlisting}
+\end{quote}
+
+\textbf{3. Google OR-Tools y matrices de distancias}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("Google OR-Tools" OR "OR-Tools" OR "Google Operations Research Tools") AND ("vehicle routing problem" OR "traveling salesman problem" OR "route optimization") AND ("logistics" OR "transportation" OR "delivery")
+	\end{lstlisting}
+\end{quote}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("distance matrix" OR "travel time matrix" OR "road network distances") AND ("route optimization" OR "vehicle routing problem" OR "traveling salesman problem") AND ("logistics" OR "freight transportation" OR "delivery routing")
+	\end{lstlisting}
+\end{quote}
+
+\textbf{4. Geolocalización y seguimiento mediante Mapbox}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("Mapbox" OR "Mapbox API") AND ("truck tracking" OR "vehicle tracking" OR "fleet tracking" OR "GPS tracking") AND ("logistics" OR "freight transportation" OR "cargo transportation" OR "delivery")
+	\end{lstlisting}
+\end{quote}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("Mapbox" OR "Mapbox API" OR "Mapbox SDK") AND ("real-time tracking" OR "vehicle tracking" OR "GPS tracking" OR geolocation) AND (logistics OR transportation OR "fleet management" OR delivery OR travel)
+	\end{lstlisting}
+\end{quote}
+
+\textbf{5. Almacenamiento de imágenes mediante Cloudinary}
+
+\begin{quote}
+	\begin{lstlisting}[style=cadenas]
+		("Cloudinary" OR "Cloudinary API") AND ("web application" OR "mobile application" OR platform OR system) AND (logistics OR transportation OR travel OR delivery OR tracking OR fleet) AND ("image storage" OR "image management" OR "media storage" OR "cloud storage")
+	\end{lstlisting}
+\end{quote}
+
+En relación con el \hyperlink{plan-oe2}{OE2}, se definió la arquitectura del sistema y se elaboraron modelos para representar la estructura de TravelDLS y la organización de sus datos. Entre estos resultados se encuentra el diagrama entidad-relación, que representa las principales entidades de la plataforma, como usuarios, roles, empresas, vehículos, conductores, clientes, órdenes y pagos, así como las relaciones entre ellas. Estos modelos sirven de referencia para organizar la información y describir los componentes y procesos principales del sistema.
+
+Por último, en cuanto al  \hyperlink{plan-oe3}{OE3}, se completó la construcción del backend de TravelDLS, incluyendo la autenticación mediante JWT y las operaciones de administración de usuarios, roles, empresas, clientes, conductores, vehículos y órdenes. Con ello, se implementaron los principales servicios del backend previstos en el plan de ejecución. El desarrollo del frontend continúa en proceso, por lo que los resultados descritos corresponden a los avances alcanzados hasta la finalización del backend.
+
 
 En la Figura~\ref{fig:diagrama-clases} se presentan las clases principales de TravelDLS, sus atributos y las relaciones entre usuarios, empresas, clientes, conductores y órdenes. También se muestran los servicios encargados de la autenticación, la gestión de órdenes y los pagos simulados.
 
