@@ -19,6 +19,7 @@ export function getRoleLabel(role: UserRole): string {
 }
 
 export function getRoleDestination(role: UserRole): string | null {
+  if (role === "platform_admin") return "/admin/dashboard";
   const dashboardBaseUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL?.trim();
   if (!dashboardBaseUrl) return null;
 

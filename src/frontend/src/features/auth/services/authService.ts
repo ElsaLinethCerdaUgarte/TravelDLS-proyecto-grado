@@ -123,6 +123,10 @@ export async function getCurrentUser(): Promise<SessionUser> {
   return parseSessionUser(await request<unknown>("/api/auth/me"));
 }
 
+export async function logout(): Promise<void> {
+  await request("/api/auth/logout", { method: "POST" });
+}
+
 export async function login(credentials: LoginCredentials): Promise<SessionUser> {
   await request("/api/auth/login", {
     method: "POST",

@@ -30,11 +30,13 @@ NEXT_PUBLIC_API_URL=http://localhost:3333
 NEXT_PUBLIC_DASHBOARD_URL=http://localhost:4200
 ```
 
-Si `NEXT_PUBLIC_DASHBOARD_URL` no está definida, el acceso se completa y se
-muestra el rol autenticado sin navegar a una ruta que todavía no existe en Next.
+El superadmin siempre entra al panel de Next en `/admin/dashboard`.
+Para los demás roles, si `NEXT_PUBLIC_DASHBOARD_URL` no está definida, el acceso
+se completa y se muestra el rol autenticado sin navegar a una ruta inexistente.
 
 ```bash
 pnpm lint       # ESLint: reglas de Next.js y TypeScript
+pnpm test       # Contratos del cliente administrativo, sin tocar la base de datos
 pnpm typecheck  # Genera tipos de rutas y comprueba TypeScript
 pnpm build     # Compilación de producción
 pnpm start     # Sirve la compilación en localhost:3000, después de build
@@ -85,7 +87,42 @@ de cada componente están junto a su archivo, en CSS Modules. El logo se adapta
 al fondo oscuro mediante CSS; los archivos de imagen originales se conservan.
 No se mantienen carpetas vacías.
 
-## Convenciones
+## Administración
+
+Las rutas `/admin` y `/admin/[section]` usan el módulo `src/features/admin/`:
+
+- `components/`: contenedor con sesión y navegación, resumen, listados, formulario y modal reutilizables.
+- `config/modules.ts`: campos, columnas, etiquetas y opciones de cada recurso.
+- `services/adminApi.ts`: peticiones con cookies, errores, cancelación y paginación.
+- `types/`: contratos de los recursos y sus formularios.
+- `styles/Admin.module.css`: estilos compartidos exclusivos del panel.
+
+Paneles disponibles: vista general, empresas, clientes, conductores, tipos de
+camión y usuarios. Las empresas, clientes, conductores y tipos de camión tienen
+creación, consulta, edición y eliminación lógica. Usuarios permite listar y crear cuentas;
+el backend actual no ofrece edición ni eliminación de usuarios. Los roles se
+consultan mediante `/api/roles`, sin depender de IDs fijos.
+
+Los tipos de camión son el catálogo que las empresas verán al registrar su flota:
+por ejemplo, refrigerado, rastra o plataforma. El superadmin administra ese
+catálogo desde Tipos de camión; las placas, chasis, conductores y estados de los
+vehículos reales pertenecen al panel de cada empresa.
+
+Para dar acceso a una empresa o conductor, crea primero su cuenta en Usuarios con
+el rol correspondiente y después vincúlala desde su formulario de perfil. Los
+camiones reales se gestionan desde la cuenta de empresa.
+El registro público continúa creando clientes.
+
+El panel requiere el backend disponible en `NEXT_PUBLIC_API_URL` y una sesión de
+`platform_admin`. La UI comprueba la sesión y las rutas del backend verifican los
+permisos. Una respuesta 401 devuelve al inicio; los errores de red ofrecen reintento.
+El resumen usa datos del API; no hay registros de demostración en la aplicación.
+
+El menú se convierte en un panel desplegable en móvil. Las tablas amplias tienen
+desplazamiento dentro de su contenedor y los formularios pasan a una columna.
+Los modales gestionan foco, Escape, confirmación de eliminación y estado de envío.
+
+## Convenciones de código
 
 - Nombres en inglés: componentes y archivos en PascalCase, hooks en camelCase
   con prefijo `use`, rutas y módulos en kebab-case.

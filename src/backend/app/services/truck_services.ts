@@ -8,7 +8,9 @@ import db from '@adonisjs/lucid/services/db'
 export default class TruckService {
   private async ensureStatusColumn() {
     try {
-      await db.rawQuery('ALTER TABLE trucks ADD COLUMN IF NOT EXISTS status VARCHAR(255) DEFAULT \'active\';')
+      await db.rawQuery(
+        "ALTER TABLE trucks ADD COLUMN IF NOT EXISTS status VARCHAR(255) DEFAULT 'active';"
+      )
     } catch (dbErr) {
       logger.error({ err: dbErr }, 'Failed to check/create status column in trucks table')
     }
@@ -79,7 +81,9 @@ export default class TruckService {
     }
   }
 
-  async list(filters: { page?: number; perPage?: number; idCompany?: number } = {}) {
+  async list(
+    filters: { page?: number; perPage?: number; idCompany?: number; search?: string } = {}
+  ) {
     await this.ensureStatusColumn()
     try {
       const page = filters.page || 1
@@ -95,6 +99,13 @@ export default class TruckService {
 
       if (filters.idCompany) {
         query.where('id_company', filters.idCompany)
+      }
+      if (filters.search) {
+        query.where((builder) =>
+          builder
+            .whereILike('plate', `%${filters.search}%`)
+            .orWhereILike('chassis', `%${filters.search}%`)
+        )
       }
 
       return await query.orderBy('id_truck', 'desc').paginate(page, perPage)
