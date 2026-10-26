@@ -29,7 +29,9 @@ export default class TrucksController {
   async reportMyTruckMaintenance({ auth, request, response }: HttpContext) {
     const status = request.input('status')
     if (status !== 'mantenimiento') {
-      return response.unprocessableEntity({ message: 'Only mantenimiento status can be reported by drivers.' })
+      return response.unprocessableEntity({
+        message: 'Only mantenimiento status can be reported by drivers.',
+      })
     }
 
     try {
@@ -64,7 +66,12 @@ export default class TrucksController {
     const idCompany = request.input('idCompany')
 
     try {
-      const trucks = await this.truckService.list({ page, perPage, idCompany })
+      const trucks = await this.truckService.list({
+        page,
+        perPage,
+        idCompany,
+        search: request.input('search'),
+      })
       return response.ok(trucks)
     } catch {
       return response.internalServerError({ message: 'Failed to retrieve trucks.' })
