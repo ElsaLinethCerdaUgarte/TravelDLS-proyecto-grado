@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { Select } from "@/components/ui/Select/Select";
+import { PhotoUpload } from "@/components/ui/PhotoUpload/PhotoUpload";
 import { modules, labels } from "../../config/modules";
 import { adminRequest, allRows, saveResource } from "../../services/adminApi";
 import {
@@ -207,12 +208,12 @@ export function ResourceForm({
                 className={`${styles.field} ${field.type === "file" ? styles.fullWidth : ""}`}
                 key={field.name}
               >
-                <label htmlFor={`admin-field-${field.name}`}>
+                {field.type !== "file" && <label htmlFor={`admin-field-${field.name}`}>
                   {field.label}
                   {field.required && (
                     <span className={styles.required}> *</span>
                   )}
-                </label>
+                </label>}
                 {field.type === "select" ? (
                   <Select
                     id={`admin-field-${field.name}`}
@@ -241,31 +242,12 @@ export function ResourceForm({
                     ]}
                   />
                 ) : field.type === "file" ? (
-                  <input
-                    id={`admin-field-${field.name}`}
-                    type="file"
-                    name="photo"
-                    accept="image/jpeg,image/png,image/webp"
+                  <PhotoUpload
+                    label="Fotografía"
+                    value={photo}
+                    onChange={(file) => { setPhoto(file); setError(""); }}
+                    existingUrl={record ? textAt(record, "photoUrl") : null}
                     disabled={busy}
-                    onChange={(event) => {
-                      const file = event.target.files?.[0];
-                      if (
-                        file &&
-                        (file.size > 2 * 1024 * 1024 ||
-                          !["image/jpeg", "image/png", "image/webp"].includes(
-                            file.type,
-                          ))
-                      ) {
-                        setError(
-                          "Selecciona una imagen JPG, PNG o WebP de hasta 2 MB.",
-                        );
-                        event.target.value = "";
-                        setPhoto(null);
-                      } else {
-                        setPhoto(file || null);
-                        setError("");
-                      }
-                    }}
                   />
                 ) : (
                   <input

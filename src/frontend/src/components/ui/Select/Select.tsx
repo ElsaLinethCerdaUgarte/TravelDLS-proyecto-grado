@@ -190,7 +190,6 @@ export function Select({
         disabled={disabled}
         className={styles.trigger}
         onKeyDown={keyboard}
-        onBlur={() => close()}
         onClick={() => (open ? close() : show())}
       >
         <span>{selected?.label || "Seleccionar…"}</span>
@@ -244,7 +243,12 @@ export function Select({
             onPointerMove={() => {
               if (!option.disabled) setActive(index);
             }}
-            onClick={() => choose(index)}
+            onClick={(event) => {
+              // Evita que el <label> exterior vuelva a activar el disparador.
+              event.preventDefault();
+              event.stopPropagation();
+              choose(index);
+            }}
           >
             <span>{option.label}</span>
             {option.value === value && (

@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
+import { ActionButton } from "@/components/ui/Workspace/Workspace";
+import { AnimatedIcon } from "@/components/ui/AnimatedIcon/AnimatedIcon";
+import { DashboardStatCard } from "@/components/ui/DashboardStatCard/DashboardStatCard";
 import { useAdminUser } from "../AdminShell/AdminShell";
 import { modules } from "../../config/modules";
 import { allRows, listResource } from "../../services/adminApi";
@@ -116,7 +119,7 @@ export function Dashboard() {
           </Link>
         </div>
         <div className={styles.welcomeArt} aria-hidden="true">
-          <Icon name="route" size={110} />
+          <AnimatedIcon name="route" size={110} />
           <span>TRAVELDLS / CONECTAMOS DESTINOS</span>
         </div>
       </section>
@@ -135,27 +138,14 @@ export function Dashboard() {
       ) : (
         <>
           <div className={styles.stats} aria-busy={loading}>
-            {resources.map((resource) => (
-              <Link
-                href={`/admin/${resource}`}
-                className={styles.stat}
-                key={resource}
-              >
-                <div>
-                  <span className={styles.statIcon}>
-                    <Icon name={modules[resource].icon} size={20} />
-                  </span>
-                  <Icon name="arrow" size={16} />
-                </div>
-                <strong>
-                  {loading
-                    ? "—"
-                    : data?.totals[resource].toLocaleString("es-NI")}
-                </strong>
-                <span>{modules[resource].title}</span>
-                <small>Ver y administrar</small>
-              </Link>
-            ))}
+            {resources.map((resource) => <DashboardStatCard
+              key={resource}
+              href={`/admin/${resource}`}
+              icon={modules[resource].icon}
+              value={loading ? "—" : data?.totals[resource].toLocaleString("es-NI") ?? "—"}
+              label={modules[resource].title}
+              hint="Ver y administrar"
+            />)}
           </div>
           {loading ? (
             <div className={styles.empty} role="status">
@@ -171,10 +161,9 @@ export function Dashboard() {
                       <h2>Empresas de la plataforma</h2>
                       <p>Las conexiones que nos mueven.</p>
                     </div>
-                    <Link className={styles.textButton} href="/admin/companies">
+                    <ActionButton href="/admin/companies" icon="arrow" iconPlacement="after">
                       Ver todas
-                      <Icon name="arrow" size={15} />
-                    </Link>
+                    </ActionButton>
                   </div>
                   <div className={styles.companyList}>
                     {data.companies.length ? (

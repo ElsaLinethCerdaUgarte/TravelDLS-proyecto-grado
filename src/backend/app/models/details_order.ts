@@ -22,6 +22,9 @@ export default class DetailsOrder extends BaseModel {
   @column({ columnName: 'amount' })
   declare amount: number
 
+  @column({ columnName: 'quantity' })
+  declare quantity: number
+
   @column({ columnName: 'unitWeight' })
   declare unitWeight: string
 

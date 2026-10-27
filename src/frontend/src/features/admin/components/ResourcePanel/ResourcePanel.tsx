@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
+import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
 import { modules, labels } from "../../config/modules";
 import { listResource, deleteResource } from "../../services/adminApi";
 import {
@@ -39,7 +40,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
   const [version, setVersion] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<{ message: string; tone?: "success" | "danger" } | null>(null);
   const [form, setForm] = useState<{ record?: Row } | null>(null);
   const [detail, setDetail] = useState<Row | null>(null);
   const [removing, setRemoving] = useState<Row | null>(null);
@@ -91,7 +92,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
     try {
       await deleteResource(resource, textAt(removing, config.id));
       setRemoving(null);
-      setNotice("Registro eliminado correctamente.");
+      setNotice({ message: "Registro eliminado correctamente.", tone: "danger" });
       setVersion(version + 1);
     } catch (cause) {
       setDeleteError(
@@ -118,18 +119,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
           Crear {config.singular}
         </button>
       </div>
-      {notice && (
-        <div className={styles.success} role="status">
-          {notice}
-          <button
-            className={styles.iconButton}
-            aria-label="Cerrar aviso"
-            onClick={() => setNotice("")}
-          >
-            <Icon name="close" size={16} />
-          </button>
-        </div>
-      )}
+      {notice && <TimedNotice message={notice.message} tone={notice.tone} onDismiss={() => setNotice(null)} />}
       <section
         className={`${styles.card} ${styles.listCard}`}
         aria-label={`Listado de ${config.title.toLowerCase()}`}
@@ -370,7 +360,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
           onClose={() => setForm(null)}
           onSaved={() => {
             setForm(null);
-            setNotice("Información guardada correctamente.");
+            setNotice({ message: "Información guardada correctamente." });
             setVersion(version + 1);
           }}
         />

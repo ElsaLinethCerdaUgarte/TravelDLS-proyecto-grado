@@ -16,6 +16,8 @@ export type IconName =
   | "chevron"
   | "arrow"
   | "box"
+  | "image"
+  | "calendar"
   | "route"
   | "shield"
   | "mail"
@@ -100,6 +102,19 @@ const paths: Record<IconName, ReactNode> = {
     <>
       <path d="m12 3 9 5v8l-9 5-9-5V8l9-5Z" />
       <path d="m3 8 9 5 9-5M12 13v8M7.5 5.5l9 5" />
+    </>
+  ),
+  image: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <circle cx="8.5" cy="9" r="1.5" />
+      <path d="m4 17 5-5 3.5 3.5 2.5-2.5 5 5" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M7 3v4M17 3v4M3 10h18M7 14h3M7 17h3" />
     </>
   ),
   route: (

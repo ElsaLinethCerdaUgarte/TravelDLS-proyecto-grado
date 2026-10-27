@@ -356,7 +356,6 @@
     transform: rotate(360deg);
   }
 }
-.success,
 .error {
   display: flex;
   align-items: center;
@@ -463,18 +462,6 @@
   font-size: 11px;
   line-height: 1.6;
 }
-.field input[type="file"] {
-  font-size: 11px;
-  padding: 9px;
-}
-.field input::file-selector-button {
-  background: #342443;
-  color: #d8bee9;
-  border: 0;
-  border-radius: 4px;
-  padding: 7px;
-  margin-right: 8px;
-}
 .required {
   color: #bf8be9;
 }
@@ -573,56 +560,6 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 17px;
   margin-bottom: 25px;
-}
-.stat {
-  background: #14131f;
-  border: 1px solid #2b2538;
-  border-radius: 12px;
-  padding: 21px;
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s,
-    background 0.22s;
-}
-.stat:hover {
-  background: #1b1628;
-  border-color: #745197;
-}
-.stat > div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #71637f;
-  margin-bottom: 18px;
-}
-.statIcon {
-  display: grid;
-  place-items: center;
-  width: 39px;
-  height: 39px;
-  background: #281e3b;
-  color: #ae87e0;
-  border-radius: 10px;
-}
-.stat > strong {
-  font-size: 30px;
-  color: #eee7f7;
-  font-weight: 600;
-  letter-spacing: -0.7px;
-}
-.stat > span {
-  color: #b5aabd;
-  font-size: 12px;
-  margin-top: 5px;
-}
-.stat > small {
-  color: #71687e;
-  font-size: 10px;
-  margin-top: 15px;
 }
 .dashboardGrid {
   display: grid;
@@ -773,9 +710,6 @@
   .welcome h2 {
     font-size: 32px;
   }
-  .stat {
-    padding: 25px;
-  }
 }
 @media (max-width: 1100px) {
   .welcomeArt {
@@ -792,9 +726,6 @@
   }
   .stats {
     gap: 12px;
-  }
-  .stat {
-    padding: 16px;
   }
   .cardHeading {
     padding: 20px;
@@ -825,12 +756,6 @@
   .stats {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
-  }
-  .stat {
-    padding: 18px;
-  }
-  .stat > strong {
-    font-size: 27px;
   }
   .quickLinks {
     grid-template-columns: 1fr;
@@ -898,7 +823,6 @@
   height: 100%;
 }
 .resourcePage > .pageHeading,
-.resourcePage > .success,
 .resourcePage > .footnote {
   flex-shrink: 0;
 }
@@ -956,7 +880,6 @@
   min-height: 34px;
   padding: 7px 10px;
 }
-.statIcon svg,
 .iconButton svg,
 .primary svg,
 .quickLinks svg {
@@ -977,27 +900,7 @@
 .refreshing svg {
   animation: spin 1s linear infinite;
 }
-.welcomeArt > svg {
-  animation: float 5s ease-in-out infinite;
-}
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
-}
 @media (hover: hover) and (pointer: fine) {
-  .stat:hover,
-  .stat:focus-visible {
-    transform: translateY(-4px) scale(1.025);
-    box-shadow: 0 14px 30px #0004;
-  }
-  .stat:hover .statIcon svg {
-    transform: scale(1.12) rotate(-6deg);
-  }
   .quickLinks > a:hover {
     transform: translateY(-3px) scale(1.012);
     box-shadow: 0 10px 25px #0003;
@@ -1055,21 +958,16 @@
   .listCard > .empty {
     animation: none;
   }
-  .welcomeArt > svg,
   .refreshing svg {
     animation: none;
   }
-  .statIcon svg,
   .iconButton svg,
   .primary svg,
   .quickLinks svg,
   .quickLinks > a {
     transition: none;
   }
-  .stat:hover,
-  .stat:focus-visible,
   .quickLinks > a:hover,
-  .stat:hover .statIcon svg,
   .primary:hover svg,
   .iconButton:hover svg,
   .quickLinks > a:hover > svg:last-child {
@@ -1078,7 +976,6 @@
   .loadingDot {
     animation: none;
   }
-  .stat,
   .primary,
   .secondary {
     transition: none;
