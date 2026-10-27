@@ -4,6 +4,9 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
+import { DetailCard } from "@/components/ui/DetailCard/DetailCard";
+import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
+import { CompanyChoiceCard } from "./CompanyChoiceCard";
 import { useClientSession } from "../ClientShell/ClientShell";
 import { ActionButton, DataState, Modal, PageHeader, Pagination, StatusBadge, workspaceStyles as ui } from "@/components/ui/Workspace/Workspace";
 import {
@@ -11,13 +14,13 @@ import {
   getOrders, getTracking, respondPrice, simulatePayment, updateDetail,
 } from "../../services/clientApi";
 import {
-  formatDate, formatMoney, matchesOrderFilter, orderStatusLabels, packagingTypes,
+  formatDate, formatMoney, formatWeight, matchesOrderFilter, orderStatusLabels, packagingTypes, parseWeight, weightUnits,
   type Company, type NewDetail, type Order, type OrderFilter, type Tracking,
 } from "../../types/client";
 import styles from "./ClientOrders.module.css";
 
 const blankDetail = (): NewDetail => ({
-  cargoDescription: "", amount: 1, unitWeight: "1",
+  cargoDescription: "", unitWeight: "1", weightUnit: "kg",
   deliveryAddress: "", typePackaging: "caja",
 });
 
@@ -40,7 +43,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
   const [version, setVersion] = useState(0);
   const [loading, setLoading] = useState(Boolean(user.idClient));
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<{ message: string; tone?: "success" | "danger" } | null>(null);
   const [filter, setFilter] = useState<OrderFilter>("all");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companyPage, setCompanyPage] = useState(1);
@@ -54,12 +57,15 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
   const [company, setCompany] = useState<Company | null>(null);
   const [draft, setDraft] = useState<NewDetail>(blankDetail);
   const [cart, setCart] = useState<NewDetail[]>([]);
+  const [pendingOrderId, setPendingOrderId] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [actionError, setActionError] = useState("");
   const [selected, setSelected] = useState<Order | null>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editDraft, setEditDraft] = useState<NewDetail>(blankDetail);
+  const [addMode, setAddMode] = useState(false);
+  const [recoveryDraft, setRecoveryDraft] = useState<NewDetail>(blankDetail);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer">("transfer");
   const [tracking, setTracking] = useState<Tracking | null>(null);
@@ -137,6 +143,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     setDetailsLoading(true);
     setActionError("");
     setEditMode(false);
+    setAddMode(false);
     setTracking(null);
     setTrackingError("");
     try {
@@ -158,21 +165,45 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     if (!user.idClient || !company || cart.length === 0 || saving) return;
     setSaving(true);
     setActionError("");
-    let createdId: number | null = null;
+    let orderId = pendingOrderId;
     try {
-      const order = await createOrder(user.idClient, company.idCompany);
-      createdId = order.idOrder;
-      for (const detail of cart) await createDetail(order.idOrder, detail);
+      if (orderId === null) {
+        const order = await createOrder(user.idClient, company.idCompany);
+        orderId = order.idOrder;
+        setPendingOrderId(orderId);
+      }
+      for (const detail of cart) {
+        await createDetail(orderId, detail);
+        setCart((items) => items.slice(1));
+      }
+      setPendingOrderId(null);
       setCompany(null);
       setChooserOpen(false);
       setCart([]);
       setDraft(blankDetail());
-      setNotice(`Pedido #${order.idOrder} creado correctamente.`);
+      setNotice({ message: `Pedido #${orderId} creado correctamente.` });
       setPage(1);
       reload();
     } catch (cause) {
-      setActionError(`${cause instanceof Error ? cause.message : "No se pudo crear el pedido."}${createdId ? ` El pedido #${createdId} quedó creado; revisa su carga antes de intentarlo de nuevo.` : ""}`);
-      if (createdId) reload();
+      setActionError(`${cause instanceof Error ? cause.message : "No se pudo crear el pedido."}${orderId ? ` El pedido #${orderId} ya existe. Corrige la carga y vuelve a pulsar «Enviar pedido» para continuar sin duplicarlo.` : ""}`);
+      if (orderId) reload();
+    } finally { setSaving(false); }
+  }
+
+  async function addToOrder(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selected || selected.status !== "pendiente" || saving) return;
+    setSaving(true);
+    setActionError("");
+    try {
+      await createDetail(selected.idOrder, recoveryDraft);
+      setSelected(await getOrder(selected.idOrder));
+      setRecoveryDraft(blankDetail());
+      setAddMode(false);
+      setNotice({ message: `Carga añadida al pedido #${selected.idOrder}.` });
+      reload();
+    } catch (cause) {
+      setActionError(cause instanceof Error ? cause.message : "No se pudo añadir la carga.");
     } finally { setSaving(false); }
   }
 
@@ -182,7 +213,9 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     try {
       const updated = await respondPrice(selected.idOrder, accepted);
       setSelected(updated);
-      setNotice(accepted ? "Cotización aceptada. El pedido continuará sin pago simulado." : "Cotización rechazada.");
+      setNotice(accepted
+        ? { message: "Cotización aceptada. El pedido continuará sin pago simulado." }
+        : { message: "Cotización rechazada.", tone: "danger" });
       reload();
     } catch (cause) { setActionError(cause instanceof Error ? cause.message : "No se pudo responder a la cotización."); }
     finally { setSaving(false); }
@@ -206,7 +239,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
       });
       setSelected(updated);
       setPaymentOpen(false);
-      setNotice("Pago simulado registrado correctamente.");
+      setNotice({ message: "Pago simulado registrado correctamente." });
       reload();
     } catch (cause) { setActionError(cause instanceof Error ? cause.message : "No se pudo registrar el pago."); }
     finally { setSaving(false); }
@@ -222,7 +255,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
       const updated = await getOrder(selected.idOrder);
       setSelected(updated);
       setEditMode(false);
-      setNotice("Carga actualizada correctamente.");
+      setNotice({ message: "Carga actualizada correctamente." });
       reload();
     } catch (cause) { setActionError(cause instanceof Error ? cause.message : "No se pudo actualizar la carga."); }
     finally { setSaving(false); }
@@ -234,7 +267,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     try {
       await deleteDetail(id);
       setSelected(await getOrder(selected.idOrder));
-      setNotice("Carga eliminada del pedido.");
+      setNotice({ message: "Carga eliminada del pedido.", tone: "danger" });
       reload();
     } catch (cause) { setActionError(cause instanceof Error ? cause.message : "No se pudo eliminar la carga."); }
     finally { setSaving(false); }
@@ -254,7 +287,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     <PageHeader eyebrow="DE PRINCIPIO A DESTINO" title="Mis pedidos" description="Solicita un envío, revisa cotizaciones y sigue cada carga desde un solo lugar."
       action={<button className={ui.primary} disabled={!user.idClient} onClick={() => { setChooserOpen(true); setCompanyLoading(true); }}><Icon name="plus" size={17} />Nuevo pedido</button>} />
     {!user.idClient && <p className={ui.notice}>Completa tu perfil de cliente para poder crear y consultar pedidos. <Link href="/client/profile">Ir a mi perfil</Link></p>}
-    {notice && <p className={ui.notice} role="status">{notice}</p>}
+    {notice && <TimedNotice message={notice.message} tone={notice.tone} onDismiss={() => setNotice(null)} />}
     <section className={ui.card} aria-label="Listado de pedidos">
       <div className={styles.toolbar}><div className={styles.filters} role="group" aria-label="Filtrar pedidos">{orderFilters.map(({ value, label }) => <button key={value} type="button" className={filter === value ? styles.filterActive : ""} onClick={() => { if (filter === value) return; setFilter(value); setPage(1); setLoading(true); }} aria-pressed={filter === value}>{label}</button>)}</div>
         <button className={ui.secondary} onClick={reload} disabled={loading} aria-label="Actualizar pedidos"><Icon name="refresh" size={17} /></button></div>
@@ -265,28 +298,52 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     {chooserOpen && <Modal title="Elige una empresa" eyebrow="TRAVELDLS · TU ESPACIO" onClose={() => setChooserOpen(false)}>
       <p className={ui.muted}>Encuentra una empresa de transporte para tu pedido.</p>
       <form className={styles.companySearch} onSubmit={(event) => { event.preventDefault(); setCompanyPage(1); setCompanySearch(companyDraft.trim()); setCompanyVersion((value) => value + 1); setCompanyLoading(true); }}><input aria-label="Buscar empresa" placeholder="Buscar empresa…" value={companyDraft} onChange={(event) => setCompanyDraft(event.target.value)} /><button className={ui.secondary}>Buscar</button></form>
-      {companyLoading || companyError || companies.length === 0 ? <DataState loading={companyLoading} error={companyError} empty="No se encontraron empresas." onRetry={() => { setCompanyLoading(true); setCompanyVersion((value) => value + 1); }} /> : <div className={styles.companyGrid}>{companies.map((item) => <button key={item.idCompany} className={styles.companyCard} onClick={() => { setCompany(item); setChooserOpen(false); setCart([]); setActionError(""); }}><span><Icon name="building" /></span><strong>{item.businessName}</strong><small>{item.ruc || "Empresa de transporte"}</small><span className={styles.companyArrow}>Solicitar transporte <Icon name="arrow" size={15} /></span></button>)}</div>}
+      {companyLoading || companyError || companies.length === 0 ? <DataState loading={companyLoading} error={companyError} empty="No se encontraron empresas." onRetry={() => { setCompanyLoading(true); setCompanyVersion((value) => value + 1); }} /> :
+        <div className={styles.companyGrid}>{companies.map((item) => <CompanyChoiceCard key={item.idCompany} company={item} onSelect={() => { setCompany(item); setChooserOpen(false); setCart([]); setPendingOrderId(null); setActionError(""); }} />)}</div>}
       <div className={styles.companyPager}><button className={ui.secondary} disabled={companyPage <= 1} onClick={() => { setCompanyPage(companyPage - 1); setCompanyLoading(true); }}>Anterior</button><span>{companyPage} / {companyLastPage}</span><button className={ui.secondary} disabled={companyPage >= companyLastPage} onClick={() => { setCompanyPage(companyPage + 1); setCompanyLoading(true); }}>Siguiente</button></div>
     </Modal>}
     {company && <Modal title={`Pedido para ${company.businessName}`} eyebrow="TRAVELDLS · TU ESPACIO" busy={saving} onClose={() => setCompany(null)}>
       <p className={ui.muted}>Agrega una o varias cargas. Podrás revisar cada una antes de enviar tu solicitud.</p>
       <form className={ui.form} onSubmit={addDraft}>
         <DetailFields value={draft} onChange={setDraft} />
-        <button className={ui.secondary} type="submit"><Icon name="plus" size={16} />Añadir carga</button>
+        <button className={ui.secondary} type="submit" disabled={saving}><Icon name="plus" size={16} />Añadir carga</button>
       </form>
-      {cart.length > 0 && <div className={styles.cart}><h3>Cargas del pedido</h3>{cart.map((item, index) => <div key={index} className={styles.cartItem}><div><strong>{item.cargoDescription}</strong><small>{item.unitWeight} kg · {item.deliveryAddress}</small></div><button className={ui.inlineButton} onClick={() => setCart((items) => items.filter((_, position) => position !== index))}>Quitar</button></div>)}</div>}
+      {cart.length > 0 && <section className={styles.cart} aria-label="Cargas del pedido"><div className={styles.cartHeading}><span className={styles.headingIcon}><Icon name="box" size={19} /></span><div><small>LISTAS PARA ENVIAR</small><h3>Cargas del pedido</h3></div><span className={styles.detailCount}>{cart.length} {cart.length === 1 ? "carga" : "cargas"}</span></div><div className={styles.detailList}>{cart.map((item, index) => <DetailCard key={index} eyebrow={`Carga ${String(index + 1).padStart(2, "0")}`} title={item.cargoDescription} facts={[
+        { label: "Peso y embalaje", value: `${formatWeight(`${item.unitWeight} ${item.weightUnit}`)} · ${packagingTypes.find((type) => type.value === item.typePackaging)?.label || item.typePackaging}`, icon: "box" },
+        { label: "Dirección de entrega", value: item.deliveryAddress, icon: "route", wide: true },
+      ]}><ActionButton icon="trash" variant="danger" disabled={saving} onClick={() => setCart((items) => items.filter((_, position) => position !== index))}>Quitar carga</ActionButton></DetailCard>)}</div></section>}
       {actionError && <p className={ui.error} role="alert">{actionError}</p>}
       <div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => setCompany(null)}>Cancelar</button><button className={ui.primary} disabled={saving || cart.length === 0} onClick={() => void submitOrder()}>{saving ? "Enviando…" : "Enviar pedido"} <Icon name="arrow" size={16} /></button></div>
     </Modal>}
     {selected && <Modal title={`Pedido #${selected.idOrder}`} eyebrow="TRAVELDLS · TU ESPACIO" busy={saving} onClose={() => { setSelected(null); setPaymentOpen(false); setEditMode(false); }}>
-      <div className={styles.orderSummary}><StatusBadge status={selected.status} label={orderStatusLabels[selected.status]} /><span>{selected.company?.businessName || `Empresa #${selected.idCompany}`}</span><span>{formatDate(selected.createdAt)}</span></div>
+      <div className={styles.orderOverview}>
+        <div className={styles.overviewStatus}><small>Estado del pedido</small><StatusBadge status={selected.status} label={orderStatusLabels[selected.status]} /></div>
+        <div className={styles.overviewFact}><Icon name="building" size={18} /><span><small>Empresa</small><strong>{selected.company?.businessName || `Empresa #${selected.idCompany}`}</strong></span></div>
+        <div className={styles.overviewFact}><Icon name="calendar" size={18} /><span><small>Fecha</small><strong>{formatDate(selected.createdAt)}</strong></span></div>
+      </div>
       {detailsLoading ? <DataState loading empty="" /> : <>
-        <h3 className={styles.subhead}>Cargas del pedido</h3>
-        {activeDetails.length ? activeDetails.map((item) => <div key={item.idDetails} className={styles.detailItem}><div><strong>{item.cargoDescription}</strong><small>{item.unitWeight} · {packagingTypes.find((type) => type.value === item.typePackaging)?.label || item.typePackaging}</small><small>Entrega: {item.deliveryAddress}</small>{item.driver && <small>Conductor: {item.driver.user?.name || item.driver.name || "Asignado"}</small>}</div><strong>{Number(item.amount) > 0 ? formatMoney(Number(item.amount)) : "Por cotizar"}</strong></div>) : <p className={ui.muted}>Este pedido aún no tiene cargas.</p>}
-        {quotedAmount > 0 && <p className={styles.total}>Monto del pedido <strong>{formatMoney(quotedAmount)}</strong></p>}
-        {selected.status === "pendiente" && activeDetails.length === 1 && <button className={ui.inlineButton} onClick={() => { const item = activeDetails[0]; setEditDraft({ cargoDescription: item.cargoDescription, amount: Number(item.amount), unitWeight: String(Number.parseFloat(item.unitWeight) || 1), deliveryAddress: item.deliveryAddress, typePackaging: item.typePackaging }); setEditMode(true); }}>Editar carga</button>}
-        {selected.status === "pendiente" && activeDetails.length > 1 && <p className={ui.muted}>Puedes quitar cargas de un pedido pendiente.</p>}
-        {selected.status === "pendiente" && activeDetails.length > 1 && activeDetails.map((item) => <button key={item.idDetails} className={ui.inlineButton} disabled={saving} onClick={() => void removeDetail(item.idDetails)}>Quitar {item.cargoDescription}</button>)}
+        <div className={styles.detailHeading}><span className={styles.headingIcon}><Icon name="box" size={19} /></span><div><small>DETALLES DEL ENVÍO</small><h3>Cargas del pedido</h3></div><span className={styles.detailCount}>{activeDetails.length} {activeDetails.length === 1 ? "carga" : "cargas"}</span></div>
+        {activeDetails.length ? <div className={styles.detailList}>{activeDetails.map((item, index) => {
+          const weightLabel = formatWeight(item.unitWeight);
+          return <DetailCard key={item.idDetails} eyebrow={`Carga ${String(index + 1).padStart(2, "0")}`} title={item.cargoDescription}
+            amount={Number(item.amount) > 0 ? formatMoney(Number(item.amount)) : "Por cotizar"} amountLabel="Precio de transporte"
+            facts={[
+              { label: "Peso y embalaje", value: `${weightLabel} · ${packagingTypes.find((type) => type.value === item.typePackaging)?.label || item.typePackaging}`, icon: "box" },
+              { label: "Conductor", value: item.driver ? item.driver.user?.name || item.driver.name || "Asignado" : "Aún sin asignar", icon: "user" },
+              { label: "Dirección de entrega", value: item.deliveryAddress, icon: "route", wide: true },
+            ]}>
+            {selected.status === "pendiente" && activeDetails.length === 1 && <ActionButton icon="edit" onClick={() => {
+              const weight = parseWeight(item.unitWeight);
+              setEditDraft({ cargoDescription: item.cargoDescription, unitWeight: weight.quantity, weightUnit: weight.unit, deliveryAddress: item.deliveryAddress, typePackaging: item.typePackaging });
+              setAddMode(false);
+              setEditMode(true);
+            }}>Editar carga</ActionButton>}
+            {selected.status === "pendiente" && activeDetails.length > 1 && <ActionButton icon="trash" variant="danger" disabled={saving} onClick={() => void removeDetail(item.idDetails)}>Quitar carga</ActionButton>}
+          </DetailCard>;
+        })}</div> : <p className={ui.muted}>Este pedido aún no tiene cargas.</p>}
+        {selected.status === "pendiente" && !addMode && <div className={styles.addDetailAction}><ActionButton icon="plus" onClick={() => { setRecoveryDraft(blankDetail()); setEditMode(false); setAddMode(true); setActionError(""); }}>Añadir carga al pedido</ActionButton></div>}
+        {selected.status === "pendiente" && addMode && <form className={`${ui.form} ${styles.addDetailForm}`} onSubmit={(event) => void addToOrder(event)}><h3 className={styles.subhead}>Nueva carga para el pedido #{selected.idOrder}</h3><DetailFields value={recoveryDraft} onChange={setRecoveryDraft} /><div className={ui.actions}><button type="button" className={ui.secondary} disabled={saving} onClick={() => setAddMode(false)}>Cancelar</button><button className={ui.primary} disabled={saving}>{saving ? "Guardando…" : "Guardar carga"}</button></div></form>}
+        {quotedAmount > 0 && <div className={styles.orderTotal}><span>Monto del pedido<small>Precio total del transporte</small></span><strong>{formatMoney(quotedAmount)}</strong></div>}
         {selected.status === "esperando_aprobacion" && <div className={styles.quote}><p>La empresa envió una cotización. Puedes aceptarla sin registrar pago, rechazarla o completar un pago simulado que también aceptará el pedido.</p><div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => void replyPrice(false)}>Rechazar</button><button className={ui.secondary} disabled={saving} onClick={() => void replyPrice(true)}>Aceptar sin pago</button>{quotedAmount > 0 && <button className={ui.primary} disabled={saving} onClick={() => { setActionError(""); setPaymentOpen(true); }}>Pagar y aceptar</button>}</div></div>}
         {selected.payment && <p className={ui.notice}>Pago registrado: {selected.payment.referenceCode}</p>}
         {selected.status === "en_transito" && <div className={styles.quote}><p>Consulta la última ubicación reportada para tu pedido.</p><button className={ui.secondary} onClick={() => void loadTracking()}><Icon name="route" size={16} />Consultar ubicación</button>{trackingError && <p className={ui.error} role="alert">{trackingError}</p>}{tracking && <p>Actualizada el {formatDate(tracking.updatedAt)} · <a href={`https://www.openstreetmap.org/?mlat=${tracking.latitude}&mlon=${tracking.longitude}#map=14/${tracking.latitude}/${tracking.longitude}`} target="_blank" rel="noopener noreferrer">Ver ubicación en el mapa</a></p>}</div>}
@@ -302,9 +359,9 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
 function DetailFields({ value, onChange }: { value: NewDetail; onChange: (value: NewDetail) => void }) {
   const update = <K extends keyof NewDetail>(key: K, next: NewDetail[K]) => onChange({ ...value, [key]: next });
   return <><label className={ui.field}>Descripción de la carga<input value={value.cargoDescription} onChange={(event) => update("cargoDescription", event.target.value)} required minLength={3} maxLength={255} placeholder="Ej. cajas de repuestos" /></label>
-    <label className={ui.field}>Peso de la carga (kg)<input type="number" min="0.01" step="any" value={value.unitWeight} onChange={(event) => update("unitWeight", event.target.value)} required placeholder="Ej. 25" /></label>
+    <div className={styles.weightFields}><label className={ui.field}>Peso de la carga<input type="number" min="0.01" step="any" value={value.unitWeight} onChange={(event) => update("unitWeight", event.target.value)} required placeholder="Ej. 25" /></label><div className={ui.field}><span>Unidad de medida</span><Select label="Unidad de medida" value={value.weightUnit} options={weightUnits} onChange={(next) => update("weightUnit", next as NewDetail["weightUnit"])} /></div></div>
     <label className={ui.field}>Dirección de entrega<input value={value.deliveryAddress} onChange={(event) => update("deliveryAddress", event.target.value)} required minLength={5} maxLength={255} placeholder="Ciudad, barrio y dirección" /></label>
-    <label className={ui.field}>Embalaje<Select label="Tipo de embalaje" value={value.typePackaging} options={packagingTypes} onChange={(next) => update("typePackaging", next)} /></label>
-    <label className={ui.field}>Monto estimado de la carga<input type="number" min="0.01" step="0.01" value={value.amount} onChange={(event) => update("amount", Number(event.target.value))} required /><small>La empresa podrá asignar una cotización antes del pago.</small></label>
+    <div className={ui.field}><span>Embalaje</span><Select label="Tipo de embalaje" value={value.typePackaging} options={packagingTypes} onChange={(next) => update("typePackaging", next)} /></div>
+    <p className={styles.priceNote}><Icon name="tag" size={16} />La empresa te enviará el precio del transporte para que lo revises antes de pagar.</p>
   </>;
 }

@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
+import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
 import { useClientSession } from "../ClientShell/ClientShell";
 import { ActionButton, DataState, Modal, PageHeader, Pagination, StatusBadge, workspaceStyles as ui } from "@/components/ui/Workspace/Workspace";
 import { cancelPayment, getPayments } from "../../services/clientApi";
@@ -73,7 +74,7 @@ export function ClientPayments() {
     <PageHeader eyebrow="TUS MOVIMIENTOS EN ORDEN" title="Pagos" description="Consulta los pagos simulados de tus pedidos y cancela los que aún aplican."
       action={<button className={ui.secondary} onClick={reload} disabled={loading}><Icon name="refresh" size={17} />Actualizar</button>} />
     {!user.idClient && <p className={ui.notice}>Completa tu perfil de cliente para consultar tus pagos. <Link href="/client/profile">Ir a mi perfil</Link></p>}
-    {notice && <p className={ui.notice} role="status">{notice}</p>}
+    {notice && <TimedNotice message={notice} tone="danger" onDismiss={() => setNotice("")} />}
     <div className={styles.summary}>
       <div><span>Total de registros</span><strong>{loading ? "—" : total}</strong></div>
       <div><span>Monto de la selección</span><strong>{loading ? "—" : formatMoney(summary)}</strong></div>

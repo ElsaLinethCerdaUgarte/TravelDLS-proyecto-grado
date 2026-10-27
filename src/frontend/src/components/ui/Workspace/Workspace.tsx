@@ -24,23 +24,24 @@ export function StatusBadge({ status, label }: { status: string; label?: string 
   </span>;
 }
 
-export function ActionButton({ children, icon, iconPlacement = "before", variant = "default", href, onClick, disabled = false, disabledReason }: {
+export function ActionButton({ children, icon, iconPlacement = "before", variant = "default", href, onClick, disabled = false, disabledReason, fullWidth = false }: {
   children: ReactNode;
   icon?: IconName;
   iconPlacement?: "before" | "after";
-  variant?: "default" | "subtle" | "danger";
+  variant?: "default" | "primary" | "subtle" | "danger";
   href?: string;
   onClick?: () => void;
   disabled?: boolean;
   disabledReason?: string;
+  fullWidth?: boolean;
 }) {
   const content = <>{icon && iconPlacement === "before" && <Icon name={icon} size={15} />}
     <span>{children}</span>{icon && iconPlacement === "after" && <Icon name={icon} size={15} />}</>;
   const className = styles.actionButton;
-  if (href && !disabled) return <Link href={href} className={className} data-variant={variant}>{content}</Link>;
-  if (href) return <span className={className} data-variant={variant} aria-disabled="true" title={disabledReason}>{content}</span>;
-  return <span className={styles.actionWrap} title={disabled ? disabledReason : undefined}>
-    <button type="button" className={className} data-variant={variant} onClick={onClick} disabled={disabled}>
+  if (href && !disabled) return <Link href={href} className={className} data-variant={variant} data-full-width={fullWidth}>{content}</Link>;
+  if (href) return <span className={className} data-variant={variant} data-full-width={fullWidth} aria-disabled="true" title={disabledReason}>{content}</span>;
+  return <span className={styles.actionWrap} data-full-width={fullWidth} title={disabled ? disabledReason : undefined}>
+    <button type="button" className={className} data-variant={variant} data-full-width={fullWidth} onClick={onClick} disabled={disabled}>
       {content}
     </button>
   </span>;

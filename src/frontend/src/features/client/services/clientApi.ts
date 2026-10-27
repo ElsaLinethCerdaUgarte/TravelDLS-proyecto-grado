@@ -80,15 +80,23 @@ export const createOrder = (idClient: number, idCompany: number) =>
 
 export const createDetail = (idOrder: number, data: NewDetail) => {
   const weight = Number(data.unitWeight);
-  if (!Number.isFinite(weight) || weight <= 0) throw new Error("Indica un peso válido en kilogramos.");
+  if (!Number.isFinite(weight) || weight <= 0) throw new Error("Indica un peso válido.");
+  const { cargoDescription, deliveryAddress, typePackaging, weightUnit } = data;
   return request<OrderDetail>("/order-details", {
     method: "POST",
-    body: JSON.stringify({ idOrder, ...data, quantity: 1, rate: data.amount / weight }),
+    body: JSON.stringify({ idOrder, cargoDescription, deliveryAddress, typePackaging, unitWeight: `${weight} ${weightUnit}`, amount: 0, quantity: 1 }),
   });
 };
 
-export const updateDetail = (id: number, data: NewDetail) =>
-  request<OrderDetail>(`/order-details/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const updateDetail = (id: number, data: NewDetail) => {
+  const weight = Number(data.unitWeight);
+  if (!Number.isFinite(weight) || weight <= 0) throw new Error("Indica un peso válido.");
+  const { cargoDescription, deliveryAddress, typePackaging, weightUnit } = data;
+  return request<OrderDetail>(`/order-details/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ cargoDescription, deliveryAddress, typePackaging, unitWeight: `${weight} ${weightUnit}` }),
+  });
+};
 
 export const deleteDetail = (id: number) =>
   request<void>(`/order-details/${id}`, { method: "DELETE" });

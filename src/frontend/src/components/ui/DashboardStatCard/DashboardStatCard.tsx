@@ -12,16 +12,18 @@ type Props = {
 
 export function DashboardStatCard({ icon, value, label, hint, href }: Props) {
   const content = <>
-    <span className={styles.top}>
-      <span className={styles.icon}><Icon name={icon} size={20} /></span>
-      {href && <Icon name="arrow" size={16} />}
+    <span className={styles.header}>
+      <strong className={styles.number}>{value}</strong>
+      {href && <Icon name="arrow" size={16} className={styles.direction} />}
     </span>
-    <strong className={styles.value}>{value}</strong>
-    <span className={styles.label}>{label}</span>
-    {hint && <small className={styles.hint}>{hint}</small>}
+    <span className={styles.caption}>{label}</span>
+    <span className={styles.footer}>
+      {hint && <small className={styles.hint}>{hint}</small>}
+      <span className={styles.symbol}><Icon name={icon} size={27} /></span>
+    </span>
   </>;
 
   return href
-    ? <Link href={href} className={styles.card}>{content}</Link>
-    : <div className={styles.card}>{content}</div>;
+    ? <Link href={href} className={styles.surface}>{content}</Link>
+    : <div className={styles.surface}>{content}</div>;
 }

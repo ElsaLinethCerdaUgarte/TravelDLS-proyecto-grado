@@ -18,6 +18,7 @@ export type Company = {
   businessName: string;
   ruc?: string;
   photoUrl?: string | null;
+  deliveredShipmentsCount?: number;
 };
 
 export type OrderDetail = {
@@ -68,11 +69,38 @@ export type Tracking = {
 
 export type NewDetail = {
   cargoDescription: string;
-  amount: number;
   unitWeight: string;
+  weightUnit: WeightUnit;
   deliveryAddress: string;
   typePackaging: string;
 };
+
+export type WeightUnit = "kg" | "t" | "lb" | "qq";
+
+export const weightUnits: { value: WeightUnit; label: string }[] = [
+  { value: "kg", label: "Kilogramos (kg)" },
+  { value: "t", label: "Toneladas (t)" },
+  { value: "lb", label: "Libras (lb)" },
+  { value: "qq", label: "Quintales (qq)" },
+];
+
+export function parseWeight(value: string): { quantity: string; unit: WeightUnit } {
+  const match = value.trim().match(/^(\d+(?:\.\d+)?)\s*(kg|t|tl|lb|qq)?$/i);
+  const unit = match?.[2]?.toLowerCase();
+  return {
+    quantity: match?.[1] || "1",
+    unit: unit === "t" || unit === "tl" ? "t" : unit === "lb" || unit === "qq" ? unit : "kg",
+  };
+}
+
+export function formatWeight(value: string): string {
+  if (!/^(\d+(?:\.\d+)?)\s*(kg|t|tl|lb|qq)?$/i.test(value.trim())) return value;
+  const { quantity, unit } = parseWeight(value);
+  const number = Number(quantity);
+  return Number.isFinite(number)
+    ? `${number.toLocaleString("es-NI", { maximumFractionDigits: 2 })} ${unit}`
+    : value;
+}
 
 export const packagingTypes = [
   { value: "pallet", label: "Pallet" },

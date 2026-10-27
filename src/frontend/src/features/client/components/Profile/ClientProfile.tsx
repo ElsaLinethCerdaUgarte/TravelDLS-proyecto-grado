@@ -4,6 +4,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
+import { PhotoUpload } from "@/components/ui/PhotoUpload/PhotoUpload";
+import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
 import { useClientSession } from "../ClientShell/ClientShell";
 import { DataState, PageHeader, workspaceStyles as ui } from "@/components/ui/Workspace/Workspace";
 import { getProfile, saveProfile } from "../../services/clientApi";
@@ -63,7 +65,7 @@ export function ClientProfile() {
 
   return <>
     <PageHeader eyebrow="TU INFORMACIÓN EN ORDEN" title="Mi perfil" description="Mantén al día los datos con los que solicitas tus envíos." />
-    {notice && <p className={ui.notice} role="status">{notice}</p>}
+    {notice && <TimedNotice message={notice} onDismiss={() => setNotice("")} />}
     {loading ? <div className={ui.card}><DataState loading empty="" /></div> : error && user.idClient && !profile ? <div className={ui.card}><DataState error={error} empty="" onRetry={() => { setLoading(true); setVersion((value) => value + 1); }} /></div> :
       <div className={styles.layout}>
         <aside className={`${ui.card} ${styles.identity}`}>
@@ -77,7 +79,7 @@ export function ClientProfile() {
           <div className={styles.formHeading}><div><h2 id="profile-form-title">Datos del cliente</h2><p>Esta información identifica tus solicitudes de transporte.</p></div><Icon name="shield" size={23} /></div>
           <form key={profile?.idClient ?? "new"} className={ui.form} onSubmit={(event) => void save(event)}>
             <div className={ui.formGrid}><label className={ui.field}>Nombre o razón social<input name="companyName" defaultValue={profile?.companyName || user.name} maxLength={255} required /></label><label className={ui.field}>Tipo de persona<Select label="Tipo de persona" value={typeClient} options={[{value:"natural",label:"Persona natural"},{value:"legal",label:"Persona jurídica"}]} onChange={(value) => setTypeClient(value as "legal" | "natural")} /></label></div>
-            <div className={ui.formGrid}><label className={ui.field}>Identificación o RUC<input name="ruc" defaultValue={profile?.ruc || ""} maxLength={20} required /></label><label className={ui.field}>Fotografía<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const selected = event.target.files?.[0] || null; setFile(selected); }} /><small>JPG, PNG o WebP; máximo 2 MB.</small></label></div>
+            <div className={ui.formGrid}><label className={ui.field}>Identificación o RUC<input name="ruc" defaultValue={profile?.ruc || ""} maxLength={20} required /></label><div className={ui.field}><PhotoUpload value={file} onChange={setFile} existingUrl={profile?.photoUrl} disabled={busy} /></div></div>
             <label className={ui.field}>Dirección<input name="address" defaultValue={profile?.address || ""} required /></label>
             <div className={styles.readonly}><div><span>Correo de acceso</span><strong>{user.email}</strong></div><div><span>Nombre de la cuenta</span><strong>{user.name}</strong></div></div>
             {error && <p className={ui.error} role="alert">{error}</p>}

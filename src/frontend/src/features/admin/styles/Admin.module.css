@@ -356,7 +356,6 @@
     transform: rotate(360deg);
   }
 }
-.success,
 .error {
   display: flex;
   align-items: center;
@@ -462,18 +461,6 @@
   color: #a596b7;
   font-size: 11px;
   line-height: 1.6;
-}
-.field input[type="file"] {
-  font-size: 11px;
-  padding: 9px;
-}
-.field input::file-selector-button {
-  background: #342443;
-  color: #d8bee9;
-  border: 0;
-  border-radius: 4px;
-  padding: 7px;
-  margin-right: 8px;
 }
 .required {
   color: #bf8be9;
@@ -836,7 +823,6 @@
   height: 100%;
 }
 .resourcePage > .pageHeading,
-.resourcePage > .success,
 .resourcePage > .footnote {
   flex-shrink: 0;
 }
