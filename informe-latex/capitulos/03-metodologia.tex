@@ -250,13 +250,13 @@ En cuanto a la organización tecnológica, el diseño documentado contempla una 
 \subsection{Metodología de Desarrollo}
 \label{sec:metodologia-desarrollo}
 
-El nivel táctico de TravelDLS corresponde al proceso de desarrollo del software y se integra en la fase 3 de la metodología de investigación en ciencia del diseño (Design Science Research Methodology, DSRM), denominada Diseño y Desarrollo del Artefacto. En esta fase, las decisiones de diseño y arquitectura derivadas de los meta-requisitos se utilizan como base para construir la plataforma web. Para organizar este proceso, se propone combinar Scrum y Extreme Programming (XP): Scrum se utilizará para planificar y distribuir el trabajo de forma incremental, mientras que XP orientará las prácticas de ingeniería hacia la calidad técnica del software \parencite{beck2000xp, schwaber2020scrum}.
+La metodología de desarrollo de TravelDLS se integra en la fase 3 de la metodología de investigación en ciencia del diseño (Design Science Research Methodology, DSRM), denominada Diseño y Desarrollo del Artefacto. En esta fase, las decisiones de diseño y arquitectura derivadas de los meta-requisitos se utilizan como base para construir la plataforma web. Para organizar este proceso, se propone combinar Scrum y Extreme Programming (XP). Scrum se utilizará para planificar y distribuir el trabajo de forma incremental, mientras que XP orientará las prácticas de ingeniería hacia la calidad técnica del software \parencite{beck2000xp, schwaber2020scrum}.
 
 Esta combinación se enmarca en el enfoque de investigación adoptado para TravelDLS. \textcite{peffers2007dsrm} describen la metodología DSRM como un proceso que comprende la identificación del problema, la definición de los objetivos de la solución, el diseño y desarrollo del artefacto, su demostración, su evaluación y la comunicación de los resultados. En consecuencia, el nivel táctico se concentra en la construcción del sistema a partir de los meta-requisitos establecidos, sin confundir la implementación de las funcionalidades con los resultados que deberán obtenerse durante su evaluación.
 
-El nivel táctico describe cómo se organizará la construcción del artefacto TravelDLS a partir de los siete meta-requisitos definidos en la Tabla~\ref{tab:meta-requisitos-traveldls}. Esta actividad se relaciona con la fase de diseño y desarrollo del artefacto dentro de la metodología de investigación en ciencia del diseño (DSRM).\textcite{peffers2007dsrm} presentan la DSRM como un proceso que vincula la identificación del problema, los objetivos de la solución, el diseño y desarrollo, la demostración, la evaluación y la comunicación de resultados. Por ello, las matrices de esta sección conectan las necesidades del sistema con las decisiones de diseño, las historias de usuario y las formas previstas de comprobar su cumplimiento.
+La metodología de desarrollo describe cómo se organizará la construcción del artefacto TravelDLS a partir de los siete meta-requisitos definidos en la Tabla~\ref{tab:meta-requisitos-traveldls}. Esta actividad se relaciona con la fase de diseño y desarrollo del artefacto dentro de la metodología de investigación en ciencia del diseño (DSRM).\textcite{peffers2007dsrm} presentan la DSRM como un proceso que vincula la identificación del problema, los objetivos de la solución, el diseño y desarrollo, la demostración, la evaluación y la comunicación de resultados. Por ello, las matrices de esta sección conectan las necesidades del sistema con las decisiones de diseño, las historias de usuario y las formas previstas de comprobar su cumplimiento.
 
-Para organizar el trabajo se propone Scrum como marco de gestión y se consideran prácticas técnicas de Extreme Programming (XP) para apoyar la calidad del código. Bahit (2012) explica cómo pueden combinarse ambos enfoques, utilizando Scrum para organizar el trabajo en iteraciones y XP para reforzar las prácticas de desarrollo. La aplicación de estas prácticas en TravelDLS deberá verificarse durante la implementación y mediante las pruebas correspondientes \parencite{beck2000xp, bahit2012scrum, schwaber2020scrum}.
+Para organizar el trabajo se propone Scrum como marco de gestión y se consideran prácticas técnicas de Extreme Programming (XP) para apoyar la calidad del código. \textcite{bahit2012scrum} explica cómo pueden combinarse ambos enfoques, utilizando Scrum para organizar el trabajo en iteraciones y XP para reforzar las prácticas de desarrollo. La aplicación de estas prácticas en TravelDLS deberá verificarse durante la implementación y mediante las pruebas correspondientes \parencite{beck2000xp, bahit2012scrum, schwaber2020scrum}.
 
 \subsubsection{Gestión del desarrollo mediante Scrum}
 
@@ -267,6 +267,24 @@ Para TravelDLS, se propone utilizar Scrum para organizar las actividades de desa
 El trabajo se organizará en Sprints de dos a tres semanas, según la planificación propuesta en el documento metodológico. Al inicio de cada Sprint se establecerá un objetivo y se seleccionarán los elementos del Product Backlog que se atenderán, considerando su prioridad, complejidad y dependencias técnicas. Durante la ejecución se desarrollarán las funcionalidades previstas y se realizarán las comprobaciones correspondientes. Al finalizar cada Sprint, se revisará el incremento obtenido y se identificarán ajustes para las iteraciones siguientes, mediante actividades de revisión y retrospectiva (Schwaber \& Sutherland, 2020).
 
 La planificación tendrá en cuenta la arquitectura tecnológica definida para TravelDLS: Next.js para el frontend, AdonisJS para el backend y PostgreSQL para la persistencia de datos. El backend se organizará mediante el patrón MVC y una capa de servicios para separar las responsabilidades de los controladores y la lógica de negocio. La distribución de actividades considerará las dependencias entre los componentes, de modo que la implementación de las interfaces se integre con los servicios y las estructuras de datos correspondientes.
+
+\subsubsection{Prácticas de ingeniería mediante Extreme Programming (XP)}
+
+Extreme Programming (XP) propone prácticas de ingeniería que buscan mejorar la calidad del software y facilitar su adaptación durante el desarrollo. \textcite{beck2000xp} describe este enfoque a partir de prácticas que promueven la retroalimentación frecuente, la simplicidad del diseño y la colaboración entre los integrantes del equipo. En TravelDLS se propone incorporar cuatro prácticas: desarrollo guiado por pruebas, refactorización continua, programación en pares y propiedad colectiva del código, e integración continua.
+
+\begin{itemize}
+	\item \textbf{Desarrollo guiado por pruebas (TDD):} El desarrollo guiado por pruebas (\textit{Test-Driven Development}, TDD) consiste en escribir una prueba automatizada antes del código funcional que permitirá satisfacerla. A partir del resultado de la prueba, se implementa la funcionalidad y se realizan los ajustes necesarios hasta que se cumpla el comportamiento esperado \parencite{beck2000xp}. En TravelDLS se propone aplicar esta práctica principalmente a las reglas de negocio del backend, como las validaciones de usuarios, la asignación de vehículos y conductores, la gestión de órdenes y el procesamiento de información relacionada con los recorridos. Las pruebas permitirán comprobar el comportamiento esperado de cada componente y detectar errores durante su implementación.
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{Refactorización continua:} La refactorización consiste en mejorar la estructura interna del código sin modificar su comportamiento observable \parencite{beck2000xp}. En TravelDLS se propone revisar y reorganizar el código conforme se incorporen nuevas funcionalidades, especialmente cuando existan instrucciones repetidas, responsabilidades mezcladas o procedimientos que puedan simplificarse. Esta práctica se aplicará a los componentes del frontend desarrollado con Next.js y a los módulos del backend construido con AdonisJS, procurando conservar la separación entre la interfaz, los controladores, la capa de servicios y el acceso a los datos.
+	
+	\item \textbf{Programación en pares y propiedad colectiva del código:} La programación en pares consiste en que dos integrantes colaboren en una misma tarea de programación, mientras que la propiedad colectiva permite que los integrantes del equipo puedan revisar y modificar diferentes partes del código, en lugar de limitar cada componente a una sola persona \parencite{beck2000xp}. Para TravelDLS se propone utilizar estas prácticas en funcionalidades que involucren varios componentes del sistema, como la autenticación, la gestión de órdenes y la optimización de recorridos. La colaboración facilitará el intercambio de conocimientos, la revisión de las soluciones implementadas y el mantenimiento del código. Su aplicación se ajustará a la disponibilidad de los integrantes y a la distribución de las tareas de cada sprint.
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{Integración continua:} \textcite{bahit2012scrum} explica que el objetivo de la integración continua es incorporar las nuevas funcionalidades a las existentes, procurando que los cambios realizados no afecten el funcionamiento de las funcionalidades anteriores. En TravelDLS, se propone aplicar esta práctica mediante la integración progresiva de los cambios en el código y la ejecución de pruebas que permitan comprobar que las nuevas funcionalidades se incorporen correctamente sin alterar las ya desarrolladas. Esto contribuirá a detectar errores durante el desarrollo y a mantener el funcionamiento conjunto de los componentes del sistema.
+\end{itemize}
 
 \subsubsection{Matriz de meta-diseños}
 
@@ -645,6 +663,8 @@ Las cadenas de búsqueda utilizadas para la revisión documental combinan palabr
 	\end{lstlisting}
 \end{quote}
 
+Las cadenas de búsqueda de este apartado se utilizaron para localizar investigaciones relacionadas con el seguimiento de cargas, la localización de vehículos y la gestión del transporte. La información obtenida sirvió principalmente para elaborar los antecedentes del proyecto, identificando sistemas e investigaciones que abordan la administración de fletes, el seguimiento en tiempo real y la coordinación de las operaciones logísticas. También contribuyó al marco teórico, especialmente en la definición de conceptos relacionados con la gestión logística, el seguimiento de cargas y la localización de vehículos.
+
 \textbf{2. Optimización de rutas y algoritmos}
 
 \begin{quote}
@@ -653,11 +673,13 @@ Las cadenas de búsqueda utilizadas para la revisión documental combinan palabr
 	\end{lstlisting}
 \end{quote}
 
+
 \begin{quote}
 	\begin{lstlisting}[style=cadenas]
 		("2-opt" OR "two-opt" OR "2 opt") AND ("traveling salesman problem" OR "vehicle routing problem" OR "route optimization") AND ("logistics" OR "transportation" OR "freight transport")
 	\end{lstlisting}
 \end{quote}
+Estas cadenas se utilizaron para buscar investigaciones sobre la planificación y optimización de rutas, con énfasis en el Problema del Agente Viajero (TSP), el algoritmo Vecino Más Cercano y el método 2-opt. Los resultados se emplearon en los antecedentes para identificar trabajos que han aplicado métodos de optimización en el transporte y la distribución de mercancías. Asimismo, sirvieron para desarrollar las bases teóricas del proyecto, explicar los métodos considerados y fundamentar la comparación de alternativas para la planificación de recorridos en TravelDLS.
 
 \textbf{3. Google OR-Tools y matrices de distancias}
 
@@ -673,6 +695,8 @@ Las cadenas de búsqueda utilizadas para la revisión documental combinan palabr
 	\end{lstlisting}
 \end{quote}
 
+Las cadenas de este apartado se utilizaron para investigar el funcionamiento y la aplicación de Google OR-Tools en problemas de optimización de rutas, así como el uso de matrices de distancias y tiempos de recorrido. La información recopilada contribuyó principalmente a las bases teóricas y a la fundamentación técnica del módulo de optimización de TravelDLS. Además, permitió identificar elementos necesarios para comparar diferentes recorridos y comprender cómo estas herramientas pueden apoyar la planificación de viajes con múltiples destinos.
+
 \textbf{4. Geolocalización y seguimiento mediante Mapbox}
 
 \begin{quote}
@@ -687,6 +711,8 @@ Las cadenas de búsqueda utilizadas para la revisión documental combinan palabr
 	\end{lstlisting}
 \end{quote}
 
+La consulta de documentación sobre Mapbox, sus API y SDK permitió conocer las herramientas disponibles para trabajar con mapas, geolocalización y seguimiento de vehículos. La información obtenida se consideró en la selección de tecnologías y en el análisis de la viabilidad técnica del proyecto, como parte de la evaluación de las herramientas que podrían apoyar las funcionalidades de ubicación y seguimiento de recorridos.
+
 \textbf{5. Almacenamiento de imágenes mediante Cloudinary}
 
 \begin{quote}
@@ -694,6 +720,8 @@ Las cadenas de búsqueda utilizadas para la revisión documental combinan palabr
 		("Cloudinary" OR "Cloudinary API") AND ("web application" OR "mobile application" OR platform OR system) AND (logistics OR transportation OR travel OR delivery OR tracking OR fleet) AND ("image storage" OR "image management" OR "media storage" OR "cloud storage")
 	\end{lstlisting}
 \end{quote}
+
+Las búsquedas sobre Cloudinary y el almacenamiento de imágenes y recursos multimedia en aplicaciones web permitieron consultar información sobre servicios para gestionar este tipo de archivos. Los resultados se consideraron en la selección de tecnologías y en el análisis de la viabilidad técnica de TravelDLS, con el propósito de evaluar una alternativa para el almacenamiento y la gestión de recursos gráficos asociados al sistema.
 
 En relación con el \hyperlink{plan-oe2}{OE2}, se definió la arquitectura del sistema y se elaboraron modelos para representar la estructura de TravelDLS y la organización de sus datos. Entre estos resultados se encuentra el diagrama entidad-relación, que representa las principales entidades de la plataforma, como usuarios, roles, empresas, vehículos, conductores, clientes, órdenes y pagos, así como las relaciones entre ellas. Estos modelos sirven de referencia para organizar la información y describir los componentes y procesos principales del sistema.
 
