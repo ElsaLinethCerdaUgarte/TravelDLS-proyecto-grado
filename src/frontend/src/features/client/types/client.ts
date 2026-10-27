@@ -59,6 +59,7 @@ export type Payment = {
   createdAt: string;
   order?: { idOrder: number; status: string } | null;
   company?: Company | null;
+  client?: { companyName?: string; user?: { name?: string } } | null;
 };
 
 export type Tracking = {
@@ -117,7 +118,7 @@ export const orderStatusLabels: Record<string, string> = {
   pendiente: "Pendiente",
   esperando_aprobacion: "Cotización recibida",
   aceptado: "Aceptado",
-  denegado: "Rechazado",
+  denegado: "Cotización rechazada",
   en_transito: "En tránsito",
   entregado: "Entregado",
   cancelado: "Cancelado",
@@ -132,15 +133,4 @@ export function matchesOrderFilter(status: string, filter: OrderFilter) {
   return status === filter;
 }
 
-export function formatDate(value?: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString("es-NI");
-}
-
-export function formatMoney(value: number) {
-  return new Intl.NumberFormat("es-NI", {
-    style: "currency",
-    currency: "NIO",
-  }).format(value);
-}
+export { formatDate, formatMoney } from "@/lib/format";

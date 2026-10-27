@@ -138,24 +138,37 @@ export default class OrdersController {
 
   /**
    * @assignPrice
-   * @description Assigns an amount/price to the first detail of an order
+   * @description Assigns a price to every detail of an order
    * @tag Orders
    * @paramPath id - Order ID - @type(number) @required
-   * @requestBody { "amount": "number" }
+   * @requestBody { "prices": [{ "idDetails": "number", "amount": "number" }] }
    * @responseBody 200 - <Order>
    * @responseBody 404 - Order not found
    * @responseBody 422 - Validation failed / Cannot assign price
    */
   async assignPrice({ params, request, response }: HttpContext) {
     const idOrder = params.id
-    const amount = request.input('amount')
-
-    if (amount === undefined || amount === null) {
-      return response.unprocessableEntity({ message: 'The amount field is required.' })
+    const prices = request.input('prices')
+    if (
+      !Array.isArray(prices) ||
+      prices.some(
+        (price) =>
+          !Number.isInteger(Number(price?.idDetails)) || !Number.isFinite(Number(price?.amount))
+      )
+    ) {
+      return response.unprocessableEntity({ message: 'Indica el precio de cada carga.' })
     }
 
     try {
-      return response.ok(await this.orderService.assignPrice(idOrder, amount))
+      return response.ok(
+        await this.orderService.assignPrice(
+          idOrder,
+          prices.map((price) => ({
+            idDetails: Number(price.idDetails),
+            amount: Number(price.amount),
+          }))
+        )
+      )
     } catch (error: any) {
       if (
         error.message === 'Order not found.' ||
@@ -181,8 +194,8 @@ export default class OrdersController {
     const idOrder = params.id
     const accepted = request.input('accepted')
 
-    if (accepted === undefined || accepted === null) {
-      return response.unprocessableEntity({ message: 'The accepted field is required.' })
+    if (typeof accepted !== 'boolean') {
+      return response.unprocessableEntity({ message: 'The accepted field must be a boolean.' })
     }
 
     try {

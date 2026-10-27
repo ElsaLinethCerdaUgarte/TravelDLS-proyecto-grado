@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { AnimatedIcon } from "@/components/ui/AnimatedIcon/AnimatedIcon";
@@ -18,6 +19,8 @@ export function ClientDashboard() {
   const [loading, setLoading] = useState(Boolean(user.idClient));
   const [error, setError] = useState("");
   const [version, setVersion] = useState(0);
+  const refreshSilently = useCallback(() => setVersion(value => value + 1), []);
+  useAutoRefresh(refreshSilently, Boolean(user.idClient));
 
   useEffect(() => {
     if (!user.idClient) return;

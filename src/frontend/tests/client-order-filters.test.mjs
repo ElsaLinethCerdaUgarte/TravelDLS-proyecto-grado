@@ -4,7 +4,8 @@ import { readFile } from "node:fs/promises";
 import ts from "typescript";
 
 const source = await readFile(new URL("../src/features/client/types/client.ts", import.meta.url), "utf8");
-const compiled = ts.transpileModule(source, {
+const standaloneSource = source.replace(/export \{ formatDate, formatMoney \} from "@\/lib\/format";/, "");
+const compiled = ts.transpileModule(standaloneSource, {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
 }).outputText;
 const { matchesOrderFilter } = await import(

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
 import { DetailCard } from "@/components/ui/DetailCard/DetailCard";
 import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { CompanyChoiceCard } from "./CompanyChoiceCard";
 import { useClientSession } from "../ClientShell/ClientShell";
 import { ActionButton, DataState, Modal, PageHeader, Pagination, StatusBadge, workspaceStyles as ui } from "@/components/ui/Workspace/Workspace";
@@ -70,6 +71,9 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
   const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer">("transfer");
   const [tracking, setTracking] = useState<Tracking | null>(null);
   const [trackingError, setTrackingError] = useState("");
+
+  const refreshSilently = useCallback(() => setVersion((value) => value + 1), []);
+  useAutoRefresh(refreshSilently, Boolean(user.idClient));
 
   useEffect(() => {
     if (!user.idClient) return;
@@ -207,15 +211,13 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     } finally { setSaving(false); }
   }
 
-  async function replyPrice(accepted: boolean) {
+  async function rejectPrice() {
     if (!selected || saving) return;
     setSaving(true); setActionError("");
     try {
-      const updated = await respondPrice(selected.idOrder, accepted);
+      const updated = await respondPrice(selected.idOrder, false);
       setSelected(updated);
-      setNotice(accepted
-        ? { message: "Cotización aceptada. El pedido continuará sin pago simulado." }
-        : { message: "Cotización rechazada.", tone: "danger" });
+      setNotice({ message: "Cotización rechazada. La empresa podrá enviar una nueva propuesta.", tone: "danger" });
       reload();
     } catch (cause) { setActionError(cause instanceof Error ? cause.message : "No se pudo responder a la cotización."); }
     finally { setSaving(false); }
@@ -344,8 +346,9 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
         {selected.status === "pendiente" && !addMode && <div className={styles.addDetailAction}><ActionButton icon="plus" onClick={() => { setRecoveryDraft(blankDetail()); setEditMode(false); setAddMode(true); setActionError(""); }}>Añadir carga al pedido</ActionButton></div>}
         {selected.status === "pendiente" && addMode && <form className={`${ui.form} ${styles.addDetailForm}`} onSubmit={(event) => void addToOrder(event)}><h3 className={styles.subhead}>Nueva carga para el pedido #{selected.idOrder}</h3><DetailFields value={recoveryDraft} onChange={setRecoveryDraft} /><div className={ui.actions}><button type="button" className={ui.secondary} disabled={saving} onClick={() => setAddMode(false)}>Cancelar</button><button className={ui.primary} disabled={saving}>{saving ? "Guardando…" : "Guardar carga"}</button></div></form>}
         {quotedAmount > 0 && <div className={styles.orderTotal}><span>Monto del pedido<small>Precio total del transporte</small></span><strong>{formatMoney(quotedAmount)}</strong></div>}
-        {selected.status === "esperando_aprobacion" && <div className={styles.quote}><p>La empresa envió una cotización. Puedes aceptarla sin registrar pago, rechazarla o completar un pago simulado que también aceptará el pedido.</p><div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => void replyPrice(false)}>Rechazar</button><button className={ui.secondary} disabled={saving} onClick={() => void replyPrice(true)}>Aceptar sin pago</button>{quotedAmount > 0 && <button className={ui.primary} disabled={saving} onClick={() => { setActionError(""); setPaymentOpen(true); }}>Pagar y aceptar</button>}</div></div>}
-        {selected.payment && <p className={ui.notice}>Pago registrado: {selected.payment.referenceCode}</p>}
+        {selected.status === "esperando_aprobacion" && <div className={styles.quote}><p>La empresa envió una cotización para todas tus cargas. Puedes rechazarla o completar un pago simulado para aceptar el pedido.</p><div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => void rejectPrice()}>Rechazar</button>{quotedAmount > 0 && <button className={ui.primary} disabled={saving} onClick={() => { setActionError(""); setPaymentOpen(true); }}>Pagar y aceptar</button>}</div></div>}
+        {selected.status === "aceptado" && selected.payment?.status !== "pagado" && quotedAmount > 0 && <div className={styles.quote}><p>Este pedido fue aceptado sin pago. Registra el pago para que la empresa pueda asignar un conductor.</p><button className={ui.primary} disabled={saving} onClick={() => {setActionError("");setPaymentOpen(true);}}>Pagar pedido</button></div>}
+        {selected.payment?.status === "pagado" && <p className={ui.notice}>Pago registrado: {selected.payment.referenceCode}</p>}
         {selected.status === "en_transito" && <div className={styles.quote}><p>Consulta la última ubicación reportada para tu pedido.</p><button className={ui.secondary} onClick={() => void loadTracking()}><Icon name="route" size={16} />Consultar ubicación</button>{trackingError && <p className={ui.error} role="alert">{trackingError}</p>}{tracking && <p>Actualizada el {formatDate(tracking.updatedAt)} · <a href={`https://www.openstreetmap.org/?mlat=${tracking.latitude}&mlon=${tracking.longitude}#map=14/${tracking.latitude}/${tracking.longitude}`} target="_blank" rel="noopener noreferrer">Ver ubicación en el mapa</a></p>}</div>}
       </>}
       {editMode && <form className={ui.form} onSubmit={(event) => void saveEdit(event)}><h3 className={styles.subhead}>Editar carga</h3><DetailFields value={editDraft} onChange={setEditDraft} /><div className={ui.actions}><button type="button" className={ui.secondary} onClick={() => setEditMode(false)}>Cancelar</button><button className={ui.primary} disabled={saving}>Guardar cambios</button></div></form>}

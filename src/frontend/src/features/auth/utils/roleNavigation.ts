@@ -19,16 +19,5 @@ export function getRoleLabel(role: UserRole): string {
 }
 
 export function getRoleDestination(role: UserRole): string | null {
-  if (role === "platform_admin" || role === "client") return roleDestinations[role];
-  const dashboardBaseUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL?.trim();
-  if (!dashboardBaseUrl) return null;
-
-  try {
-    const baseUrl = dashboardBaseUrl.endsWith("/")
-      ? dashboardBaseUrl
-      : `${dashboardBaseUrl}/`;
-    return new URL(roleDestinations[role].replace(/^\//, ""), baseUrl).toString();
-  } catch {
-    return null;
-  }
+  return roleDestinations[role];
 }
