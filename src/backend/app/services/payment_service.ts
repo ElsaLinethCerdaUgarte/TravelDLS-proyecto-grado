@@ -201,6 +201,10 @@ export default class PaymentService {
         throw new Error('No se puede cancelar un pago de una orden entregada o en transito.')
       }
 
+      if (orderStatus === OrderStatus.ACCEPTED && payment.status === PaymentStatus.PAID) {
+        throw new Error('No se puede cancelar el pago de un pedido aceptado y pagado.')
+      }
+
       payment.status = PaymentStatus.CANCELLED
       payment.cancellationReason = reason
 

@@ -37,6 +37,13 @@ export default class OrderService {
         throw new Error('No se puede iniciar una orden anulada.')
       }
 
+      if (
+        orderAnterior.payment?.status === PaymentStatus.PAID &&
+        (data.status === OrderStatus.ANNULLED || data.status === OrderStatus.CANCELLED)
+      ) {
+        throw new Error('No se puede anular un pedido que ya fue pagado.')
+      }
+
       order.merge(data)
       await order.save()
 
@@ -82,7 +89,10 @@ export default class OrderService {
       if (error.code === 'E_ROW_NOT_FOUND' || error.message === 'Order not found.') {
         throw new Error('Order not found.')
       }
-      if (error.message === 'No se puede iniciar una orden anulada.') {
+      if (
+        error.message === 'No se puede iniciar una orden anulada.' ||
+        error.message === 'No se puede anular un pedido que ya fue pagado.'
+      ) {
         throw error
       }
       logger.error({ err: error }, 'Failed to update order')

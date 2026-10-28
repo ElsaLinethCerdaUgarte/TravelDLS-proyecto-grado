@@ -4,5 +4,6 @@
 .stack{display:grid;gap:18px}.toolbar{display:flex;align-items:end;gap:14px;flex-wrap:wrap;margin-bottom:20px}.toolbar>label{flex:1;min-width:180px}.toolbar>div{min-width:180px}
 .quoteForm{display:grid;gap:14px;padding:20px;border:1px solid #49345f;border-radius:14px;background:#1c1628}.quoteForm h3{margin:0;color:#eadcf7;font-size:18px}.quoteForm p{margin:0}.quoteForm strong{color:#cfa5ed}.quoteForm>span{justify-self:start}
 .profile{max-width:800px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.caption{color:#b19dc9;font-size:11px;letter-spacing:1.5px}.section{margin-top:28px}.section h2{font-size:18px}.intro{color:#a99bb7;line-height:1.7}.wide{min-width:160px}
+.fleetStatus{display:grid;gap:7px;justify-items:start;max-width:220px}.fleetStatus span:last-child:not(:first-child){color:#b8a8c5;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
 @media(max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.stats{gap:10px}.hero{padding:20px}.hero h2{font-size:23px}.hero>svg{display:none}.toolbar{align-items:stretch}.toolbar>div{width:100%}}

@@ -1,7 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
 import TruckService from '#services/truck_services'
-import { createTruckValidator, updateTruckValidator } from '#validators/truck_validator'
+import {
+  createTruckValidator,
+  updateTruckValidator,
+  reportTruckMaintenanceValidator,
+} from '#validators/truck_validator'
 
 @inject()
 export default class TrucksController {
@@ -27,8 +31,8 @@ export default class TrucksController {
   }
 
   async reportMyTruckMaintenance({ auth, request, response }: HttpContext) {
-    const status = request.input('status')
-    if (status !== 'mantenimiento') {
+    const payload = await request.validateUsing(reportTruckMaintenanceValidator)
+    if (payload.status !== 'mantenimiento') {
       return response.unprocessableEntity({
         message: 'Only mantenimiento status can be reported by drivers.',
       })
@@ -42,7 +46,7 @@ export default class TrucksController {
       const idDriver = user.driver?.idDriver
       if (!idDriver) return response.notFound({ message: 'Driver profile not found.' })
 
-      const truck = await this.truckService.reportMaintenanceForDriver(idDriver)
+      const truck = await this.truckService.reportMaintenanceForDriver(idDriver, payload.reason)
       return response.ok(truck)
     } catch (error: any) {
       if (error.message === 'Assigned truck not found.') {

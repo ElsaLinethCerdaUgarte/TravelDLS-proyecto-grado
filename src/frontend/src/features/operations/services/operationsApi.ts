@@ -35,7 +35,7 @@ export async function allPages<T>(path: string, signal?: AbortSignal): Promise<T
   return rows;
 }
 export type Driver = { idDriver: number; idCompany: number; license: string; passport: string; status: string; photoUrl?: string; user?: { name: string; email: string }; company?: { businessName: string } };
-export type Truck = { idTruck: number; plate: string; chassis: string; status: string; idDriver: number; idCategory: number; driver?: Driver; category?: { nameCategory: string }; company?: { businessName: string } };
+export type Truck = { idTruck: number; plate: string; chassis: string; status: string; maintenanceReason?: string | null; idDriver: number; idCategory: number; driver?: Driver; category?: { nameCategory: string }; company?: { businessName: string } };
 export type CompanyProfile = { idCompany: number; businessName: string; ruc: string; photoUrl?: string };
 export type OperationalOrder = Order & { client?: { companyName: string; user?: { name: string } } };
 export const driverLabels: Record<string, string> = { available: "Disponible", ontrip: "En viaje", offline: "Desconectado", inactive: "Inactivo" };

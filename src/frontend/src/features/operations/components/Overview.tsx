@@ -4,7 +4,7 @@ import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useOperationalSession } from "@/components/ui/OperationalShell/OperationalShell";
 import { DashboardStatCard } from "@/components/ui/DashboardStatCard/DashboardStatCard";
 import { Icon } from "@/components/ui/Icon/Icon";
-import { ActionButton, DataState, PageHeader, StatusBadge } from "@/components/ui/Workspace/Workspace";
+import { ActionButton, DataState, PageHeader, StatusBadge, workspaceStyles as w } from "@/components/ui/Workspace/Workspace";
 import { DetailCard } from "@/components/ui/DetailCard/DetailCard";
 import { allPages, type OperationalOrder } from "../services/operationsApi";
 import { orderStatusLabels, formatDate } from "@/features/client/types/client";
@@ -35,7 +35,8 @@ export function Overview() {
     <section className={s.hero}><div><span className={s.caption}>TRAVELDLS · CONECTAMOS DESTINOS</span><h2>Hola, {user.name.split(" ")[0]}.</h2>
       <p>{company ? "Hagamos que todo siga en movimiento. Coordina tu flota, responde a tus clientes y prepara el próximo envío." : "El próximo destino está en tus manos. Revisa tus viajes asignados, tu camión y mantén informados a tus clientes."}</p>
       <ActionButton href={destination} variant="primary" icon="arrow" iconPlacement="after">{company ? "Gestionar pedidos" : "Ver mis viajes"}</ActionButton></div><Icon name="route" size={100} /></section>
-    {loading || error ? <DataState loading={loading} error={error} empty="" onRetry={reload} /> : <>
+    {error && orders.length > 0 && !loading && <p className={w.error} role="status">No se pudo actualizar la vista general. Se muestran los últimos datos disponibles.</p>}
+    {loading || (error && !orders.length) ? <DataState loading={loading} error={error} empty="" onRetry={reload} /> : <>
       <div className={s.stats}>
         <DashboardStatCard icon="box" value={orders.length} label={company ? "Pedidos totales" : "Viajes asignados"} href={destination} />
         <DashboardStatCard icon="route" value={orders.filter(o => ["pendiente","esperando_aprobacion","aceptado"].includes(o.status)).length} label="Por gestionar" href={destination} />

@@ -63,8 +63,8 @@ export type Payment = {
 };
 
 export type Tracking = {
-  latitude: number;
-  longitude: number;
+  latitude: number | string;
+  longitude: number | string;
   updatedAt: string;
 };
 

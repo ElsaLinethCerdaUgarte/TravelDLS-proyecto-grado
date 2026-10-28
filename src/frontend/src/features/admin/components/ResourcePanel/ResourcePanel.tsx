@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
 import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { modules, labels } from "../../config/modules";
 import { listResource, deleteResource } from "../../services/adminApi";
 import {
@@ -46,12 +47,20 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
   const [removing, setRemoving] = useState<Row | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+  const requestKey = JSON.stringify([resource, page, perPage, search]);
+  const lastRequestKey = useRef<string | null>(null);
+  const refreshSilently = useCallback(() => setVersion(value => value + 1), []);
+  useAutoRefresh(refreshSilently, !form && !removing && !deleteBusy);
 
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
-      setLoading(true);
-      setError("");
+      if (lastRequestKey.current !== requestKey) {
+        lastRequestKey.current = requestKey;
+        setLoading(true);
+        setData(null);
+        setError("");
+      }
       try {
         const result = await listResource(
           resource,
@@ -63,7 +72,11 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
         if (!controller.signal.aborted) {
           if (page > result.meta.lastPage && result.meta.lastPage > 0)
             setPage(result.meta.lastPage);
-          else setData(result);
+          else {
+            setData(result);
+            setDetail(current => current ? result.data.find(row => textAt(row, config.id) === textAt(current, config.id)) || current : null);
+            setError("");
+          }
         }
       } catch (cause) {
         if (!controller.signal.aborted)
@@ -78,7 +91,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
     }
     void load();
     return () => controller.abort();
-  }, [resource, page, search, version, perPage]);
+  }, [resource, page, search, version, perPage, requestKey, config.id]);
 
   function find(event: FormEvent) {
     event.preventDefault();
@@ -93,7 +106,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
       await deleteResource(resource, textAt(removing, config.id));
       setRemoving(null);
       setNotice({ message: "Registro eliminado correctamente.", tone: "danger" });
-      setVersion(version + 1);
+      refreshSilently();
     } catch (cause) {
       setDeleteError(
         cause instanceof Error ? cause.message : "No se pudo eliminar.",
@@ -120,6 +133,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
         </button>
       </div>
       {notice && <TimedNotice message={notice.message} tone={notice.tone} onDismiss={() => setNotice(null)} />}
+      {error && data && <p className={styles.refreshWarning} role="status">No se pudo actualizar el listado. Se muestran los últimos datos disponibles.</p>}
       <section
         className={`${styles.card} ${styles.listCard}`}
         aria-label={`Listado de ${config.title.toLowerCase()}`}
@@ -150,7 +164,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
             )}
             <button
               className={`${styles.iconButton} ${loading ? styles.refreshing : ""}`}
-              onClick={() => setVersion(version + 1)}
+              onClick={refreshSilently}
               disabled={loading}
               aria-label="Actualizar listado"
             >
@@ -164,14 +178,14 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
             <h2>Cargando {config.title.toLowerCase()}</h2>
             <p>Estamos consultando la información más reciente.</p>
           </div>
-        ) : error ? (
+        ) : error && !data ? (
           <div className={styles.empty} role="alert">
             <Icon name="help" size={30} />
             <h2>No pudimos cargar los datos</h2>
             <p>{error}</p>
             <button
               className={styles.secondary}
-              onClick={() => setVersion(version + 1)}
+              onClick={refreshSilently}
             >
               Reintentar
             </button>
@@ -319,7 +333,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
           <span>
             {loading
               ? "Cargando…"
-              : error
+              : error && !data
                 ? "—"
                 : `${data?.data.length ? (page - 1) * perPage + 1 : 0}–${Math.min(page * perPage, data?.meta.total ?? 0)} de ${data?.meta.total ?? 0} registros`}
           </span>
@@ -327,7 +341,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
             <button
               className={styles.secondary}
               onClick={() => setPage(page - 1)}
-              disabled={loading || Boolean(error) || page <= 1}
+              disabled={loading || !data || page <= 1}
             >
               Anterior
             </button>
@@ -338,7 +352,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
               className={styles.secondary}
               onClick={() => setPage(page + 1)}
               disabled={
-                loading || Boolean(error) || page >= (data?.meta.lastPage ?? 1)
+                loading || !data || page >= (data?.meta.lastPage ?? 1)
               }
             >
               Siguiente
@@ -361,7 +375,7 @@ export function ResourcePanel({ resource }: { resource: AdminResource }) {
           onSaved={() => {
             setForm(null);
             setNotice({ message: "Información guardada correctamente." });
-            setVersion(version + 1);
+            refreshSilently();
           }}
         />
       )}

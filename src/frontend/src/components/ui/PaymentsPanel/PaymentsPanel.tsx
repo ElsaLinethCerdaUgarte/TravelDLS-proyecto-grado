@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
 import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { ActionButton, DataState, Modal, PageHeader, Pagination, StatusBadge, workspaceStyles as ui } from "@/components/ui/Workspace/Workspace";
 import { formatDate, formatMoney } from "@/lib/format";
 import styles from "./PaymentsPanel.module.css";
@@ -12,6 +13,7 @@ import styles from "./PaymentsPanel.module.css";
 type Payment = {
   idPayment: number; idOrder: number; amount: number; status: string; method: "card" | "transfer";
   referenceCode: string; last4?: string | null; paidAt?: string | null; createdAt: string;
+  billingEmail?: string; transferReference?: string | null; cancellationReason?: string | null;
   order?: { status: string } | null;
   company?: { businessName: string } | null;
   client?: { companyName?: string; user?: { name?: string } } | null;
@@ -37,11 +39,13 @@ export function PaymentsPanel({ mode, load, cancel, name, enabled = true }: Prop
   const [target, setTarget] = useState<Payment | null>(null), [detail, setDetail] = useState<Payment | null>(null), [busy, setBusy] = useState(false), [actionError, setActionError] = useState("");
 
   const reload = useCallback(() => { setLoading(true); setVersion(value => value + 1); }, []);
+  const refreshSilently = useCallback(() => setVersion(value => value + 1), []);
+  useAutoRefresh(refreshSilently, enabled && !loading && !busy);
   useEffect(() => {
     if (!enabled) return;
     const controller = new AbortController();
     load(page, perPage, { status: status || undefined, method: method || undefined, search: search || undefined }, controller.signal)
-      .then(result => { if (controller.signal.aborted) return; setPayments(result.data); setTotal(result.meta.total); setLastPage(Math.max(1, result.meta.lastPage)); setSummary(Number(result.summary?.totalAmount ?? 0)); setError(""); setLoading(false); })
+      .then(result => { if (controller.signal.aborted) return; setPayments(result.data); setDetail(current => current ? result.data.find(payment => payment.idPayment === current.idPayment) || current : null); setTotal(result.meta.total); setLastPage(Math.max(1, result.meta.lastPage)); setSummary(Number(result.summary?.totalAmount ?? 0)); setError(""); setLoading(false); if (page > result.meta.lastPage) setPage(Math.max(1, result.meta.lastPage)); })
       .catch(cause => { if (controller.signal.aborted) return; setError(cause instanceof Error ? cause.message : "No pudimos cargar los pagos."); setLoading(false); });
     return () => controller.abort();
   }, [enabled, load, page, perPage, status, method, search, version]);
@@ -72,7 +76,8 @@ export function PaymentsPanel({ mode, load, cancel, name, enabled = true }: Prop
         <form className={styles.search} onSubmit={event => { event.preventDefault(); setSearch(draftSearch.trim()); setPage(1); reload(); }}><Icon name="search" size={17} /><input value={draftSearch} onChange={event => setDraftSearch(event.target.value)} aria-label="Buscar referencia" placeholder="Buscar referencia…" /><button type="submit" className={ui.secondary}>Buscar</button></form>
         <div className={styles.filters}><Select label="Filtrar por estado" value={status} options={[{value:"",label:"Todos los estados"},{value:"pagado",label:"Pagados"},{value:"cancelado",label:"Cancelados"},{value:"pendiente",label:"Pendientes"},{value:"fallido",label:"Fallidos"}]} onChange={value => {setStatus(value);setPage(1);setLoading(true);}} /><Select label="Filtrar por método" value={method} options={[{value:"",label:"Todos los métodos"},{value:"card",label:"Tarjeta"},{value:"transfer",label:"Transferencia"}]} onChange={value => {setMethod(value);setPage(1);setLoading(true);}} /></div>
       </div>
-      {loading || error || payments.length === 0 ? <DataState loading={loading} error={error} empty="No hay pagos para mostrar." onRetry={reload} /> :
+      {error && payments.length > 0 && !loading && <p className={ui.error} role="status">No se pudieron actualizar los pagos. Se muestran los últimos datos disponibles.</p>}
+      {loading || payments.length === 0 ? <DataState loading={loading} error={error} empty="No hay pagos para mostrar." onRetry={reload} /> :
         <div className={ui.tableWrap}><table className={ui.table}><thead><tr><th>Referencia</th><th>Pedido</th><th>{mode === "client" ? "Empresa" : "Cliente"}</th><th>Monto</th><th>Método</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr></thead><tbody>{payments.map(payment => <tr key={payment.idPayment}><td><strong>{payment.referenceCode}</strong></td><td>#{payment.idOrder}</td><td>{mode === "client" ? payment.company?.businessName || "—" : payment.client?.companyName || payment.client?.user?.name || "—"}</td><td>{formatMoney(Number(payment.amount))}</td><td>{payment.method === "card" ? `Tarjeta ${payment.last4 ? `•••• ${payment.last4}` : ""}` : "Transferencia"}</td><td><StatusBadge status={payment.status} label={paymentStatusLabels[payment.status]} /></td><td>{formatDate(payment.paidAt || payment.createdAt)}</td><td>{mode === "client" ? <ActionButton icon="close" variant="danger" disabled={!canCancel(payment)} disabledReason={cancelDisabledReason(payment)} onClick={() => {setTarget(payment);setActionError("");}}>Cancelar</ActionButton> : <ActionButton icon="eye" onClick={() => setDetail(payment)}>Ver detalles</ActionButton>}</td></tr>)}</tbody></table></div>}
       <Pagination page={page} lastPage={lastPage} total={total} perPage={perPage} disabled={loading} onPage={value => {setPage(value);setLoading(true);}} onPerPage={value => {setPerPage(value);setPage(1);setLoading(true);}} />
     </section>
@@ -82,15 +87,52 @@ export function PaymentsPanel({ mode, load, cancel, name, enabled = true }: Prop
         {actionError && <p className={ui.error} role="alert">{actionError}</p>}
         <div className={ui.actions}><button className={ui.secondary} type="button" disabled={busy} onClick={() => setTarget(null)}>Volver</button><button className={ui.danger} disabled={busy}>{busy ? "Cancelando…" : "Confirmar cancelación"}</button></div></form>
     </Modal>}
-    {detail && <Modal title={`Pago #${detail.idPayment}`} eyebrow="CONTROL DE INGRESOS" onClose={() => setDetail(null)}><div className={ui.form}><p>Referencia: <strong>{detail.referenceCode}</strong></p><p>Pedido: #{detail.idOrder}</p><p>Monto: <strong>{formatMoney(Number(detail.amount))}</strong></p><p>Método: {detail.method === "card" ? "Tarjeta" : "Transferencia"}</p><p>Estado: {paymentStatusLabels[detail.status] || detail.status}</p><p>Fecha: {formatDate(detail.paidAt || detail.createdAt)}</p><ActionButton onClick={() => setDetail(null)}>Cerrar</ActionButton></div></Modal>}
+    {detail && <Modal title={`Pago #${detail.idPayment}`} eyebrow="CONTROL DE INGRESOS" onClose={() => setDetail(null)}>
+      <PaymentDetail payment={detail} onClose={() => setDetail(null)} />
+    </Modal>}
     {mode === "client" && <p className={styles.footnote}>Sesión de {name}. Los pagos mostrados corresponden a tu cuenta de cliente.</p>}
   </>;
 }
 
-function canCancel(payment: Payment) { return payment.status !== "cancelado" && !["entregado", "en_transito"].includes(payment.order?.status || ""); }
+function PaymentDetail({ payment, onClose }: { payment: Payment; onClose: () => void }) {
+  const method = payment.method === "card"
+    ? `Tarjeta${payment.last4 ? ` ···· ${payment.last4}` : ""}`
+    : "Transferencia";
+
+  return <div className={styles.detailCard}>
+    <section className={styles.detailHero} data-status={payment.status} aria-label="Resumen del pago">
+      <Icon name="tag" size={96} className={styles.detailWatermark} />
+      <div className={styles.detailHeroTop}>
+        <span className={styles.detailIcon}><Icon name="tag" size={22} /></span>
+        <StatusBadge status={payment.status} label={paymentStatusLabels[payment.status]} />
+      </div>
+      <span className={styles.detailEyebrow}>Monto registrado</span>
+      <strong className={styles.detailAmount}>{formatMoney(Number(payment.amount))}</strong>
+      <span className={styles.detailHeroCaption}>Pedido #{payment.idOrder} · {method}</span>
+    </section>
+
+    <div className={styles.detailReference}>
+      <span>Referencia del pago</span>
+      <strong>{payment.referenceCode}</strong>
+    </div>
+
+    <dl className={styles.detailFacts}>
+      <div><dt><Icon name="box" size={16} />Pedido</dt><dd>#{payment.idOrder}</dd></div>
+      <div><dt><Icon name="calendar" size={16} />Fecha</dt><dd>{formatDate(payment.paidAt || payment.createdAt)}</dd></div>
+      <div><dt><Icon name="tag" size={16} />Método</dt><dd>{method}</dd></div>
+      <div><dt><Icon name="user" size={16} />Cliente</dt><dd>{payment.client?.companyName || payment.client?.user?.name || "—"}</dd></div>
+      {payment.billingEmail && <div className={styles.detailFactWide}><dt><Icon name="mail" size={16} />Correo de facturación</dt><dd>{payment.billingEmail}</dd></div>}
+      {payment.cancellationReason && <div className={styles.detailFactWide}><dt><Icon name="help" size={16} />Motivo de cancelación</dt><dd>{payment.cancellationReason}</dd></div>}
+    </dl>
+    <div className={styles.detailFooter}><ActionButton onClick={onClose}>Cerrar</ActionButton></div>
+  </div>;
+}
+
+function canCancel(payment: Payment) { return payment.status !== "cancelado" && !["entregado", "en_transito"].includes(payment.order?.status || "") && !(payment.status === "pagado" && payment.order?.status === "aceptado"); }
 function cancelDisabledReason(payment: Payment) {
   if (payment.status === "cancelado") return "Este pago ya fue cancelado.";
   if (payment.order?.status === "entregado") return "No se puede cancelar un pago de un pedido entregado.";
   if (payment.order?.status === "en_transito") return "No se puede cancelar un pago de un pedido en tránsito.";
+  if (payment.status === "pagado" && payment.order?.status === "aceptado") return "No se puede cancelar el pago de un pedido aceptado y pagado.";
   return undefined;
 }
