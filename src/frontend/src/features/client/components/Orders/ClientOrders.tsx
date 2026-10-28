@@ -1,21 +1,24 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { Select } from "@/components/ui/Select/Select";
 import { DetailCard } from "@/components/ui/DetailCard/DetailCard";
 import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { CompanyChoiceCard } from "./CompanyChoiceCard";
+import { PaymentCheckout, type PaymentSubmission } from "./PaymentCheckout";
+import { ClientTripMap } from "./ClientTripMap";
 import { useClientSession } from "../ClientShell/ClientShell";
 import { ActionButton, DataState, Modal, PageHeader, Pagination, StatusBadge, workspaceStyles as ui } from "@/components/ui/Workspace/Workspace";
 import {
-  ClientApiError, createDetail, createOrder, deleteDetail, getCompanies, getOrder,
-  getOrders, getTracking, respondPrice, simulatePayment, updateDetail,
+  createDetail, createOrder, deleteDetail, getCompanies, getOrder,
+  getOrders, respondPrice, simulatePayment, updateDetail,
 } from "../../services/clientApi";
 import {
   formatDate, formatMoney, formatWeight, matchesOrderFilter, orderStatusLabels, packagingTypes, parseWeight, weightUnits,
-  type Company, type NewDetail, type Order, type OrderFilter, type Tracking,
+  type Company, type NewDetail, type Order, type OrderFilter,
 } from "../../types/client";
 import styles from "./ClientOrders.module.css";
 
@@ -67,9 +70,12 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
   const [addMode, setAddMode] = useState(false);
   const [recoveryDraft, setRecoveryDraft] = useState<NewDetail>(blankDetail);
   const [paymentOpen, setPaymentOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer">("transfer");
-  const [tracking, setTracking] = useState<Tracking | null>(null);
-  const [trackingError, setTrackingError] = useState("");
+  const [mapOpen, setMapOpen] = useState(false);
+
+  const refreshSilently = useCallback(() => setVersion((value) => value + 1), []);
+  useAutoRefresh(refreshSilently, Boolean(user.idClient));
+  const refreshCompaniesSilently = useCallback(() => setCompanyVersion(value => value + 1), []);
+  useAutoRefresh(refreshCompaniesSilently, chooserOpen && Boolean(user.idClient));
 
   useEffect(() => {
     if (!user.idClient) return;
@@ -136,6 +142,17 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     return () => { active = false; };
   }, [initialOrderId, user.idClient]);
 
+  const selectedId = selected?.idOrder;
+  useEffect(() => {
+    if (!selectedId || !user.idClient || saving || editMode || addMode || paymentOpen || detailsLoading) return;
+    const controller = new AbortController();
+    getOrder(selectedId, controller.signal).then(fresh => {
+      if (!controller.signal.aborted && fresh.idClient === user.idClient)
+        setSelected(current => current?.idOrder === selectedId ? fresh : current);
+    }).catch(() => undefined);
+    return () => controller.abort();
+  }, [selectedId, user.idClient, version, saving, editMode, addMode, paymentOpen, detailsLoading]);
+
   function reload() { setLoading(true); setVersion((value) => value + 1); }
 
   async function openOrder(order: Order) {
@@ -144,8 +161,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     setActionError("");
     setEditMode(false);
     setAddMode(false);
-    setTracking(null);
-    setTrackingError("");
+    setMapOpen(false);
     try {
       const fresh = await getOrder(order.idOrder);
       if (fresh.idClient !== user.idClient) throw new Error("Este pedido no pertenece a tu cuenta.");
@@ -207,36 +223,23 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     } finally { setSaving(false); }
   }
 
-  async function replyPrice(accepted: boolean) {
+  async function rejectPrice() {
     if (!selected || saving) return;
     setSaving(true); setActionError("");
     try {
-      const updated = await respondPrice(selected.idOrder, accepted);
+      const updated = await respondPrice(selected.idOrder, false);
       setSelected(updated);
-      setNotice(accepted
-        ? { message: "Cotización aceptada. El pedido continuará sin pago simulado." }
-        : { message: "Cotización rechazada.", tone: "danger" });
+      setNotice({ message: "Cotización rechazada. La empresa podrá enviar una nueva propuesta.", tone: "danger" });
       reload();
     } catch (cause) { setActionError(cause instanceof Error ? cause.message : "No se pudo responder a la cotización."); }
     finally { setSaving(false); }
   }
 
-  async function pay(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function pay(data: PaymentSubmission) {
     if (!selected || saving) return;
     setSaving(true); setActionError("");
-    const data = new FormData(event.currentTarget);
     try {
-      const updated = await simulatePayment(selected.idOrder, {
-        method: paymentMethod,
-        billingEmail: String(data.get("billingEmail") || "").trim(),
-        ...(paymentMethod === "card" ? {
-          cardHolderName: String(data.get("cardHolderName") || "").trim(),
-          cardNumber: String(data.get("cardNumber") || "").replace(/\s/g, ""),
-          expiry: String(data.get("expiry") || "").trim(),
-          cvc: String(data.get("cvc") || "").trim(),
-        } : { transferReference: String(data.get("transferReference") || "").trim() }),
-      });
+      const updated = await simulatePayment(selected.idOrder, data);
       setSelected(updated);
       setPaymentOpen(false);
       setNotice({ message: "Pago simulado registrado correctamente." });
@@ -273,13 +276,6 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
     finally { setSaving(false); }
   }
 
-  async function loadTracking() {
-    if (!selected) return;
-    setTrackingError("");
-    try { setTracking(await getTracking(selected.idOrder)); }
-    catch (cause) { setTrackingError(cause instanceof ClientApiError && cause.status === 404 ? "Todavía no hay una ubicación disponible." : cause instanceof Error ? cause.message : "No se pudo consultar la ubicación."); }
-  }
-
   const activeDetails = selected?.details?.filter((detail) => !detail.deletedAt) ?? [];
   const quotedAmount = activeDetails.reduce((sum, detail) => sum + Number(detail.amount || 0), 0);
 
@@ -288,17 +284,19 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
       action={<button className={ui.primary} disabled={!user.idClient} onClick={() => { setChooserOpen(true); setCompanyLoading(true); }}><Icon name="plus" size={17} />Nuevo pedido</button>} />
     {!user.idClient && <p className={ui.notice}>Completa tu perfil de cliente para poder crear y consultar pedidos. <Link href="/client/profile">Ir a mi perfil</Link></p>}
     {notice && <TimedNotice message={notice.message} tone={notice.tone} onDismiss={() => setNotice(null)} />}
+    {error && orders.length > 0 && !loading && <p className={ui.error} role="status">No se pudieron actualizar los pedidos. Se muestran los últimos datos disponibles.</p>}
     <section className={ui.card} aria-label="Listado de pedidos">
       <div className={styles.toolbar}><div className={styles.filters} role="group" aria-label="Filtrar pedidos">{orderFilters.map(({ value, label }) => <button key={value} type="button" className={filter === value ? styles.filterActive : ""} onClick={() => { if (filter === value) return; setFilter(value); setPage(1); setLoading(true); }} aria-pressed={filter === value}>{label}</button>)}</div>
         <button className={ui.secondary} onClick={reload} disabled={loading} aria-label="Actualizar pedidos"><Icon name="refresh" size={17} /></button></div>
-      {loading || error || orders.length === 0 ? <DataState loading={loading} error={error} empty={filter === "all" ? "Aún no hay pedidos para mostrar." : "No hay pedidos en esta categoría."} onRetry={reload} /> :
+      {loading || orders.length === 0 ? <DataState loading={loading} error={error} empty={filter === "all" ? "Aún no hay pedidos para mostrar." : "No hay pedidos en esta categoría."} onRetry={reload} /> :
         <div className={ui.tableWrap}><table className={ui.table}><thead><tr><th>Pedido</th><th>Empresa</th><th>Estado</th><th>Cargas</th><th>Fecha</th><th>Acción</th></tr></thead><tbody>{orders.map((order) => <tr key={order.idOrder}><td><strong>#{order.idOrder}</strong></td><td>{order.company?.businessName || `Empresa #${order.idCompany}`}</td><td><StatusBadge status={order.status} label={orderStatusLabels[order.status]} /></td><td>{order.details?.filter((item) => !item.deletedAt).length ?? "—"}</td><td>{formatDate(order.createdAt)}</td><td><ActionButton icon="eye" onClick={() => void openOrder(order)}>Ver detalles</ActionButton></td></tr>)}</tbody></table></div>}
       <Pagination page={page} lastPage={lastPage} total={total} perPage={perPage} disabled={loading} onPage={(value) => { setPage(value); setLoading(true); }} onPerPage={(value) => { setPerPage(value); setPage(1); setLoading(true); }} />
     </section>
     {chooserOpen && <Modal title="Elige una empresa" eyebrow="TRAVELDLS · TU ESPACIO" onClose={() => setChooserOpen(false)}>
       <p className={ui.muted}>Encuentra una empresa de transporte para tu pedido.</p>
+      {companyError && companies.length > 0 && !companyLoading && <p className={ui.error} role="status">No se pudieron actualizar las empresas. Se muestran los últimos datos disponibles.</p>}
       <form className={styles.companySearch} onSubmit={(event) => { event.preventDefault(); setCompanyPage(1); setCompanySearch(companyDraft.trim()); setCompanyVersion((value) => value + 1); setCompanyLoading(true); }}><input aria-label="Buscar empresa" placeholder="Buscar empresa…" value={companyDraft} onChange={(event) => setCompanyDraft(event.target.value)} /><button className={ui.secondary}>Buscar</button></form>
-      {companyLoading || companyError || companies.length === 0 ? <DataState loading={companyLoading} error={companyError} empty="No se encontraron empresas." onRetry={() => { setCompanyLoading(true); setCompanyVersion((value) => value + 1); }} /> :
+      {companyLoading || companies.length === 0 ? <DataState loading={companyLoading} error={companyError} empty="No se encontraron empresas." onRetry={() => { setCompanyLoading(true); setCompanyVersion((value) => value + 1); }} /> :
         <div className={styles.companyGrid}>{companies.map((item) => <CompanyChoiceCard key={item.idCompany} company={item} onSelect={() => { setCompany(item); setChooserOpen(false); setCart([]); setPendingOrderId(null); setActionError(""); }} />)}</div>}
       <div className={styles.companyPager}><button className={ui.secondary} disabled={companyPage <= 1} onClick={() => { setCompanyPage(companyPage - 1); setCompanyLoading(true); }}>Anterior</button><span>{companyPage} / {companyLastPage}</span><button className={ui.secondary} disabled={companyPage >= companyLastPage} onClick={() => { setCompanyPage(companyPage + 1); setCompanyLoading(true); }}>Siguiente</button></div>
     </Modal>}
@@ -310,12 +308,12 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
       </form>
       {cart.length > 0 && <section className={styles.cart} aria-label="Cargas del pedido"><div className={styles.cartHeading}><span className={styles.headingIcon}><Icon name="box" size={19} /></span><div><small>LISTAS PARA ENVIAR</small><h3>Cargas del pedido</h3></div><span className={styles.detailCount}>{cart.length} {cart.length === 1 ? "carga" : "cargas"}</span></div><div className={styles.detailList}>{cart.map((item, index) => <DetailCard key={index} eyebrow={`Carga ${String(index + 1).padStart(2, "0")}`} title={item.cargoDescription} facts={[
         { label: "Peso y embalaje", value: `${formatWeight(`${item.unitWeight} ${item.weightUnit}`)} · ${packagingTypes.find((type) => type.value === item.typePackaging)?.label || item.typePackaging}`, icon: "box" },
-        { label: "Dirección de entrega", value: item.deliveryAddress, icon: "route", wide: true },
+        { label: "Descripción y dirección de entrega", value: item.deliveryAddress, icon: "route", wide: true },
       ]}><ActionButton icon="trash" variant="danger" disabled={saving} onClick={() => setCart((items) => items.filter((_, position) => position !== index))}>Quitar carga</ActionButton></DetailCard>)}</div></section>}
       {actionError && <p className={ui.error} role="alert">{actionError}</p>}
       <div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => setCompany(null)}>Cancelar</button><button className={ui.primary} disabled={saving || cart.length === 0} onClick={() => void submitOrder()}>{saving ? "Enviando…" : "Enviar pedido"} <Icon name="arrow" size={16} /></button></div>
     </Modal>}
-    {selected && <Modal title={`Pedido #${selected.idOrder}`} eyebrow="TRAVELDLS · TU ESPACIO" busy={saving} onClose={() => { setSelected(null); setPaymentOpen(false); setEditMode(false); }}>
+    {selected && !paymentOpen && !mapOpen && <Modal title={`Pedido #${selected.idOrder}`} eyebrow="TRAVELDLS · TU ESPACIO" busy={saving} onClose={() => { setSelected(null); setPaymentOpen(false); setEditMode(false); }}>
       <div className={styles.orderOverview}>
         <div className={styles.overviewStatus}><small>Estado del pedido</small><StatusBadge status={selected.status} label={orderStatusLabels[selected.status]} /></div>
         <div className={styles.overviewFact}><Icon name="building" size={18} /><span><small>Empresa</small><strong>{selected.company?.businessName || `Empresa #${selected.idCompany}`}</strong></span></div>
@@ -330,7 +328,7 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
             facts={[
               { label: "Peso y embalaje", value: `${weightLabel} · ${packagingTypes.find((type) => type.value === item.typePackaging)?.label || item.typePackaging}`, icon: "box" },
               { label: "Conductor", value: item.driver ? item.driver.user?.name || item.driver.name || "Asignado" : "Aún sin asignar", icon: "user" },
-              { label: "Dirección de entrega", value: item.deliveryAddress, icon: "route", wide: true },
+              { label: "Descripción y dirección de entrega", value: item.deliveryAddress, icon: "route", wide: true },
             ]}>
             {selected.status === "pendiente" && activeDetails.length === 1 && <ActionButton icon="edit" onClick={() => {
               const weight = parseWeight(item.unitWeight);
@@ -344,15 +342,21 @@ export function ClientOrders({ initialNew = false, initialOrderId }: { initialNe
         {selected.status === "pendiente" && !addMode && <div className={styles.addDetailAction}><ActionButton icon="plus" onClick={() => { setRecoveryDraft(blankDetail()); setEditMode(false); setAddMode(true); setActionError(""); }}>Añadir carga al pedido</ActionButton></div>}
         {selected.status === "pendiente" && addMode && <form className={`${ui.form} ${styles.addDetailForm}`} onSubmit={(event) => void addToOrder(event)}><h3 className={styles.subhead}>Nueva carga para el pedido #{selected.idOrder}</h3><DetailFields value={recoveryDraft} onChange={setRecoveryDraft} /><div className={ui.actions}><button type="button" className={ui.secondary} disabled={saving} onClick={() => setAddMode(false)}>Cancelar</button><button className={ui.primary} disabled={saving}>{saving ? "Guardando…" : "Guardar carga"}</button></div></form>}
         {quotedAmount > 0 && <div className={styles.orderTotal}><span>Monto del pedido<small>Precio total del transporte</small></span><strong>{formatMoney(quotedAmount)}</strong></div>}
-        {selected.status === "esperando_aprobacion" && <div className={styles.quote}><p>La empresa envió una cotización. Puedes aceptarla sin registrar pago, rechazarla o completar un pago simulado que también aceptará el pedido.</p><div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => void replyPrice(false)}>Rechazar</button><button className={ui.secondary} disabled={saving} onClick={() => void replyPrice(true)}>Aceptar sin pago</button>{quotedAmount > 0 && <button className={ui.primary} disabled={saving} onClick={() => { setActionError(""); setPaymentOpen(true); }}>Pagar y aceptar</button>}</div></div>}
-        {selected.payment && <p className={ui.notice}>Pago registrado: {selected.payment.referenceCode}</p>}
-        {selected.status === "en_transito" && <div className={styles.quote}><p>Consulta la última ubicación reportada para tu pedido.</p><button className={ui.secondary} onClick={() => void loadTracking()}><Icon name="route" size={16} />Consultar ubicación</button>{trackingError && <p className={ui.error} role="alert">{trackingError}</p>}{tracking && <p>Actualizada el {formatDate(tracking.updatedAt)} · <a href={`https://www.openstreetmap.org/?mlat=${tracking.latitude}&mlon=${tracking.longitude}#map=14/${tracking.latitude}/${tracking.longitude}`} target="_blank" rel="noopener noreferrer">Ver ubicación en el mapa</a></p>}</div>}
+        {selected.status === "esperando_aprobacion" && <div className={styles.quote}><p>La empresa envió una cotización para todas tus cargas. Puedes rechazarla o completar un pago simulado para aceptar el pedido.</p><div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => void rejectPrice()}>Rechazar</button>{quotedAmount > 0 && <button className={ui.primary} disabled={saving} onClick={() => { setActionError(""); setPaymentOpen(true); }}>Pagar y aceptar</button>}</div></div>}
+        {selected.status === "aceptado" && selected.payment?.status !== "pagado" && quotedAmount > 0 && <div className={styles.quote}><p>Este pedido fue aceptado sin pago. Registra el pago para que la empresa pueda asignar un conductor.</p><button className={ui.primary} disabled={saving} onClick={() => {setActionError("");setPaymentOpen(true);}}>Pagar pedido</button></div>}
+        {selected.payment?.status === "pagado" && <p className={ui.notice}>Pago registrado: {selected.payment.referenceCode}</p>}
+        {selected.status === "en_transito" && <div className={styles.quote}><p>Sigue la ubicación que comparte el conductor durante el viaje.</p><ActionButton variant="primary" icon="route" onClick={() => setMapOpen(true)}>Ver mapa del pedido</ActionButton></div>}
       </>}
       {editMode && <form className={ui.form} onSubmit={(event) => void saveEdit(event)}><h3 className={styles.subhead}>Editar carga</h3><DetailFields value={editDraft} onChange={setEditDraft} /><div className={ui.actions}><button type="button" className={ui.secondary} onClick={() => setEditMode(false)}>Cancelar</button><button className={ui.primary} disabled={saving}>Guardar cambios</button></div></form>}
-      {paymentOpen && <form className={ui.form} onSubmit={(event) => void pay(event)}><h3 className={styles.subhead}>Pago simulado</h3><p className={ui.muted}>Esta operación registra una simulación en TravelDLS; no realiza un cobro bancario.</p><label className={ui.field}>Método<Select label="Método de pago" value={paymentMethod} options={[{value:"transfer",label:"Transferencia"},{value:"card",label:"Tarjeta"}]} onChange={(value) => setPaymentMethod(value as "card" | "transfer")} /></label><label className={ui.field}>Correo de facturación<input type="email" name="billingEmail" defaultValue={user.email} required /></label>{paymentMethod === "transfer" ? <label className={ui.field}>Referencia de transferencia<input name="transferReference" required minLength={4} maxLength={100} /></label> : <div className={ui.formGrid}><label className={ui.field}>Titular<input name="cardHolderName" required minLength={3} /></label><label className={ui.field}>Número de tarjeta de prueba<input name="cardNumber" inputMode="numeric" required minLength={12} maxLength={23} autoComplete="off" /></label><label className={ui.field}>Vencimiento<input name="expiry" placeholder="MM/AA" required minLength={4} maxLength={5} autoComplete="off" /></label><label className={ui.field}>CVC<input name="cvc" inputMode="numeric" required minLength={3} maxLength={4} autoComplete="off" /></label></div>}<div className={ui.actions}><button type="button" className={ui.secondary} onClick={() => setPaymentOpen(false)}>Cancelar</button><button className={ui.primary} disabled={saving}>{saving ? "Registrando…" : "Confirmar simulación"}</button></div></form>}
       {actionError && <p className={ui.error} role="alert">{actionError}</p>}
       <div className={ui.actions}><button className={ui.secondary} disabled={saving} onClick={() => setSelected(null)}>Cerrar</button></div>
     </Modal>}
+    {selected && mapOpen && <ClientTripMap order={selected} onClose={() => setMapOpen(false)} />}
+    {selected && paymentOpen && <PaymentCheckout orderId={selected.idOrder}
+      companyName={selected.company?.businessName || `Empresa #${selected.idCompany}`}
+      details={activeDetails} amount={quotedAmount} billingEmail={user.email}
+      busy={saving} error={actionError} acceptedWithoutPayment={selected.status === "aceptado"}
+      onClose={() => { setPaymentOpen(false); setActionError(""); }} onPay={(data) => void pay(data)} />}
   </>;
 }
 
@@ -360,7 +364,7 @@ function DetailFields({ value, onChange }: { value: NewDetail; onChange: (value:
   const update = <K extends keyof NewDetail>(key: K, next: NewDetail[K]) => onChange({ ...value, [key]: next });
   return <><label className={ui.field}>Descripción de la carga<input value={value.cargoDescription} onChange={(event) => update("cargoDescription", event.target.value)} required minLength={3} maxLength={255} placeholder="Ej. cajas de repuestos" /></label>
     <div className={styles.weightFields}><label className={ui.field}>Peso de la carga<input type="number" min="0.01" step="any" value={value.unitWeight} onChange={(event) => update("unitWeight", event.target.value)} required placeholder="Ej. 25" /></label><div className={ui.field}><span>Unidad de medida</span><Select label="Unidad de medida" value={value.weightUnit} options={weightUnits} onChange={(next) => update("weightUnit", next as NewDetail["weightUnit"])} /></div></div>
-    <label className={ui.field}>Dirección de entrega<input value={value.deliveryAddress} onChange={(event) => update("deliveryAddress", event.target.value)} required minLength={5} maxLength={255} placeholder="Ciudad, barrio y dirección" /></label>
+    <label className={ui.field}>Descripción y dirección de entrega<textarea value={value.deliveryAddress} onChange={(event) => update("deliveryAddress", event.target.value)} required minLength={5} maxLength={255} rows={3} placeholder="Ciudad, barrio, dirección y referencias para encontrar el lugar" /></label>
     <div className={ui.field}><span>Embalaje</span><Select label="Tipo de embalaje" value={value.typePackaging} options={packagingTypes} onChange={(next) => update("typePackaging", next)} /></div>
     <p className={styles.priceNote}><Icon name="tag" size={16} />La empresa te enviará el precio del transporte para que lo revises antes de pagar.</p>
   </>;

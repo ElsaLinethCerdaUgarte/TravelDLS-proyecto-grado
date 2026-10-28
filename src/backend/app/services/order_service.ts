@@ -6,6 +6,7 @@ import Order from '#models/order'
 import { OrderStatus } from '#enums/order_status'
 import Driver from '#models/driver'
 import { DriverStatus } from '#enums/driver_status'
+import { PaymentStatus } from '#enums/payment_status'
 
 @inject()
 export default class OrderService {
@@ -34,6 +35,13 @@ export default class OrderService {
 
       if (orderAnterior.status === OrderStatus.ANNULLED && data.status === OrderStatus.IN_TRANSIT) {
         throw new Error('No se puede iniciar una orden anulada.')
+      }
+
+      if (
+        orderAnterior.payment?.status === PaymentStatus.PAID &&
+        (data.status === OrderStatus.ANNULLED || data.status === OrderStatus.CANCELLED)
+      ) {
+        throw new Error('No se puede anular un pedido que ya fue pagado.')
       }
 
       order.merge(data)
@@ -81,7 +89,10 @@ export default class OrderService {
       if (error.code === 'E_ROW_NOT_FOUND' || error.message === 'Order not found.') {
         throw new Error('Order not found.')
       }
-      if (error.message === 'No se puede iniciar una orden anulada.') {
+      if (
+        error.message === 'No se puede iniciar una orden anulada.' ||
+        error.message === 'No se puede anular un pedido que ya fue pagado.'
+      ) {
         throw error
       }
       logger.error({ err: error }, 'Failed to update order')
@@ -172,6 +183,11 @@ export default class OrderService {
   async assignDriver(idOrder: number, idDriver: number): Promise<Order> {
     try {
       const order = await this.findById(idOrder)
+      if (order.status !== OrderStatus.ACCEPTED || order.payment?.status !== PaymentStatus.PAID) {
+        throw new Error(
+          'Solo se puede asignar un conductor cuando el pedido está aceptado y pagado.'
+        )
+      }
 
       // Validation: max 5 active trips for this driver
       const activeTripsCount = await db
@@ -204,21 +220,42 @@ export default class OrderService {
     }
   }
 
-  async assignPrice(idOrder: number, amount: number): Promise<Order> {
+  async assignPrice(
+    idOrder: number,
+    prices: { idDetails: number; amount: number }[]
+  ): Promise<Order> {
     try {
       const order = await this.findById(idOrder)
-      const detail = order.details[0]
-      if (!detail) {
-        throw new Error('No order detail found to assign price.')
+      if (![OrderStatus.PENDING, OrderStatus.DENIED].includes(order.status as OrderStatus)) {
+        throw new Error('La cotización está bloqueada hasta que el cliente responda.')
       }
-
-      detail.amount = amount
-      await detail.save()
-
-      order.status = OrderStatus.WAITING_APPROVAL as string
-      await order.save()
-
-      logger.info({ idOrder, amount }, 'Price assigned to order detail successfully')
+      const ids = order.details.map((detail) => detail.idDetails)
+      if (
+        !ids.length ||
+        prices.length !== ids.length ||
+        new Set(prices.map((price) => price.idDetails)).size !== ids.length ||
+        prices.some(
+          (price) =>
+            !ids.includes(price.idDetails) || !Number.isFinite(price.amount) || price.amount <= 0
+        )
+      ) {
+        throw new Error('Indica un precio válido para cada carga del pedido.')
+      }
+      await db.transaction(async (trx) => {
+        for (const price of prices) {
+          await trx
+            .from('details_orders')
+            .where('idDetails', price.idDetails)
+            .where('id_order', order.idOrder)
+            .whereNull('deletedAt')
+            .update({ amount: price.amount })
+        }
+        await trx
+          .from('orders')
+          .where('idOrder', order.idOrder)
+          .update({ status: OrderStatus.WAITING_APPROVAL })
+      })
+      logger.info({ idOrder }, 'Order quotation updated successfully')
 
       return await this.findById(idOrder)
     } catch (error: any) {
@@ -233,6 +270,9 @@ export default class OrderService {
   async respondPrice(idOrder: number, accepted: boolean): Promise<Order> {
     try {
       const order = await this.findById(idOrder)
+      if (order.status !== OrderStatus.WAITING_APPROVAL) {
+        throw new Error('Este pedido no tiene una cotización pendiente.')
+      }
       if (accepted) {
         order.status = OrderStatus.ACCEPTED as string
       } else {
@@ -242,7 +282,7 @@ export default class OrderService {
 
       logger.info({ idOrder, accepted }, 'Order price responded successfully')
 
-      return order
+      return await this.findById(idOrder)
     } catch (error: any) {
       if (error.code === 'E_ROW_NOT_FOUND') {
         throw new Error('Order not found.')

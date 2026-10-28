@@ -85,12 +85,13 @@ export function Pagination({ page, lastPage, total, perPage, onPage, onPerPage, 
   </div>;
 }
 
-export function Modal({ title, eyebrow, children, onClose, busy = false }: {
+export function Modal({ title, eyebrow, children, onClose, busy = false, size = "default" }: {
   title: string;
   eyebrow?: string;
   children: ReactNode;
   onClose: () => void;
   busy?: boolean;
+  size?: "default" | "wide" | "map";
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -102,7 +103,7 @@ export function Modal({ title, eyebrow, children, onClose, busy = false }: {
     document.body.style.overflow = "hidden";
     return () => { dialog?.close(); document.body.style.overflow = previous; focused?.focus(); };
   }, []);
-  return <dialog ref={ref} className={styles.dialog} aria-labelledby={titleId}
+  return <dialog ref={ref} className={styles.dialog} data-size={size} aria-labelledby={titleId}
     onCancel={(event) => { event.preventDefault(); if (!busy) onClose(); }}>
     <header className={styles.dialogHeader}>
       <div>{eyebrow && <p className={styles.eyebrow}>{eyebrow}</p>}<h2 id={titleId}>{title}</h2></div>

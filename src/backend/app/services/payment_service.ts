@@ -55,8 +55,10 @@ export default class PaymentService {
         .preload('payment')
         .firstOrFail()
 
-      if (order.status !== OrderStatus.WAITING_APPROVAL) {
-        throw new Error('Solo se pueden pagar pedidos pendientes de aprobacion.')
+      if (order.status !== OrderStatus.WAITING_APPROVAL && order.status !== OrderStatus.ACCEPTED) {
+        throw new Error(
+          'Solo se pueden pagar pedidos cotizados pendientes de aprobación o aceptados sin pago.'
+        )
       }
 
       if (order.payment?.status === PaymentStatus.PAID) {
@@ -121,10 +123,17 @@ export default class PaymentService {
       this.applyPaymentFilters(query, filters, scope)
 
       const summaryQuery = Payment.query().whereNull('deletedAt')
-      this.applyPaymentFilters(summaryQuery, { ...filters, status: filters.summaryStatus ?? filters.status }, scope)
+      this.applyPaymentFilters(
+        summaryQuery,
+        { ...filters, status: filters.summaryStatus ?? filters.status },
+        scope
+      )
       const summaryRow = await summaryQuery.sum('amount as totalAmount').first()
       const totalAmount = Number(
-        summaryRow?.$extras?.totalAmount ?? summaryRow?.$extras?.total_amount ?? summaryRow?.$extras?.totalamount ?? 0
+        summaryRow?.$extras?.totalAmount ??
+          summaryRow?.$extras?.total_amount ??
+          summaryRow?.$extras?.totalamount ??
+          0
       )
 
       const paginator = await query.orderBy('idPayment', 'desc').paginate(page, perPage)
@@ -192,6 +201,10 @@ export default class PaymentService {
         throw new Error('No se puede cancelar un pago de una orden entregada o en transito.')
       }
 
+      if (orderStatus === OrderStatus.ACCEPTED && payment.status === PaymentStatus.PAID) {
+        throw new Error('No se puede cancelar el pago de un pedido aceptado y pagado.')
+      }
+
       payment.status = PaymentStatus.CANCELLED
       payment.cancellationReason = reason
 
@@ -231,7 +244,11 @@ export default class PaymentService {
     return { role }
   }
 
-  private applyPaymentFilters(query: any, filters: PaymentFilters, scope: PaymentAccessScope): void {
+  private applyPaymentFilters(
+    query: any,
+    filters: PaymentFilters,
+    scope: PaymentAccessScope
+  ): void {
     if (scope.role === 'company' && scope.idCompany) {
       query.where('idCompany', scope.idCompany)
     } else if (scope.role === 'client' && scope.idClient) {

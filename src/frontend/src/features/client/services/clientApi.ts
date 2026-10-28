@@ -120,4 +120,4 @@ export const getPayments = (page = 1, perPage = 10, filters: { status?: string; 
 export const cancelPayment = (id: number, reason: string) =>
   request<Payment>(`/payments/${id}/cancel`, { method: "PATCH", body: JSON.stringify({ reason }) });
 
-export const getTracking = (id: number) => request<Tracking>(`/orders/${id}/tracking`);
+export const getTracking = (id: number, signal?: AbortSignal) => request<Tracking>(`/orders/${id}/tracking`, { signal });

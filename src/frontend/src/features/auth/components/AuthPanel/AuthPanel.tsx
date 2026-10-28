@@ -38,7 +38,7 @@ export function AuthPanel() {
     setNotice(null);
   }
 
-  function finishAuthentication(user: SessionUser) {
+  function finishAuthentication(user: SessionUser): boolean {
     const roleLabel = getRoleLabel(user.role);
     const destination = getRoleDestination(user.role);
 
@@ -49,9 +49,10 @@ export function AuthPanel() {
         : `Sesión iniciada correctamente como ${roleLabel}.`,
     });
 
-    if (destination) {
-      window.location.assign(destination);
-    }
+    if (!destination) return false;
+
+    window.location.assign(destination);
+    return true;
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -66,6 +67,8 @@ export function AuthPanel() {
     setNotice(null);
     const transitionStartedAt = isRegistering ? null : Date.now();
 
+    let navigationStarted = false;
+
     try {
       const user = isRegistering
         ? await signup({
@@ -78,7 +81,7 @@ export function AuthPanel() {
       if (transitionStartedAt !== null) {
         await waitForSessionTransition(transitionStartedAt);
       }
-      finishAuthentication(user);
+      navigationStarted = finishAuthentication(user);
     } catch (error) {
       if (transitionStartedAt !== null) {
         await waitForSessionTransition(transitionStartedAt);
@@ -91,7 +94,8 @@ export function AuthPanel() {
             : "No fue posible completar la solicitud. Inténtalo nuevamente.",
       });
     } finally {
-      setIsSubmitting(false);
+      // Keep the transition visible until the destination replaces this page.
+      if (!navigationStarted) setIsSubmitting(false);
     }
   }
 

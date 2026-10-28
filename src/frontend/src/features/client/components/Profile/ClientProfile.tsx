@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import Image from "next/image";
-import { Icon } from "@/components/ui/Icon/Icon";
+import { ProfileLayout, ProfileReadOnly } from "@/components/ui/ProfileLayout/ProfileLayout";
 import { Select } from "@/components/ui/Select/Select";
 import { PhotoUpload } from "@/components/ui/PhotoUpload/PhotoUpload";
 import { TimedNotice } from "@/components/ui/TimedNotice/TimedNotice";
@@ -10,7 +9,6 @@ import { useClientSession } from "../ClientShell/ClientShell";
 import { DataState, PageHeader, workspaceStyles as ui } from "@/components/ui/Workspace/Workspace";
 import { getProfile, saveProfile } from "../../services/clientApi";
 import type { ClientProfile as ClientProfileData } from "../../types/client";
-import styles from "./ClientProfile.module.css";
 
 export function ClientProfile() {
   const { user, refresh } = useClientSession();
@@ -67,25 +65,18 @@ export function ClientProfile() {
     <PageHeader eyebrow="TU INFORMACIÓN EN ORDEN" title="Mi perfil" description="Mantén al día los datos con los que solicitas tus envíos." />
     {notice && <TimedNotice message={notice} onDismiss={() => setNotice("")} />}
     {loading ? <div className={ui.card}><DataState loading empty="" /></div> : error && user.idClient && !profile ? <div className={ui.card}><DataState error={error} empty="" onRetry={() => { setLoading(true); setVersion((value) => value + 1); }} /></div> :
-      <div className={styles.layout}>
-        <aside className={`${ui.card} ${styles.identity}`}>
-          <div className={styles.photo}>{profile?.photoUrl ? <Image src={profile.photoUrl} alt="Foto del perfil" width={110} height={110} unoptimized /> : <Icon name="user" size={40} />}</div>
-          <h2>{profile?.companyName || user.name}</h2>
-          <p>{user.email}</p>
-          <span className={styles.role}>{profile?.typeClient === "legal" ? "Persona jurídica" : profile?.typeClient === "natural" ? "Persona natural" : "Nuevo perfil"}</span>
-          {!user.idClient && <p className={styles.prompt}>Completa tu perfil para comenzar a crear pedidos.</p>}
-        </aside>
-        <section className={`${ui.card} ${ui.cardPad}`} aria-labelledby="profile-form-title">
-          <div className={styles.formHeading}><div><h2 id="profile-form-title">Datos del cliente</h2><p>Esta información identifica tus solicitudes de transporte.</p></div><Icon name="shield" size={23} /></div>
+      <ProfileLayout name={profile?.companyName || user.name} email={user.email} photoUrl={profile?.photoUrl}
+        role={profile?.typeClient === "legal" ? "Persona jurídica" : profile?.typeClient === "natural" ? "Persona natural" : "Nuevo perfil"}
+        prompt={!user.idClient ? "Completa tu perfil para comenzar a crear pedidos." : undefined}
+        heading="Datos del cliente" description="Esta información identifica tus solicitudes de transporte.">
           <form key={profile?.idClient ?? "new"} className={ui.form} onSubmit={(event) => void save(event)}>
             <div className={ui.formGrid}><label className={ui.field}>Nombre o razón social<input name="companyName" defaultValue={profile?.companyName || user.name} maxLength={255} required /></label><label className={ui.field}>Tipo de persona<Select label="Tipo de persona" value={typeClient} options={[{value:"natural",label:"Persona natural"},{value:"legal",label:"Persona jurídica"}]} onChange={(value) => setTypeClient(value as "legal" | "natural")} /></label></div>
             <div className={ui.formGrid}><label className={ui.field}>Identificación o RUC<input name="ruc" defaultValue={profile?.ruc || ""} maxLength={20} required /></label><div className={ui.field}><PhotoUpload value={file} onChange={setFile} existingUrl={profile?.photoUrl} disabled={busy} /></div></div>
             <label className={ui.field}>Dirección<input name="address" defaultValue={profile?.address || ""} required /></label>
-            <div className={styles.readonly}><div><span>Correo de acceso</span><strong>{user.email}</strong></div><div><span>Nombre de la cuenta</span><strong>{user.name}</strong></div></div>
+            <ProfileReadOnly items={[{label:"Correo de acceso",value:user.email},{label:"Nombre de la cuenta",value:user.name}]} />
             {error && <p className={ui.error} role="alert">{error}</p>}
             <div className={ui.actions}><button className={ui.primary} disabled={busy}>{busy ? "Guardando…" : profile ? "Guardar cambios" : "Crear mi perfil"}</button></div>
           </form>
-        </section>
-      </div>}
+      </ProfileLayout>}
   </>;
 }

@@ -128,6 +128,11 @@ Los desplegables comparten `components/ui/Select`, con opciones moradas, manejo 
 teclado y validación de campos obligatorios. Las animaciones de iconos y tarjetas
 respetan la preferencia de movimiento reducido del sistema.
 
+## Mapas
+
+El seguimiento del cliente y el GPS del conductor usan OpenStreetMap. El flujo
+actual y la futura integración de Mapbox están descritos en [docs/maps.md](docs/maps.md).
+
 ## Convenciones de código
 
 - Nombres en inglés: componentes y archivos en PascalCase, hooks en camelCase

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { ActionButton } from "@/components/ui/Workspace/Workspace";
 import { AnimatedIcon } from "@/components/ui/AnimatedIcon/AnimatedIcon";
 import { DashboardStatCard } from "@/components/ui/DashboardStatCard/DashboardStatCard";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useAdminUser } from "../AdminShell/AdminShell";
 import { modules } from "../../config/modules";
 import { allRows, listResource } from "../../services/adminApi";
@@ -30,11 +31,11 @@ export function Dashboard() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [version, setVersion] = useState(0);
+  const refreshSilently = useCallback(() => setVersion(value => value + 1), []);
+  useAutoRefresh(refreshSilently, !loading);
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
-      setLoading(true);
-      setError("");
       try {
         const [pages, drivers] = await Promise.all([
           Promise.all(
@@ -50,7 +51,7 @@ export function Dashboard() {
           ),
           allRows("drivers", controller.signal),
         ]);
-        if (!controller.signal.aborted)
+        if (!controller.signal.aborted) {
           setData({
             totals: Object.fromEntries(
               resources.map((resource, index) => [
@@ -61,6 +62,8 @@ export function Dashboard() {
             companies: pages[0].data,
             drivers,
           });
+          setError("");
+        }
       } catch (cause) {
         if (!controller.signal.aborted)
           setError(
@@ -94,7 +97,7 @@ export function Dashboard() {
         <button
           className={`${styles.secondary} ${loading ? styles.refreshing : ""}`}
           disabled={loading}
-          onClick={() => setVersion(version + 1)}
+          onClick={refreshSilently}
         >
           <Icon name="refresh" size={16} />
           Actualizar
@@ -123,20 +126,21 @@ export function Dashboard() {
           <span>TRAVELDLS / CONECTAMOS DESTINOS</span>
         </div>
       </section>
-      {error ? (
+      {error && !data ? (
         <div className={`${styles.card} ${styles.empty}`} role="alert">
           <Icon name="help" size={30} />
           <h2>No pudimos cargar el resumen</h2>
           <p>{error}</p>
           <button
             className={styles.secondary}
-            onClick={() => setVersion(version + 1)}
+            onClick={refreshSilently}
           >
             Reintentar
           </button>
         </div>
       ) : (
         <>
+          {error && data && <p className={styles.refreshWarning} role="status">No se pudo actualizar el resumen. Se muestran los últimos datos disponibles.</p>}
           <div className={styles.stats} aria-busy={loading}>
             {resources.map((resource) => <DashboardStatCard
               key={resource}

@@ -23,8 +23,12 @@ export default class TruckService {
     chassis: string
     plate: string
     status?: string
+    maintenanceReason?: string
   }): Promise<Truck> {
     await this.ensureStatusColumn()
+    if (data.status === 'mantenimiento' && !data.maintenanceReason?.trim()) {
+      throw new Error('Indica el motivo del mantenimiento del camión.')
+    }
     if (data.idDriver) {
       const existing = await Truck.query()
         .whereNull('deletedAt')
@@ -53,6 +57,7 @@ export default class TruckService {
       chassis: string
       plate: string
       status: string
+      maintenanceReason: string
     }>
   ): Promise<Truck> {
     await this.ensureStatusColumn()
@@ -68,7 +73,11 @@ export default class TruckService {
     }
     try {
       const truck = await Truck.query().whereNull('deletedAt').where('id_truck', id).firstOrFail()
+      if (data.status === 'mantenimiento' && !(data.maintenanceReason || truck.maintenanceReason)) {
+        throw new Error('Indica el motivo del mantenimiento del camión.')
+      }
       truck.merge(data)
+      if (data.status && data.status !== 'mantenimiento') truck.maintenanceReason = null
       await truck.save()
       logger.info({ idTruck: truck.idTruck }, 'Truck updated successfully')
       return truck
@@ -158,9 +167,10 @@ export default class TruckService {
     }
   }
 
-  async reportMaintenanceForDriver(idDriver: number): Promise<Truck> {
+  async reportMaintenanceForDriver(idDriver: number, reason: string): Promise<Truck> {
     const truck = await this.findByDriverId(idDriver)
     truck.status = 'mantenimiento'
+    truck.maintenanceReason = reason
     await truck.save()
     logger.info({ idTruck: truck.idTruck, idDriver }, 'Driver reported truck maintenance')
     return await this.findById(truck.idTruck)

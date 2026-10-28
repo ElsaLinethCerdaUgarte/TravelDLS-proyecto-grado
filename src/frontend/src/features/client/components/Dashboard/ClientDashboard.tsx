@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { AnimatedIcon } from "@/components/ui/AnimatedIcon/AnimatedIcon";
@@ -18,6 +19,8 @@ export function ClientDashboard() {
   const [loading, setLoading] = useState(Boolean(user.idClient));
   const [error, setError] = useState("");
   const [version, setVersion] = useState(0);
+  const refreshSilently = useCallback(() => setVersion(value => value + 1), []);
+  useAutoRefresh(refreshSilently, Boolean(user.idClient));
 
   useEffect(() => {
     if (!user.idClient) return;
@@ -47,6 +50,7 @@ export function ClientDashboard() {
       <AnimatedIcon name="route" size={112} />
     </section>
     {!user.idClient && <div className={styles.profilePrompt}><Icon name="user" size={23} /><div><strong>Completa tu perfil para crear pedidos</strong><p>Necesitamos tus datos de cliente antes de solicitar transporte.</p></div><Link className={ui.secondary} href="/client/profile">Completar perfil</Link></div>}
+    {error && orders.length > 0 && !loading && <p className={ui.error} role="status">No se pudo actualizar la vista general. Se muestran los últimos datos disponibles.</p>}
     <div className={styles.stats}>
       {[
         { label: "Pedidos totales", value: total, icon: "box" as const },
@@ -56,7 +60,7 @@ export function ClientDashboard() {
       ].map((item) => <DashboardStatCard key={item.label} icon={item.icon} value={loading ? "—" : item.value} label={item.label} />)}
     </div>
     <section className={`${ui.card} ${styles.recent}`} aria-label="Pedidos recientes"><div className={styles.sectionHead}><div><h2>Pedidos recientes</h2><p>Las últimas conexiones de tu ruta.</p></div><ActionButton href="/client/orders" icon="arrow" iconPlacement="after" variant="subtle">Ver todos</ActionButton></div>
-      {loading || error || orders.length === 0 ? <DataState loading={loading} error={error} empty="Aún no tienes pedidos registrados." onRetry={() => { setLoading(true); setVersion((value) => value + 1); }} /> :
+      {loading || orders.length === 0 ? <DataState loading={loading} error={error} empty="Aún no tienes pedidos registrados." onRetry={() => { setLoading(true); setVersion((value) => value + 1); }} /> :
         <div className={ui.tableWrap}><table className={ui.table}><thead><tr><th>Pedido</th><th>Empresa</th><th>Estado</th><th>Fecha</th></tr></thead><tbody>{orders.slice(0, 5).map((order) => <tr key={order.idOrder}><td><Link href={`/client/orders?order=${order.idOrder}`} className={ui.inlineButton}>#{order.idOrder}</Link></td><td>{order.company?.businessName || `Empresa #${order.idCompany}`}</td><td><StatusBadge status={order.status} label={orderStatusLabels[order.status]} /></td><td>{formatDate(order.createdAt)}</td></tr>)}</tbody></table></div>}
     </section>
     <div className={styles.quickLinks}><Link href="/client/payments"><AnimatedIcon name="tag" motion="hover" /><span><strong>Mis pagos</strong><small>Consulta tus movimientos.</small></span><Icon name="arrow" size={16} /></Link><Link href="/client/profile"><AnimatedIcon name="user" motion="hover" /><span><strong>Mi perfil</strong><small>Tu información en orden.</small></span><Icon name="arrow" size={16} /></Link></div>

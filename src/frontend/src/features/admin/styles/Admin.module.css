@@ -36,6 +36,15 @@
   padding: 3px 9px;
   letter-spacing: 0;
 }
+.refreshWarning {
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border: 1px solid #624255;
+  border-radius: 9px;
+  background: #321f2b;
+  color: #edbbcd;
+  font-size: 12px;
+}
 .primary,
 .secondary,
 .danger {
