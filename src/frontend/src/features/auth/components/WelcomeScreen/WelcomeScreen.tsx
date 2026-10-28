@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ui/ThemeToggle/ThemeToggle";
 import { Icon } from "@/components/ui/Icon/Icon";
 import { AuthPanel } from "@/features/auth/components/AuthPanel/AuthPanel";
 import styles from "./WelcomeScreen.module.css";
@@ -18,10 +19,13 @@ export function WelcomeScreen() {
           height={99}
           preload
         />
+        <div className={styles.headerActions}>
         <span className={styles.headerNote}>
           <span />
           Conectamos tu próximo destino
         </span>
+        <ThemeToggle />
+        </div>
       </header>
 
       <main className={styles.main}>
