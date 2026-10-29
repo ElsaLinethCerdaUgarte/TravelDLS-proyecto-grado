@@ -16,6 +16,9 @@ export default class DetailsOrder extends BaseModel {
   @column({ columnName: 'id_driver' })
   declare idDriver: number | null
 
+  @column({ columnName: 'delivery_status' })
+  declare deliveryStatus: string
+
   @column({ columnName: 'cargoDescription' })
   declare cargoDescription: string
 

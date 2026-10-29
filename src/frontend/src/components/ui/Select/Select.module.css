@@ -11,9 +11,9 @@
   gap: 12px;
   min-height: 43px;
   padding: 10px 12px;
-  border: 1px solid #3a2d49;
-  background: #0f0d18;
-  color: #eee5f9;
+  border: 1px solid var(--theme-border, #3a2d49);
+  background: var(--theme-canvas, #0f0d18);
+  color: var(--theme-text, #eee5f9);
   border-radius: 8px;
   font: inherit;
   font-size: 12px;
@@ -31,14 +31,14 @@
 }
 .trigger svg {
   flex-shrink: 0;
-  color: #bb94e6;
+  color: var(--theme-accent, #bb94e6);
   transform: rotate(90deg);
   transition: transform 0.18s;
 }
 .trigger[aria-expanded="true"] {
-  background: #1b1327;
-  border-color: #a366df;
-  box-shadow: 0 0 0 3px #a366df18;
+  background: var(--theme-surface, #1b1327);
+  border-color: var(--theme-border-strong, #a366df);
+  box-shadow: 0 0 0 3px var(--theme-shadow, #a366df18);
 }
 .trigger[aria-expanded="true"] svg {
   transform: rotate(-90deg);
@@ -64,17 +64,17 @@
   inset: auto;
   margin: 0;
   padding: 6px;
-  border: 1px solid #5c3c78;
+  border: 1px solid var(--theme-border, #5c3c78);
   border-radius: 11px;
-  background: #1a1424;
-  color: #eee5f9;
+  background: var(--theme-surface, #1a1424);
+  color: var(--theme-text, #eee5f9);
   box-shadow:
-    0 16px 45px #0008,
-    0 0 0 1px #ba89e90c;
+    0 16px 45px var(--theme-shadow, #0008),
+    0 0 0 1px var(--theme-shadow, #ba89e90c);
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: #654080 transparent;
+  scrollbar-color: var(--theme-border-strong, #654080) transparent;
   font-family: inherit;
 }
 .popup:popover-open {
@@ -96,19 +96,19 @@
   min-width: 0;
 }
 .option[aria-selected="true"] {
-  color: #e1c7ff;
-  background: #342047;
+  color: var(--theme-accent, #e1c7ff);
+  background: var(--theme-tint, #342047);
 }
 .option[data-active="true"] {
-  background: #482b61;
-  color: #fff;
+  background: var(--theme-tint, #482b61);
+  color: var(--theme-text, #fff);
 }
 .option[aria-disabled="true"] {
   opacity: 0.45;
   cursor: not-allowed;
 }
 .check {
-  color: #ce9bff;
+  color: var(--theme-accent, #ce9bff);
   flex-shrink: 0;
 }
 @keyframes reveal {

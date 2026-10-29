@@ -62,18 +62,18 @@ export function DriverTripMap({ order, onClose }: { order: OperationalOrder; onC
     routeAbort.current?.abort();
   }, []);
   useEffect(() => {
-    if (order.status !== "en_transito" && watch.current !== null) {
+    if (!order.details?.some(d => d.deliveryStatus === "in_transit") && watch.current !== null) {
       navigator.geolocation.clearWatch(watch.current);
       watch.current = null;
     }
-  }, [order.status]);
+  }, [order.details]);
 
   function start() {
     if (!navigator.geolocation) {
       setError("Este dispositivo no permite consultar su ubicación.");
       return;
     }
-    if (order.status !== "en_transito" || watch.current !== null) return;
+    if (!order.details?.some(d => d.deliveryStatus === "in_transit") || watch.current !== null) return;
     setError("");
     setLastSent(null);
     setSharing(true);
@@ -111,7 +111,7 @@ export function DriverTripMap({ order, onClose }: { order: OperationalOrder; onC
     }
   }
 
-  const isSharing = sharing && order.status === "en_transito";
+  const isSharing = sharing && order.details?.some(d => d.deliveryStatus === "in_transit");
   const destination = [...new Set((order.details || []).map(detail => detail.deliveryAddress).filter(Boolean))].join(" · ");
   const speed = !isSharing || gpsInfo?.speed === null || gpsInfo?.speed === undefined || !Number.isFinite(gpsInfo.speed) ? "—" : String(Math.max(0, Math.round(gpsInfo.speed * 3.6)));
   const mapUrl = point
@@ -145,7 +145,7 @@ export function DriverTripMap({ order, onClose }: { order: OperationalOrder; onC
         <div className={styles.actions}>
           {isSharing
             ? <ActionButton icon="route" onClick={stop}>Detener GPS</ActionButton>
-            : <ActionButton icon="route" variant="primary" disabled={order.status !== "en_transito"} onClick={start}>Iniciar GPS</ActionButton>}
+            : <ActionButton icon="route" variant="primary" disabled={!order.details?.some(d => d.deliveryStatus === "in_transit")} onClick={start}>Iniciar GPS</ActionButton>}
         </div>
         <div className={styles.attribution}><span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a>{route && " · Ruta: OSRM"}</span><a href={mapUrl} target="_blank" rel="noopener noreferrer">Abrir mapa ↗</a></div>
       </div>

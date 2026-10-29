@@ -1,4 +1,5 @@
 "use client";
+import { DeliveryInbox } from "@/features/deliveries/DeliveryInbox";
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
@@ -10,6 +11,7 @@ import { SessionTransition } from "@/components/ui/SessionTransition/SessionTran
 import { waitForSessionTransition } from "@/components/ui/SessionTransition/sessionTransitionTiming";
 import { getCurrentUser, logout, AuthRequestError } from "@/features/auth/services/authService";
 import type { SessionUser } from "@/features/auth/types/auth";
+import { ThemeToggle } from "@/components/ui/ThemeToggle/ThemeToggle";
 import styles from "./ClientShell.module.css";
 
 const ClientContext = createContext<{ user: SessionUser; refresh: () => Promise<void> } | null>(null);
@@ -150,10 +152,12 @@ export function ClientShell({ children }: { children: ReactNode }) {
         <header className={styles.topbar}>
           <button className={styles.menuButton} onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={menuOpen} aria-controls="client-navigation"><Icon name={menuOpen ? "close" : "menu"} /></button>
           <div className={styles.breadcrumb}><span>Mi espacio</span><Icon name="chevron" size={12} /><strong key={pathname}>{current?.label || "Cliente"}</strong></div>
-          <Link className={styles.profile} href="/client/profile" aria-label="Ir a mi perfil"><span className={styles.avatar}>{user.name.slice(0, 2).toUpperCase()}</span><span>{user.name}<small>Cliente</small></span></Link>
+          <ThemeToggle />
+            <Link className={styles.profile} href="/client/profile" aria-label="Ir a mi perfil"><span className={styles.avatar}>{user.name.slice(0, 2).toUpperCase()}</span><span>{user.name}<small>Cliente</small></span></Link>
         </header>
         <main id="client-content" key={pathname} className={styles.content} tabIndex={-1}>
           {error && <p className={styles.alert} role="alert">{error}</p>}
+          <DeliveryInbox />
           {children}
         </main>
         <footer className={styles.footer}><span>© {new Date().getFullYear()} TravelDLS</span><span>Tu carga y tu empresa. Nuestro compromiso.</span></footer>

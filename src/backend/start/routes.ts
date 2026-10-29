@@ -251,3 +251,12 @@ router.get('/swagger', async ({ response }) => {
 router.get('/docs', async () => {
   return AutoSwagger.default.ui('/swagger', swaggerConfig)
 })
+
+const DeliveriesController = () => import('#controllers/deliveries_controller')
+router.get('/api/orders/:id/deliveries', [DeliveriesController, 'index']).use([middleware.auth(), middleware.roleGuard(['client', 'company', 'driver', 'platform_admin'])])
+router.post('/api/orders/:id/deliveries/:detailId/report', [DeliveriesController, 'report']).use([middleware.auth(), middleware.roleGuard(['driver'])])
+router.post('/api/orders/:id/deliveries/:reportId/respond', [DeliveriesController, 'respond']).use([middleware.auth(), middleware.roleGuard(['client'])])
+router.post('/api/orders/:id/deliveries/:reportId/resolve', [DeliveriesController, 'resolve']).use([middleware.auth(), middleware.roleGuard(['platform_admin'])])
+router.get('/api/deliveries/review', [DeliveriesController, 'review']).use([middleware.auth(), middleware.roleGuard(['platform_admin'])])
+
+router.get('/api/deliveries/pending', [DeliveriesController, 'pending']).use([middleware.auth(), middleware.roleGuard(['client'])])

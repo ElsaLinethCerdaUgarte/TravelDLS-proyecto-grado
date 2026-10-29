@@ -22,6 +22,7 @@ import {
 } from "@/features/auth/services/authService";
 import type { SessionUser } from "@/features/auth/types/auth";
 import { modules } from "../../config/modules";
+import { ThemeToggle } from "@/components/ui/ThemeToggle/ThemeToggle";
 import styles from "./AdminShell.module.css";
 
 const SessionContext = createContext<SessionUser | null>(null);
@@ -31,6 +32,7 @@ export function useAdminUser() {
 
 const navigation: { path: string; label: string; icon: IconName }[] = [
   { path: "dashboard", label: "Vista general", icon: "grid" },
+  { path: "deliveries", label: "Revisión de entregas", icon: "box" },
   ...Object.entries(modules).map(([path, item]) => ({
     path,
     label: item.title,
@@ -276,6 +278,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 {current?.label || "Panel"}
               </strong>
             </div>
+            <ThemeToggle />
             <div className={styles.profile}>
               <span className={styles.avatar}>
                 {user.name.slice(0, 2).toUpperCase()}

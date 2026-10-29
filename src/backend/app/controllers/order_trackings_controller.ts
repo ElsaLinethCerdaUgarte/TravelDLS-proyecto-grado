@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import OrderTracking from '#models/order_tracking'
 import Order from '#models/order'
 import type User from '#models/user'
-import { OrderStatus } from '#enums/order_status'
 
 export default class OrderTrackingsController {
   private async authorizedOrder(orderId: number, user: User) {
@@ -40,7 +39,7 @@ export default class OrderTrackingsController {
     }
     const order = await this.authorizedOrder(orderId, auth.user!)
     if (!order) return response.forbidden({ message: 'No tienes acceso a este pedido.' })
-    if (order.status !== OrderStatus.IN_TRANSIT) {
+    if (!order.details.some((d) => d.deliveryStatus === 'in_transit')) {
       return response.unprocessableEntity({
         message: 'Solo se puede compartir ubicación durante el viaje.',
       })

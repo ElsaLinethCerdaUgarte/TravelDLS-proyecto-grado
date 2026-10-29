@@ -29,7 +29,7 @@ export default class Truck extends BaseModel {
   @column()
   declare status: string
 
-  @column()
+  @column({ columnName: 'maintenance_reason' })
   declare maintenanceReason: string | null
 
   @column.dateTime({ autoCreate: true, columnName: 'created_at' })

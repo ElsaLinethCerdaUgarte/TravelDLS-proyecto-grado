@@ -1,4 +1,5 @@
 "use client";
+import { DeliveryPanel } from "@/features/deliveries/DeliveryPanel";
 import { useCallback, useEffect, useState } from "react";
 import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 import { useOperationalSession } from "@/components/ui/OperationalShell/OperationalShell";
@@ -44,7 +45,7 @@ export function Orders() {
         {label:"Estado",render:o=><StatusBadge status={o.status} label={orderStatusLabels[o.status]} />},{label:"Cargas",render:o=>o.details?.length || 0},
         {label:"Fecha",render:o=>formatDate(o.createdAt)},{label:"Acción",render:o=><ActionButton icon="eye" onClick={()=>setSelected(o)}>Ver detalles</ActionButton>}]} />
     {selected && <OrderDialog order={selected} company={company} idCompany={user.idCompany} idDriver={user.idDriver}
-      hasActiveTrip={orders.some(o=>o.status==="en_transito")} onClose={()=>setSelected(null)}
+      hasActiveTrip={orders.some(o=>o.details?.some(d=>d.deliveryStatus==="in_transit"))} onClose={()=>setSelected(null)}
       onOpenMap={()=>{setMapOrder(selected);setSelected(null);}}
       onTripStarted={()=>setMapOrder({...selected,status:"en_transito"})}
       onSaved={(message,danger)=>{setSelected(null);setPage(1);setNotice(message);setTone(danger?"danger":"success");reload();}} />}
@@ -61,7 +62,7 @@ function OrderDialog({order,company,idCompany,idDriver,hasActiveTrip,onClose,onS
   useEffect(()=>{
     const abort=new AbortController();
     async function load() {
-      if(company && order.status === "aceptado" && order.payment?.status === "pagado") {
+      if(company && ["aceptado","requiere_nueva_entrega"].includes(order.status) && order.payment?.status === "pagado") {
         setDrivers(await allPages<Driver>(`/drivers?idCompany=${idCompany}&availableForOrders=true`,abort.signal));
       } else if (!company) {
         const profile=await api<Driver>("/drivers/"+idDriver,"GET",undefined,abort.signal);
@@ -100,22 +101,23 @@ function OrderDialog({order,company,idCompany,idDriver,hasActiveTrip,onClose,onS
         <strong>Total: {formatMoney(quoteIsValid ? quotePrices.reduce((sum, price) => sum + price.amount, 0) : 0)}</strong>
         <ActionButton variant="primary" disabled={busy || !quoteIsValid} onClick={()=>execute(base+"/assign-price","PATCH",{prices:quotePrices},"Cotización enviada al cliente.")}>{order.status === "denegado" ? "Enviar nueva cotización" : "Enviar cotización"}</ActionButton>
       </div>}
-      {company && order.status === "aceptado" && !isPaid && <p className={w.notice}>Este pedido aún no tiene un pago vigente. Se podrá asignar un conductor después del pago.</p>}
-      {company && order.status === "aceptado" && isPaid && !!order.details?.length && <>
-        <Select label="Conductor disponible para la primera carga" value={driver} onChange={setDriver} options={drivers.map(d=>({value:String(d.idDriver),label:d.user?.name || d.license}))} />
+      {company && ["aceptado","requiere_nueva_entrega"].includes(order.status) && !isPaid && <p className={w.notice}>Este pedido aún no tiene un pago vigente. Se podrá asignar un conductor después del pago.</p>}
+      {company && ["aceptado","requiere_nueva_entrega"].includes(order.status) && isPaid && !!order.details?.length && <>
+        <Select label="Conductor para las cargas pendientes" value={driver} onChange={setDriver} options={drivers.map(d=>({value:String(d.idDriver),label:d.user?.name || d.license}))} />
         {ready && !drivers.length && <p className={s.intro}>No hay conductores disponibles con camión activo.</p>}
         <ActionButton disabled={busy || !driver || !ready} icon="user" onClick={()=>execute(base+"/assign-driver","PATCH",{idDriver:Number(driver)},"Conductor asignado.")}>Asignar conductor</ActionButton>
       </>}
       {!company && order.status==="aceptado" && <><p className={s.intro}>{block || "Cuando estés listo, inicia el viaje para actualizar el estado de la entrega."}</p>
         <ActionButton variant="primary" icon="truck" disabled={busy || !ready || !!block} disabledReason={block} onClick={()=>setConfirm("en_transito")}>Iniciar viaje</ActionButton></>}
-      {!company && order.status==="en_transito" && <div className={w.rowActions}>
+      {!company && order.details?.some(d=>d.deliveryStatus==="in_transit") && <div className={w.rowActions}>
         <ActionButton disabled={busy} icon="route" onClick={onOpenMap}>Abrir mapa GPS</ActionButton>
-        <ActionButton disabled={busy} variant="primary" onClick={()=>setConfirm("entregado")}>Marcar entregado</ActionButton>
+
       </div>}
       {company && ["pendiente","esperando_aprobacion","denegado","aceptado"].includes(order.status) && !isPaid && <ActionButton variant="danger" disabled={busy} onClick={()=>setConfirm("anulado")}>Anular pedido</ActionButton>}
       {confirm && <div className={w.card+" "+w.cardPad}><p>¿Confirmas {confirm==="en_transito"?"el inicio del viaje":confirm==="entregado"?"que la carga fue entregada":"la anulación del pedido"}?</p>
         <div className={w.rowActions}><ActionButton disabled={busy} onClick={()=>setConfirm(null)}>Volver</ActionButton><ActionButton disabled={busy} variant={confirm==="anulado"?"danger":"primary"} onClick={()=>execute(base,"PUT",{status:confirm},confirm==="anulado"?"Pedido anulado.":confirm==="entregado"?"Entrega registrada.":"Viaje iniciado.",confirm==="anulado",confirm==="en_transito"?onTripStarted:undefined)}>Confirmar</ActionButton></div>
       </div>}
+      <DeliveryPanel orderId={order.idOrder} role={company?"company":"driver"} driverId={idDriver} onChanged={()=>onSaved("Estado de entrega actualizado.")} />
       {error && <p className={w.error} role="alert">{error}</p>}
       <div className={w.actions}><ActionButton disabled={busy} onClick={onClose}>Cerrar</ActionButton></div>
     </div>
