@@ -128,9 +128,10 @@ function PaymentDetail({ payment, onClose }: { payment: Payment; onClose: () => 
   </div>;
 }
 
-function canCancel(payment: Payment) { return payment.status !== "cancelado" && !["entregado", "en_transito"].includes(payment.order?.status || "") && !(payment.status === "pagado" && payment.order?.status === "aceptado"); }
+function canCancel(payment: Payment) { return payment.status !== "cancelado" && !["entregado", "en_transito", "pendiente_confirmacion", "entrega_disputada", "requiere_nueva_entrega"].includes(payment.order?.status || "") && !(payment.status === "pagado" && payment.order?.status === "aceptado"); }
 function cancelDisabledReason(payment: Payment) {
   if (payment.status === "cancelado") return "Este pago ya fue cancelado.";
+  if (["pendiente_confirmacion","entrega_disputada","requiere_nueva_entrega"].includes(payment.order?.status || "")) return "La entrega de este pedido sigue en proceso de confirmación o revisión.";
   if (payment.order?.status === "entregado") return "No se puede cancelar un pago de un pedido entregado.";
   if (payment.order?.status === "en_transito") return "No se puede cancelar un pago de un pedido en tránsito.";
   if (payment.status === "pagado" && payment.order?.status === "aceptado") return "No se puede cancelar el pago de un pedido aceptado y pagado.";

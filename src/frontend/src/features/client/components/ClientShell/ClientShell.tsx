@@ -1,4 +1,5 @@
 "use client";
+import { DeliveryInbox } from "@/features/deliveries/DeliveryInbox";
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
@@ -156,6 +157,7 @@ export function ClientShell({ children }: { children: ReactNode }) {
         </header>
         <main id="client-content" key={pathname} className={styles.content} tabIndex={-1}>
           {error && <p className={styles.alert} role="alert">{error}</p>}
+          <DeliveryInbox />
           {children}
         </main>
         <footer className={styles.footer}><span>© {new Date().getFullYear()} TravelDLS</span><span>Tu carga y tu empresa. Nuestro compromiso.</span></footer>

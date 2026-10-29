@@ -17,3 +17,7 @@
 .actionButton[data-variant="primary"]:hover:not(:disabled):not([aria-disabled="true"]){background:#8b50d2;border-color:var(--theme-border-strong, #ad74e5);color:#fff}
 @media(max-width:600px){.heading{align-items:flex-start;flex-direction:column;gap:14px}.heading h1{font-size:25px}.heading .primary{width:100%}.cardPad{padding:18px}.formGrid{grid-template-columns:1fr}.dialogBody{padding:18px}.dialogHeader{padding:18px}.pager{padding:12px;gap:10px}.pagerActions{width:100%;justify-content:space-between}.table td,.table th{padding:12px}.actions>*{flex:1}}
 @media(prefers-reduced-motion:reduce){.spinner{animation:none}.primary,.secondary,.danger,.actionButton{transition:none}.primary:hover{transform:none}}
+
+.status[data-status="confirmed"]{background:var(--theme-success-bg,#1b382e);color:var(--theme-success-text,#8cd8b4)}
+.status[data-status="awaiting_confirmation"],.status[data-status="pendiente_confirmacion"],.status[data-status="rescheduled"],.status[data-status="requiere_nueva_entrega"]{background:var(--theme-warning-bg,#3a2d1d);color:var(--theme-warning-text,#dfb978)}
+.status[data-status="disputed"],.status[data-status="entrega_disputada"]{background:var(--theme-danger-bg,#3e2533);color:var(--theme-danger-text,#e3a0b5)}

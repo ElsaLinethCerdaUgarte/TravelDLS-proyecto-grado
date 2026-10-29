@@ -22,6 +22,8 @@ export type Company = {
 };
 
 export type OrderDetail = {
+  deliveryStatus?: string;
+  idDriver?: number | null;
   idDetails: number;
   idOrder: number;
   cargoDescription: string;
@@ -115,6 +117,9 @@ export const packagingTypes = [
 ];
 
 export const orderStatusLabels: Record<string, string> = {
+  pendiente_confirmacion: "Pendiente de confirmación",
+  entrega_disputada: "Entrega en disputa",
+  requiere_nueva_entrega: "Requiere nueva entrega",
   pendiente: "Pendiente",
   esperando_aprobacion: "Cotización recibida",
   aceptado: "Aceptado",
@@ -130,6 +135,7 @@ export type OrderFilter = "all" | "pendiente" | "esperando_aprobacion" | "en_tra
 export function matchesOrderFilter(status: string, filter: OrderFilter) {
   if (filter === "all") return true;
   if (filter === "cancelled") return ["cancelado", "anulado", "denegado"].includes(status);
+  if (filter === "en_transito") return ["en_transito","pendiente_confirmacion","entrega_disputada","requiere_nueva_entrega"].includes(status);
   return status === filter;
 }
 

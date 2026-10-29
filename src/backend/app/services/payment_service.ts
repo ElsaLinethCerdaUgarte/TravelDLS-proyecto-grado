@@ -197,8 +197,8 @@ export default class PaymentService {
       }
 
       const orderStatus = payment.order?.status
-      if (orderStatus === OrderStatus.DELIVERED || orderStatus === OrderStatus.IN_TRANSIT) {
-        throw new Error('No se puede cancelar un pago de una orden entregada o en transito.')
+      if ([OrderStatus.DELIVERED, OrderStatus.IN_TRANSIT, OrderStatus.DELIVERY_PENDING, OrderStatus.DELIVERY_DISPUTED, OrderStatus.REDELIVERY].includes(orderStatus as OrderStatus)) {
+        throw new Error('No se puede cancelar un pago de un pedido en proceso de entrega o ya entregado.')
       }
 
       if (orderStatus === OrderStatus.ACCEPTED && payment.status === PaymentStatus.PAID) {

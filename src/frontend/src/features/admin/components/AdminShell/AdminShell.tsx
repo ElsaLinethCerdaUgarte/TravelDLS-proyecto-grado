@@ -32,6 +32,7 @@ export function useAdminUser() {
 
 const navigation: { path: string; label: string; icon: IconName }[] = [
   { path: "dashboard", label: "Vista general", icon: "grid" },
+  { path: "deliveries", label: "Revisión de entregas", icon: "box" },
   ...Object.entries(modules).map(([path, item]) => ({
     path,
     label: item.title,
